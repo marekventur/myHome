@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID" version="2.5">
+    <display-name>IT Mill Toolkit example application</display-name>
+	
+	<!--
+    <servlet>
+        <servlet-name>exampleApplication</servlet-name>
+        <servlet-class>
+            com.itmill.toolkit.terminal.gwt.server.ApplicationServlet
+        </servlet-class>
+        <init-param>
+            <param-name>application</param-name>
+            <param-value>
+                com.example.ExampleApplication
+            </param-value>
+       </init-param>
+    </servlet>
+	-->
+	
+    <!-- Toolkit example application -->
+	<!--
+    <servlet-mapping>
+        <servlet-name>exampleApplication</servlet-name>
+        <url-pattern>/exampleApplication/*</url-pattern>
+    </servlet-mapping>
+	-->
+	
+    <!-- Let any Toolkit servlet to handle static files too (/ITMILL/* resources) -->
+    <!-- In production environment we can let e.g. Apache handle these more efficiently -->
+	<!--
+    <servlet-mapping>
+        <servlet-name>exampleApplication</servlet-name>
+        <url-pattern>/ITMILL/*</url-pattern>
+    </servlet-mapping>
+	-->
+	
+	<servlet>
+		<servlet-name>XmlRpcServlet</servlet-name>
+        <servlet-class>org.apache.xmlrpc.webserver.XmlRpcServlet</servlet-class>
+        <init-param>
+ 			<param-name>enabledForExtensions</param-name>
+			<param-value>true</param-value>
+			<description>
+            	Sets, whether the servlet supports vendor extensions for XML-RPC.
+			</description>
+        </init-param>
+    </servlet>
+	
+	
+	
+    <servlet-mapping>
+        <servlet-name>XmlRpcServlet</servlet-name>
+        <url-pattern>/xmlrpc</url-pattern>
+    </servlet-mapping>
+	
+    <!-- redirects us to example application -->
+    <!--
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+	-->
+
+</web-app>

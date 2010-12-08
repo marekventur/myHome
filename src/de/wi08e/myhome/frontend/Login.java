@@ -1,5 +1,25 @@
 package de.wi08e.myhome.frontend;
 
-public class Login {
+import java.util.HashMap;
+import java.util.UUID;
 
+public class Login {
+	
+	/**
+	 * The main login method
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public HashMap<String, Object> login(String username, String password) {
+		
+		String userToken = UUID.randomUUID().toString();
+		boolean isAdmin = true;
+	
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		result.put("isAdmin", new Boolean(isAdmin));
+		result.put("userToken", userToken);
+		return result;
+		
+	}
 }

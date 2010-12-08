@@ -1,12 +1,14 @@
 package de.wi08e.myhome;
 
+import de.wi08e.myhome.xmlrpc.HTTPServer;
+
 public class Main {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		new HTTPServer();
 
 	}
 
