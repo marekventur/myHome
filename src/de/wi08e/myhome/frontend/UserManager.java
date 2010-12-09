@@ -39,5 +39,13 @@ public class UserManager {
 		return result;
 	}
 	
+	/**
+	 * Deletes an user
+	 * @param token
+	 */
+	public void deleteUser(String token) {
+		
+	}
+	
 	
 }
