@@ -17,5 +17,11 @@
 	<classpathentry kind="lib" path="lib/axis2/wsdl4j-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/axis2/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/axis2/axiom-api-1.2.10.jar"/>
+	<classpathentry kind="lib" path="lib/axis2/axiom-impl-1.2.10.jar"/>
+	<classpathentry kind="lib" path="lib/axis2/neethi-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/axis2/mail-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/axis2/woden-api-1.0M8.jar"/>
+	<classpathentry kind="lib" path="lib/axis2/axis2-codegen-1.5.3.jar"/>
+	<classpathentry kind="lib" path="lib/axis2/axis2-adb-1.5.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

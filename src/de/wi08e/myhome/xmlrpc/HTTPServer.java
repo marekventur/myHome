@@ -13,11 +13,25 @@ public class HTTPServer {
 		try {
 			final Server server = new Server();
 	
-			final Connector connector = new SelectChannelConnector();
-			connector.setPort(Integer.parseInt(Config.getProperty("webserverPort")));
-			//final Connector connector = new SslSocketConnector();
-			//connector.setPort(8081);
-			server.setConnectors(new Connector[] { connector });
+			if (Config.getProperty("webserverHTTPSForce").equals("true")) {
+				/* With HTTPS */
+				/*final Connector connector = new SslSocketConnector();
+				connector.setPort(Integer.parseInt(Config.getProperty("webserverPort")));
+				if (Config.hasProperty("webserverHost"))
+					connector.setHost(Config.getProperty("webserverHost"));
+				connector.
+				server.setConnectors(new Connector[] { connector });*/
+			}
+			else
+			{
+				/* Without HTTPS */
+				final Connector connector = new SelectChannelConnector();
+				connector.setPort(Integer.parseInt(Config.getProperty("webserverPort")));
+				if (Config.hasProperty("webserverHost"))
+					connector.setHost(Config.getProperty("webserverHost"));
+				server.setConnectors(new Connector[] { connector });
+			}
+			
 	
 			final WebAppContext webappcontext = new WebAppContext();
 			webappcontext.setContextPath("");

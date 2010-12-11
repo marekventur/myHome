@@ -68,7 +68,7 @@
 	
 	 <servlet-mapping>
         <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>/soap</url-pattern>
+        <url-pattern>/soap/*</url-pattern>
     </servlet-mapping>
 	
     <!-- redirects us to example application -->

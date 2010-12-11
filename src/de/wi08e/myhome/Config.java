@@ -23,4 +23,8 @@ public class Config {
 	public static String getProperty(String key) {
 		return properties.getProperty(key, "");
 	}
+	
+	public static boolean hasProperty(String key) {
+		return properties.containsKey(key);
+	}
 }
