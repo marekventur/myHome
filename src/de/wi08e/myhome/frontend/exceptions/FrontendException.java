@@ -1,11 +1,11 @@
 package de.wi08e.myhome.frontend.exceptions;
 
-import org.apache.xmlrpc.XmlRpcException;
 
-public class FrontendException extends XmlRpcException {
+
+public class FrontendException extends Exception {
 
 	public FrontendException(int code, String text) {
-		super(code, text);
+		super(text);
 	}
 
 }

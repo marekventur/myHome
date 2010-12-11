@@ -37,7 +37,7 @@
         <url-pattern>/ITMILL/*</url-pattern>
     </servlet-mapping>
 	-->
-	
+	<!--
 	<servlet>
 		<servlet-name>XmlRpcServlet</servlet-name>
         <servlet-class>org.apache.xmlrpc.webserver.XmlRpcServlet</servlet-class>
@@ -49,12 +49,26 @@
 			</description>
         </init-param>
     </servlet>
+	-->
 	
+	<servlet>
+        <servlet-name>AxisServlet</servlet-name>
+        <servlet-class>
+            org.apache.axis2.transport.http.AxisServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 	
-	
+	<!--
     <servlet-mapping>
         <servlet-name>XmlRpcServlet</servlet-name>
         <url-pattern>/xmlrpc</url-pattern>
+    </servlet-mapping>
+	-->
+	
+	 <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/soap</url-pattern>
     </servlet-mapping>
 	
     <!-- redirects us to example application -->
