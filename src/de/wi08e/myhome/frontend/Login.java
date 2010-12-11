@@ -9,7 +9,7 @@ public class Login {
 	 * The main login method
 	 * @param username
 	 * @param password
-	 * @return
+	 * @return HashMap (isAdmin, userToken)
 	 */
 	public HashMap<String, Object> login(String username, String password) {
 		
