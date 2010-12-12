@@ -5,6 +5,7 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 import de.wi08e.myhome.frontend.exceptions.*;
+import de.wi08e.myhome.usermanager.SessionUserToken;
 
 /**
  * This is the main frontend interface. It is modeled to be a SOAP-Interface via javax.jws.WebService
@@ -32,7 +33,7 @@ public class FrontendInterface {
 	
 		LoginResponse result = new LoginResponse();
 		result.isAdmin = true;
-		result.userToken = UUID.randomUUID().toString();;
+		result.userToken = SessionUserToken.INSTANCE.generate();
 		return result;	
 	}
 	

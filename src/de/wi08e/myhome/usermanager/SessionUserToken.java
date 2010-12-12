@@ -42,7 +42,7 @@ public enum SessionUserToken {
 	private final char[] buf = new char[length];
 
 	public String generate() {
-		for (int i = 0; i < symbols.length; ++i)
+		for (int i = 0; i < length; ++i)
 			buf[i] = symbols[random.nextInt(symbols.length)];
 		return new String(buf);
 	}
