@@ -1,10 +1,11 @@
 package de.wi08e.myhome.frontend.exceptions;
 
+/**
+ * This exception is raised when a requested username is not found.
+ */
+
 public class UserNotFound extends FrontendException {
 
-	/**
-	 * This exception is raised when a requested username is not found.
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public UserNotFound() {
