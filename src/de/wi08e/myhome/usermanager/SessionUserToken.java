@@ -26,10 +26,11 @@ public enum SessionUserToken {
 	// An array of symbols holding
 	private static final char[] symbols = new char[36];
 	static {
-		for (int idx = 0; idx < 10; ++idx)
-			symbols[idx] = (char) ('0' + idx);
-		for (int idx = 10; idx < 36; ++idx)
-			symbols[idx] = (char) ('a' + idx - 10);
+		for (int i = 0; i < 10; i++)
+			symbols[i] = (char) ('0' + i);
+		for (int i = 10; i < 36; i++)
+			symbols[i] = (char) ('a' + i - 10);
+		System.out.println(symbols);
 	}
 
 	// Length of the token
@@ -41,10 +42,12 @@ public enum SessionUserToken {
 	// A fixed length char buffer
 	private final char[] buf = new char[length];
 
-	public String generate() {
+	public synchronized String generate() {
+
 		for (int i = 0; i < length; ++i)
 			buf[i] = symbols[random.nextInt(symbols.length)];
 		return new String(buf);
+			
 	}
 
 }
