@@ -24,13 +24,17 @@ public class FrontendInterface {
 	 * The main login method
 	 * @param username The username of the person trying to log in. It's case-insensitive
 	 * @param password The corresponding password. It's case-sensitive
+	 * @throws LoginUsernameOrPasswordWrong Thrown when password or username is wrong
 	 * @return LoginReponse The returning class contains an "isAdmin"-boolean and the newly generated userToken
 	 */
 	@SOAPBinding(style = Style.RPC)
-	public LoginResponse login(String username, String password) {
+	public LoginResponse login(String username, String password) throws LoginUsernameOrPasswordWrong {
 		System.out.println(username);
 		System.out.println(password);
 	
+		if (username.length() == 0)
+			throw new LoginUsernameOrPasswordWrong();
+		
 		LoginResponse result = new LoginResponse();
 		result.isAdmin = true;
 		result.userToken = SessionUserToken.INSTANCE.generate();
@@ -87,5 +91,51 @@ public class FrontendInterface {
 		
 
 		return new UserResponse[] {hans, peter};
+	}
+	
+	/**
+	 * Returns the user with the given username (requires admin rights)
+	 * @param userToken Session user token
+	 * @param username Username of the requested user 
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
+	 * @throws UserNotFound Thrown when username is not found in database
+	 * @return UserResponse UserResponse object containing username, fullname and isAdmin flag
+	 */
+	@SOAPBinding(style = Style.RPC)
+	public UserResponse getUser(String userToken, String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
+
+		if ("".equals(userToken))
+			throw new NotLoggedIn();
+
+		if (!"1234".equals(userToken))
+			throw new NoAdminRights();
+		
+		if ("".equals(username))
+			throw new UserNotFound();
+
+		return new UserResponse("hans", "Hans Meier", true);
+	}
+	
+	/**
+	 * Deletes an user (requires admin rights)
+	 * @param userToken Session user token
+	 * @param username Username of the user which should be deleted
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
+	 * @throws UserNotFound Thrown when username is not found in database
+	 */
+	@SOAPBinding(style = Style.RPC)
+	public void deleteUser(String userToken, String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
+
+		if ("".equals(userToken))
+			throw new NotLoggedIn();
+
+		if (!"1234".equals(userToken))
+			throw new NoAdminRights();	
+		
+		if ("".equals(username))
+			throw new UserNotFound();
+
 	}
 }
