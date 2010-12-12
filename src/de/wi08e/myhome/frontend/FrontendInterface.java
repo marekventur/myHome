@@ -38,9 +38,31 @@ public class FrontendInterface {
 	}
 	
 	/**
+	 * Checks if userToken is still valid
+	 * @param userToken
+	 * @return true if valid
+	 */
+	@SOAPBinding(style = Style.RPC)
+	public boolean checkUserToken(String userToken) {
+		return userToken.length() > 0;	
+	}
+	
+	/**
+	 * Logging the user out
+	 * @param userToken
+	 * @return true if valid
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 */
+	@SOAPBinding(style = Style.RPC)
+	public void logout(String userToken) throws NotLoggedIn {
+		if ("".equals(userToken))
+			throw new NotLoggedIn();
+	}
+	
+	/**
 	 * Lists all users or just one special user (requires admin rights)
 	 * @param userToken Session user token
-	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after an session timeout 
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
 	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't see this list.
 	 * @return Array of UserResponse containing username, fullname and isAdmin flag
 	 */
