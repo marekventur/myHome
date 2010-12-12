@@ -136,6 +136,64 @@ public class FrontendInterface {
 		
 		if ("".equals(username))
 			throw new UserNotFound();
-
 	}
+	
+	/**
+	 * Change the password for an user (requires admin rights when not changing you own password)
+	 * @param userToken Session user token
+	 * @param username Username of the user which should be deleted
+	 * @param password New password
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
+	 * @throws UserNotFound Thrown when username is not found in database
+	 * @throws PasswordTooShort Thrown when the password is too short
+	 */
+	@SOAPBinding(style = Style.RPC)
+	public void changePassword(String userToken, String username, String password) throws NotLoggedIn, NoAdminRights, UserNotFound, PasswordTooShort {
+
+		if ("".equals(userToken))
+			throw new NotLoggedIn();
+
+		if (!"1234".equals(userToken) && !"hans".equals(username))
+			throw new NoAdminRights();	
+		
+		if ("".equals(username))
+			throw new UserNotFound();
+		
+		if (password.length()<8)
+			throw new PasswordTooShort(8);
+	}
+	
+	/**
+	 * Creates a new user account (requires admin rights)
+	 * @param userToken Session user token
+	 * @param username Username of the user which should be added
+	 * @param fullname Fullname of the user which should be added
+	 * @param password Password
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
+	 * @throws PasswordTooShort Thrown when the password is too short
+	 * @throws UsernameTooShortOrInvalid Thrown when username is too short or invalid
+	 * @throws UsernameAlreadyInUse Thrown when username is already used by someone else
+	 */
+	@SOAPBinding(style = Style.RPC)
+	public void addUser(String userToken, String username, String password) throws NotLoggedIn, NoAdminRights, PasswordTooShort, UsernameTooShortOrInvalid, UsernameAlreadyInUse {
+
+		if ("".equals(userToken))
+			throw new NotLoggedIn();
+
+		if (!"1234".equals(userToken))
+			throw new NoAdminRights();	
+		
+		if (username.length() < 4)
+			throw new UsernameTooShortOrInvalid(4);
+		
+		if ("hans".equals(username))
+			throw new UsernameAlreadyInUse();
+		
+		if (password.length() < 8)
+			throw new PasswordTooShort(8);
+	}
+	
+	
 }

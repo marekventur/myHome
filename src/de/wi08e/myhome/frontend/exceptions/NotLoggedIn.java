@@ -1,6 +1,10 @@
 package de.wi08e.myhome.frontend.exceptions;
 
-
+/**
+ * Raised when given userToken is not valid. It might has expired.
+ * @author Marek
+ *
+ */
 public class NotLoggedIn extends FrontendException {
 	
 	private static final long serialVersionUID = 1L;
