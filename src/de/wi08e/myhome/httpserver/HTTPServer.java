@@ -9,9 +9,9 @@ public class HTTPServer {
 	
 	public HTTPServer() {
 		
-		Endpoint endpointLogin = Endpoint.create( new FrontendInterface());
-		System.out.println("http://"+Config.getProperty("webserverHost")+":"+Config.getProperty("webserverPort")+"/service?wsdl");
-		endpointLogin.publish("http://"+Config.getProperty("webserverHost")+":"+Config.getProperty("webserverPort")+"/service");
-		
+		Endpoint endpoint = Endpoint.create( new FrontendInterface());
+		String uri = "http://"+Config.getProperty("webserverHost")+":"+Config.getProperty("webserverPort")+"/service";
+		System.out.println(uri+"/service?wsdl");
+		endpoint.publish(uri);
 	}	
 }
