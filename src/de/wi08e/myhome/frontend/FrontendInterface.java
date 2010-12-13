@@ -1,10 +1,12 @@
 package de.wi08e.myhome.frontend;
 
-import java.util.UUID;
+import java.util.logging.Logger;
+
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 import de.wi08e.myhome.frontend.exceptions.*;
+import de.wi08e.myhome.httpserver.HTTPServer;
 import de.wi08e.myhome.usermanager.SessionUserToken;
 
 /**
@@ -20,6 +22,8 @@ import de.wi08e.myhome.usermanager.SessionUserToken;
 @WebService
 public class FrontendInterface {
 
+	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
+	
 	/**
 	 * The main login method
 	 * @param username The username of the person trying to log in. It's case-insensitive
@@ -29,8 +33,7 @@ public class FrontendInterface {
 	 */
 	@SOAPBinding(style = Style.RPC)
 	public LoginResponse login(String username, String password) throws LoginUsernameOrPasswordWrong {
-		System.out.println(username);
-		System.out.println(password);
+		LOGGER.info("Login attempt: "+username);
 	
 		if (username.length() == 0)
 			throw new LoginUsernameOrPasswordWrong();

@@ -30,7 +30,6 @@ public enum SessionUserToken {
 			symbols[i] = (char) ('0' + i);
 		for (int i = 10; i < 36; i++)
 			symbols[i] = (char) ('a' + i - 10);
-		System.out.println(symbols);
 	}
 
 	// Length of the token
