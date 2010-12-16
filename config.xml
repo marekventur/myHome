@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<config>
+	<!-- This defines the database -->
+	<database type="mysql" host="localhost" port="3306" username="myhome" password="myhome" database="myhome" />
+	
+	<!-- This configures the soap interface -->
+	<soapinterface>
+		<!-- At the moment nothing besides "http" is supported -->
+		<binding protocol="http" port="8888" host="localhost" />
+		<!-- At the moment you can only use one interface -->
+	</soapinterface>
+	
+	<!-- This describes all used plugins -->
+	<nodeplugins>
+		<!-- every nodeplugin is described here -->
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceantester" class="EnoceanTester">
+			<!-- There can be zero to many parameter tags -->
+			<parameter>
+				<key>title</key>
+				<value>Enocean Tester Wohnzimmer</value>	
+			</parameter>
+			
+			<!-- There can be zero or one data tags-->
+			<data>
+				<!-- might be different for every plugin -->
+				<node type="2RockerSwitch">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab01</id>
+					<title>Lichtschalter Wohnzimmer</title>
+				</node>
+				
+				<node type="Relais">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab02</id>
+					<title>Licht Wohnzimmer</title>
+					<reacts>
+						<node>
+							<manufacturer>simulator</manufacturer>
+							<id>ababab01</id>
+						</node>
+					</reacts>
+				</node>
+				<!-- end of data tag -->
+			</data>
+		</nodeplugin>
+		
+		<!-- There might be some more plugins added here -->
+	</nodeplugins>
+</config>
