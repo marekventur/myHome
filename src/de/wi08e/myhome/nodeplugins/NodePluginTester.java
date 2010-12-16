@@ -17,7 +17,6 @@ import de.wi08e.myhome.httpserver.HTTPServer;
  */
 public class NodePluginTester {
 	public static void main(String[] args) throws IOException, SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		//NodePluginLoader.addFile("nodeplugins/german.jar");
 		NodePluginLoader.addFile("nodeplugins/german.jar");
 		
 		Class<?> loadedClass = ClassLoader.getSystemClassLoader()
