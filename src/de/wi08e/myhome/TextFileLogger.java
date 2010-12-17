@@ -27,7 +27,7 @@ public class TextFileLogger {
 		Logger logger = Logger.getLogger("");
 		logger.setLevel(Level.INFO);
 		try {
-			fileTxt = new FileHandler(Config.getProperty("log"));
+			fileTxt = new FileHandler(Config.getLogFile());
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

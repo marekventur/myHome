@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
 
 <config>
+	<!-- This defines the loging-file -->
+	<loging filename="log.txt" />
+	
 	<!-- This defines the database -->
-	<database type="mysql" host="localhost" port="3306" username="myhome" password="myhome" database="myhome" />
+	<database type="mysql" host="localhost" port="3306" user="myhome" password="myhome" database="myhome" />
 	
 	<!-- This configures the soap interface -->
 	<soapinterface>
@@ -14,7 +17,7 @@
 	<!-- This describes all used plugins -->
 	<nodeplugins>
 		<!-- every nodeplugin is described here -->
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceantester" class="EnoceanTester">
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceantester" classname="EnoceanTester">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
 				<key>title</key>
