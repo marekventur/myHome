@@ -19,10 +19,6 @@ public abstract class NodePlugin {
 	private org.w3c.dom.Node data;
 	private HashMap<String, String> properties;
 	
-	public NodePluginEvent getEvent() {
-		return event;
-	}
-
 	public NodePlugin(NodePluginEvent event, HashMap<String, String> properties, org.w3c.dom.Node data) {
 		this.event = event;
 		this.properties = properties;
@@ -35,6 +31,18 @@ public abstract class NodePlugin {
 	
 	public Datagram chainSendDatagramm(Datagram datagram) {
 		return datagram;
+	}
+	
+	public NodePluginEvent getEvent() {
+		return event;
+	}
+	
+	public org.w3c.dom.Node getData() {
+		return data;
+	}
+
+	public HashMap<String, String> getProperties() {
+		return properties;
 	}
 
 }

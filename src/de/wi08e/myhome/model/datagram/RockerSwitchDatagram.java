@@ -19,7 +19,7 @@ public class RockerSwitchDatagram extends BroadcastDatagram {
 		
 		button = button.toLowerCase();
 		if (button.length()!=2 || !button.matches("[abcd][10]"))
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("button has to match [abcd][10]");
 		
 		this.button = button;
 		this.pressed = pressed;

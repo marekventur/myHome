@@ -3,20 +3,13 @@
  */
 package de.wi08e.myhome.nodeplugins;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-
-import de.wi08e.myhome.httpserver.HTTPServer;
-
 
 /**
  * @author Marek
  *
  */
 public class NodePluginTester {
-	public static void main(String[] args) throws IOException, SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	public static void main(String[] args)  {
 		/*NodePluginLoader.addFile("nodeplugins/german.jar");
 		
 		Class<?> loadedClass = ClassLoader.getSystemClassLoader()
