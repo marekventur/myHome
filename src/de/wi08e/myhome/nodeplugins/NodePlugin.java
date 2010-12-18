@@ -3,6 +3,8 @@
  */
 package de.wi08e.myhome.nodeplugins;
 
+import java.util.HashMap;
+
 import de.wi08e.myhome.model.datagram.Datagram;
 
 /**
@@ -14,13 +16,17 @@ import de.wi08e.myhome.model.datagram.Datagram;
 public abstract class NodePlugin {
 	
 	private NodePluginEvent event;
-
+	private org.w3c.dom.Node data;
+	private HashMap<String, String> properties;
+	
 	public NodePluginEvent getEvent() {
 		return event;
 	}
 
-	public NodePlugin(NodePluginEvent event) {
+	public NodePlugin(NodePluginEvent event, HashMap<String, String> properties, org.w3c.dom.Node data) {
 		this.event = event;
+		this.properties = properties;
+		this.data = data;
 	}
 	
 	public Datagram chainReceiveDatagram(Datagram datagram) {

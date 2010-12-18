@@ -82,12 +82,16 @@ public class Config {
 			for (int i=0; i<bindings.getLength(); i++ ) {
 				Node binding = bindings.item(i);
 				String host = "localhost";
+				String path = "/";
 				int port = 8888;
 				if (binding.getAttributes().getNamedItem("host") != null) 
 					host = binding.getAttributes().getNamedItem("host").getNodeValue();
 				if (binding.getAttributes().getNamedItem("port") != null) 
 					port = Integer.parseInt(binding.getAttributes().getNamedItem("port").getNodeValue());
-				soapInterfaces.add(new ConfigSOAPInterface(ConfigSOAPInterface.Protocol.HTTP, host, port));
+				if (binding.getAttributes().getNamedItem("path") != null) 
+					path = binding.getAttributes().getNamedItem("path").getNodeValue();
+				
+				soapInterfaces.add(new ConfigSOAPInterface(ConfigSOAPInterface.Protocol.HTTP, host, port, path));
 			}
 		}
 		if (soapInterfaces.size() < 1) throw new Exception("There has to be at least one SOAPInterface binding");
