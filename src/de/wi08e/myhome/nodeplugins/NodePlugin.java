@@ -13,36 +13,8 @@ import de.wi08e.myhome.model.datagram.Datagram;
  * @author Marek
  *
  */
-public abstract class NodePlugin {
-	
-	private NodePluginEvent event;
-	private org.w3c.dom.Node data;
-	private HashMap<String, String> properties;
-	
-	public NodePlugin(NodePluginEvent event, HashMap<String, String> properties, org.w3c.dom.Node data) {
-		this.event = event;
-		this.properties = properties;
-		this.data = data;
-	}
-	
-	public Datagram chainReceiveDatagram(Datagram datagram) {
-		return datagram;
-	}
-	
-	public Datagram chainSendDatagramm(Datagram datagram) {
-		return datagram;
-	}
-	
-	public NodePluginEvent getEvent() {
-		return event;
-	}
-	
-	public org.w3c.dom.Node getData() {
-		return data;
-	}
-
-	public HashMap<String, String> getProperties() {
-		return properties;
-	}
-
+public interface NodePlugin {
+	public void initiate(NodePluginEvent event, HashMap<String, String> properties, org.w3c.dom.Node data);
+	public Datagram chainReceiveDatagram(Datagram datagram);
+	public Datagram chainSendDatagramm(Datagram datagram);
 }
