@@ -3,7 +3,7 @@
  */
 package de.wi08e.myhome;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.w3c.dom.Node;
 
@@ -14,16 +14,16 @@ import org.w3c.dom.Node;
 public class ConfigPlugin {
 	private String namespace;
 	private String classname;
-	private HashMap<String, String> properties = new HashMap<String, String>();
-	private org.w3c.dom.Node xmlNode;
+	private Map<String, String> properties;
+	private org.w3c.dom.Node data;
 	
 	public ConfigPlugin(String namespace, String classname,
-			HashMap<String, String> properties, Node xmlNode) {
+			Map<String, String> properties, Node data) {
 		super();
 		this.namespace = namespace;
 		this.classname = classname;
 		this.properties = properties;
-		this.xmlNode = xmlNode;
+		this.data = data;
 	}
 
 	public String getNamespace() {
@@ -34,12 +34,12 @@ public class ConfigPlugin {
 		return classname;
 	}
 
-	public HashMap<String, String> getProperties() {
+	public Map<String, String> getProperties() {
 		return properties;
 	}
 
-	public org.w3c.dom.Node getXmlNode() {
-		return xmlNode;
+	public org.w3c.dom.Node getData() {
+		return data;
 	}
 	
 	

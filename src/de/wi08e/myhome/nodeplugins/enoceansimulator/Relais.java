@@ -6,7 +6,6 @@ package de.wi08e.myhome.nodeplugins.enoceansimulator;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;

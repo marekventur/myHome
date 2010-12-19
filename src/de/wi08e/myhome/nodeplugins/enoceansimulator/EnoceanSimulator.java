@@ -3,13 +3,14 @@
  */
 package de.wi08e.myhome.nodeplugins.enoceansimulator;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.w3c.dom.Node;
 
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
+import de.wi08e.myhome.nodeplugins.NodePluginException;
 
 /**
  * @author Marek
@@ -17,6 +18,8 @@ import de.wi08e.myhome.nodeplugins.NodePluginEvent;
  */
 public class EnoceanSimulator implements NodePlugin {
 
+	private String identifier = "";
+	
 	/**
 	 * @param event
 	 * @param properties
@@ -24,11 +27,21 @@ public class EnoceanSimulator implements NodePlugin {
 	 */
 	public EnoceanSimulator() {
 		System.out.println("Hello World");
+		
 	}
 
 	@Override
-	public void initiate(NodePluginEvent event,	HashMap<String, String> properties, Node data) {
-		System.out.println(properties.get("title"));
+	public void initiate(NodePluginEvent event,	Map<String, String> properties, Node data) throws NodePluginException {
+		/* Is there a title? */
+		if (!properties.containsKey("title"))
+			throw new NodePluginException("Enocean Simulator", "Property 'title' not found");
+		identifier = "Enocean Simulator: "+properties.get("title");
+		
+		/* Is there data? */
+		if (data == null)
+			throw new NodePluginException(identifier, "no 'data' tag found");
+
+		new GUI(properties.get("title"), data);
 	}
 
 
@@ -42,5 +55,13 @@ public class EnoceanSimulator implements NodePlugin {
 	public Datagram chainSendDatagramm(Datagram datagram) {
 		return null;
 	}
+
+
+	@Override
+	public String getName() {
+		return "Enocean Simulator";
+	}
+
+	
 
 }

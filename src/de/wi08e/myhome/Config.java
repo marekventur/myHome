@@ -2,7 +2,9 @@ package de.wi08e.myhome;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,8 +27,8 @@ public class Config {
 	private static String databasePassword;
 	private static String databaseName;
 	
-	private static ArrayList<ConfigSOAPInterface> soapInterfaces = new ArrayList<ConfigSOAPInterface>();
-	private static ArrayList<ConfigPlugin> plugins = new ArrayList<ConfigPlugin>();
+	private static List<ConfigSOAPInterface> soapInterfaces = new ArrayList<ConfigSOAPInterface>();
+	private static List<ConfigPlugin> plugins = new ArrayList<ConfigPlugin>();
 	
 	/**
 	 * Loads config data from a xml file. 
@@ -108,7 +110,7 @@ public class Config {
 					String namespace;
 					String classname;
 					Node data = null;
-					HashMap<String, String> properties = new HashMap<String, String>();
+					Map<String, String> properties = new HashMap<String, String>();
 					
 					/* namespace & classname */
 					if (nodePlugin.getAttributes().getNamedItem("namespace") == null)
@@ -175,11 +177,11 @@ public class Config {
 		return databaseName;
 	}
 
-	public static ArrayList<ConfigSOAPInterface> getSoapInterfaces() {
+	public static List<ConfigSOAPInterface> getSoapInterfaces() {
 		return soapInterfaces;
 	}
 
-	public static ArrayList<ConfigPlugin> getPlugins() {
+	public static List<ConfigPlugin> getPlugins() {
 		return plugins;
 	}
 

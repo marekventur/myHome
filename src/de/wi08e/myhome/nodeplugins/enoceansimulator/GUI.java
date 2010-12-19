@@ -34,16 +34,18 @@ public class GUI extends JFrame {
 		JPanel content = new JPanel(new GridLayout(0,2));
 		getContentPane().add(content, BorderLayout.CENTER);	
 		
+		/* Add Nodes */
 		content.add(new TwoRockerSwitch("Lichtschalter"));	    
 		content.add(new Relais("Lampe 1"));
 		content.add(new Relais("Lampe 2"));
 
-	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		/* Load */
+	    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	    pack();
 	    setVisible(true);
 	}
 	
 	public static void main(String[] args) {
-		new GUI("Wohnzimmer", null);
+		
 	}
 }

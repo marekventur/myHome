@@ -17,26 +17,38 @@
 	<!-- This describes all used plugins -->
 	<nodeplugins>
 		<!-- every nodeplugin is described here -->
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceantester" classname="EnoceanTester">
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator" classname="EnoceanSimulator">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
 				<key>title</key>
-				<value>Enocean Tester Wohnzimmer</value>	
+				<value>Wohnzimmer</value>	
 			</parameter>
 			
 			<!-- There can be zero or one data tags-->
 			<data>
 				<!-- might be different for every plugin -->
-				<node type="2RockerSwitch">
+				<node type="TwoRockerSwitch">
 					<manufacturer>simulator</manufacturer>
 					<id>ababab01</id>
-					<title>Lichtschalter Wohnzimmer</title>
+					<title>Lichtschalter</title>
 				</node>
 				
 				<node type="Relais">
 					<manufacturer>simulator</manufacturer>
 					<id>ababab02</id>
-					<title>Licht Wohnzimmer</title>
+					<title>Licht 1</title>
+					<reacts>
+						<node>
+							<manufacturer>simulator</manufacturer>
+							<id>ababab01</id>
+						</node>
+					</reacts>
+				</node>
+				
+				<node type="Relais">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab03</id>
+					<title>Licht 2</title>
 					<reacts>
 						<node>
 							<manufacturer>simulator</manufacturer>

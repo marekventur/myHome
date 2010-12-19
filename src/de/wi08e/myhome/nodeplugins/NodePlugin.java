@@ -3,7 +3,7 @@
  */
 package de.wi08e.myhome.nodeplugins;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import de.wi08e.myhome.model.datagram.Datagram;
 
@@ -14,7 +14,8 @@ import de.wi08e.myhome.model.datagram.Datagram;
  *
  */
 public interface NodePlugin {
-	public void initiate(NodePluginEvent event, HashMap<String, String> properties, org.w3c.dom.Node data);
+	public void initiate(NodePluginEvent event, Map<String, String> properties, org.w3c.dom.Node data) throws NodePluginException;
 	public Datagram chainReceiveDatagram(Datagram datagram);
 	public Datagram chainSendDatagramm(Datagram datagram);
+	public String getName();
 }
