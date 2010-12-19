@@ -96,7 +96,9 @@ public class Node {
 	public String toString() {
 		return type+':'+manufacturer+':'+id;
 	}
-	
-	
+
+	public boolean equals(Node node) {
+		return (node.toString().contentEquals(toString()));
+	}
 	
 }

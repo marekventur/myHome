@@ -58,14 +58,13 @@ public class NodePluginRunnable implements Runnable {
 
 					@Override
 					public void logError(String text) {
-						// TODO Auto-generated method stub
-						
+						System.out.println(text);						
 					}
 
 					@Override
-					public void datagrammReceived(Datagram datagram) {
-						// TODO Auto-generated method stub
-						
+					public void datagrammReceived(Datagram datagram) {			
+						for (NodePlugin plugin: plugins) 
+							plugin.chainReceiveDatagram(datagram);	
 					}
 
 					@Override
@@ -86,6 +85,8 @@ public class NodePluginRunnable implements Runnable {
 				LOGGER.warning("No constructor found in "+configPlugin.getNamespace()+"."+configPlugin.getClassname());
 			} catch (java.lang.ClassCastException e) {
 				LOGGER.warning("Can't cast "+configPlugin.getNamespace()+"."+configPlugin.getClassname());
+			} catch (NodePluginException e) {
+				LOGGER.warning(e.getMessage());
 			} catch (Exception e) {
 				LOGGER.warning("Other exception in "+configPlugin.getNamespace()+"."+configPlugin.getClassname()+": "+e.getMessage());
 			} 

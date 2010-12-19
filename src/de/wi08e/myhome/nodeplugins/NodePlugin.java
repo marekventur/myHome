@@ -15,7 +15,7 @@ import de.wi08e.myhome.model.datagram.Datagram;
  */
 public interface NodePlugin {
 	public void initiate(NodePluginEvent event, Map<String, String> properties, org.w3c.dom.Node data) throws NodePluginException;
-	public Datagram chainReceiveDatagram(Datagram datagram);
-	public Datagram chainSendDatagramm(Datagram datagram);
+	public void chainReceiveDatagram(Datagram datagram);
+	public void chainSendDatagramm(Datagram datagram);
 	public String getName();
 }

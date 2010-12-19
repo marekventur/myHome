@@ -135,7 +135,7 @@ public class Config {
 					}
 					
 					/* data tag */
-					NodeList datas = ((Element)nodePluginTop).getElementsByTagName("data");
+					NodeList datas = ((Element)nodePlugin).getElementsByTagName("data");
 					if (datas.getLength() > 1)
 						throw new Exception("Too much data tags for one plugin found");	
 					if (datas.getLength() == 1)

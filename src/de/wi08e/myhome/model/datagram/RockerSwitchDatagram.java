@@ -8,29 +8,34 @@ import de.wi08e.myhome.model.Node;
  */
 public class RockerSwitchDatagram extends BroadcastDatagram {
 
-	private String button;
-	private boolean pressed;
+	public enum State {PRESSED, RELEASED}
+	public enum Button {A, B}
+	public enum OnOff {ON, OFF}
+	private Button button;
+	private OnOff onOff;
+	private State state;
 	
 	/**
 	 * @param sender
 	 */
-	public RockerSwitchDatagram(Node sender, String button, boolean pressed) {
-		super(sender);
-		
-		button = button.toLowerCase();
-		if (button.length()!=2 || !button.matches("[abcd][10]"))
-			throw new IllegalArgumentException("button has to match [abcd][10]");
-		
+	public RockerSwitchDatagram(Node sender, Button button, OnOff onOff, State state) {
+		super(sender);	
 		this.button = button;
-		this.pressed = pressed;
+		this.state = state;
+		this.onOff = onOff;
+
 	}
 	
-	public String getButton() {
+	public Button getButton() {
 		return button;
 	}
 	
-	public boolean isPressed() {
-		return pressed;
+	public State getState() {
+		return state;
+	}
+
+	public OnOff getOnOff() {
+		return onOff;
 	}
 	
 	

@@ -37,24 +37,94 @@
 					<manufacturer>simulator</manufacturer>
 					<id>ababab02</id>
 					<title>Licht 1</title>
-					<reacts>
-						<node>
-							<manufacturer>simulator</manufacturer>
-							<id>ababab01</id>
-						</node>
-					</reacts>
+					
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab01</id>
+						<button>a</button>
+					</trigger>
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab04</id>
+						<button>b</button>
+					</trigger>
+					
 				</node>
 				
 				<node type="Relais">
 					<manufacturer>simulator</manufacturer>
 					<id>ababab03</id>
 					<title>Licht 2</title>
-					<reacts>
-						<node>
-							<manufacturer>simulator</manufacturer>
-							<id>ababab01</id>
-						</node>
-					</reacts>
+					
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab01</id>
+						<button>b</button>
+					</trigger>
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab04</id>
+						<button>b</button>
+					</trigger>
+					
+				</node>
+				<!-- end of data tag -->
+			</data>
+		</nodeplugin>
+		
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator" classname="EnoceanSimulator">
+			<!-- There can be zero to many parameter tags -->
+			<parameter>
+				<key>title</key>
+				<value>Küche</value>	
+			</parameter>
+			
+			<!-- There can be zero or one data tags-->
+			<data>
+				<!-- might be different for every plugin -->
+				<node type="TwoRockerSwitch">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab04</id>
+					<title>Lichtschalter</title>
+				</node>
+				
+				<node type="Relais">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab06</id>
+					<title>Licht 1</title>
+					
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab04</id>
+						<button>a</button>
+					</trigger>
+					
+				</node>
+				
+				<node type="Relais">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab07</id>
+					<title>Licht 2</title>
+					
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab04</id>
+						<button>a</button>
+					</trigger>
+					
+				</node>
+				
+				<node type="Relais">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab08</id>
+					<title>Licht 3</title>
+					
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab04</id>
+						<button>a</button>
+					</trigger>
+					
 				</node>
 				<!-- end of data tag -->
 			</data>

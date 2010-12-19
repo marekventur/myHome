@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -15,7 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.w3c.dom.Node;
+import de.wi08e.myhome.model.Node;
 
 /**
  * @author Marek
@@ -23,7 +24,7 @@ import org.w3c.dom.Node;
  */
 public class GUI extends JFrame {
 	
-	public GUI(String title, Node data) {
+	public GUI(String title, List<NodePanel> nodePanels) {
 		super(title);
 		setLayout(new BorderLayout());
 	
@@ -35,17 +36,18 @@ public class GUI extends JFrame {
 		getContentPane().add(content, BorderLayout.CENTER);	
 		
 		/* Add Nodes */
-		content.add(new TwoRockerSwitch("Lichtschalter"));	    
-		content.add(new Relais("Lampe 1"));
-		content.add(new Relais("Lampe 2"));
+		for (NodePanel nodePanel: nodePanels) 
+			content.add(nodePanel);	    
 
-		/* Load */
-	    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+	}
+
+	/**
+	 * 
+	 */
+	public void createAndShowGUI() {
+	    
 	    pack();
 	    setVisible(true);
-	}
-	
-	public static void main(String[] args) {
-		
 	}
 }
