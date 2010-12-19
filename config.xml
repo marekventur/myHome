@@ -24,6 +24,16 @@
 				<value>Wohnzimmer</value>	
 			</parameter>
 			
+			<parameter>
+				<key>left</key>
+				<value>100</value>	
+			</parameter>
+			
+			<parameter>
+				<key>top</key>
+				<value>100</value>	
+			</parameter>
+			
 			<!-- There can be zero or one data tags-->
 			<data>
 				<!-- might be different for every plugin -->
@@ -77,6 +87,16 @@
 			<parameter>
 				<key>title</key>
 				<value>Küche</value>	
+			</parameter>
+			
+			<parameter>
+				<key>left</key>
+				<value>400</value>	
+			</parameter>
+			
+			<parameter>
+				<key>top</key>
+				<value>100</value>	
 			</parameter>
 			
 			<!-- There can be zero or one data tags-->

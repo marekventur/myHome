@@ -121,7 +121,7 @@ public class Config {
 					classname = nodePlugin.getAttributes().getNamedItem("classname").getNodeValue();
 					
 					/* parameters */
-					NodeList parameters = ((Element)nodePluginTop).getElementsByTagName("parameter");
+					NodeList parameters = ((Element)nodePlugin).getElementsByTagName("parameter");
 					for (int j=0; j<parameters.getLength(); j++ ) {
 						Node parameter = parameters.item(j);
 						

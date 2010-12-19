@@ -143,6 +143,17 @@ public class EnoceanSimulator implements NodePlugin {
 		
 		gui = new GUI(properties.get("title"), nodePanels);
 		
+		/* Screenposition */
+		int left = 0;
+		int top = 0;
+		if (properties.containsKey("left")) 
+			left = Integer.parseInt(properties.get("left"));
+		
+		if (properties.containsKey("top"))
+			top = Integer.parseInt(properties.get("top"));
+		System.out.println(top);
+		gui.setLocation(left, top);
+		
 		SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
 		        gui.createAndShowGUI();
