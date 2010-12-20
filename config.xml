@@ -17,7 +17,7 @@
 	<!-- This describes all used plugins -->
 	<nodeplugins>
 		<!-- every nodeplugin is described here -->
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator" classname="EnoceanSimulator">
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
 				<key>title</key>
@@ -82,7 +82,7 @@
 			</data>
 		</nodeplugin>
 		
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator" classname="EnoceanSimulator">
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
 				<key>title</key>

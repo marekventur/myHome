@@ -42,7 +42,7 @@ public class NodePluginRunnable implements Runnable {
 			Class<?> loadedClass;
 			try {
 				loadedClass = ClassLoader.getSystemClassLoader()
-					.loadClass(configPlugin.getNamespace()+"."+configPlugin.getClassname());
+					.loadClass(configPlugin.getNamespace()+".Main");
 			
 				Constructor<?> cs = loadedClass.getConstructor();
 			
@@ -78,17 +78,17 @@ public class NodePluginRunnable implements Runnable {
 				
 				plugins.add(plugin);
 			} catch (ClassNotFoundException e) {
-				LOGGER.warning("Can't find "+configPlugin.getNamespace()+"."+configPlugin.getClassname());
+				LOGGER.warning("Can't find "+configPlugin.getNamespace());
 			} catch (SecurityException e) {
-				LOGGER.warning("Security exception in "+configPlugin.getNamespace()+"."+configPlugin.getClassname());
+				LOGGER.warning("Security exception in "+configPlugin.getNamespace());
 			} catch (NoSuchMethodException e) {
-				LOGGER.warning("No constructor found in "+configPlugin.getNamespace()+"."+configPlugin.getClassname());
+				LOGGER.warning("No constructor found in "+configPlugin.getNamespace());
 			} catch (java.lang.ClassCastException e) {
-				LOGGER.warning("Can't cast "+configPlugin.getNamespace()+"."+configPlugin.getClassname());
+				LOGGER.warning("Can't cast "+configPlugin.getNamespace());
 			} catch (NodePluginException e) {
 				LOGGER.warning(e.getMessage());
 			} catch (Exception e) {
-				LOGGER.warning("Other exception in "+configPlugin.getNamespace()+"."+configPlugin.getClassname()+": "+e.getMessage());
+				LOGGER.warning("Other exception in "+configPlugin.getNamespace()+": "+e.getMessage());
 			} 
 		}
 		

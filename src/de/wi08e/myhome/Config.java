@@ -108,7 +108,7 @@ public class Config {
 				for (int i=0; i<nodePlugins.getLength(); i++ ) {
 					Node nodePlugin = nodePlugins.item(i);
 					String namespace;
-					String classname;
+					
 					Node data = null;
 					Map<String, String> properties = new HashMap<String, String>();
 					
@@ -116,9 +116,6 @@ public class Config {
 					if (nodePlugin.getAttributes().getNamedItem("namespace") == null)
 						throw new Exception("No namespace found for a plugin");
 					namespace = nodePlugin.getAttributes().getNamedItem("namespace").getNodeValue();
-					if (nodePlugin.getAttributes().getNamedItem("classname") == null) 
-						throw new Exception("No classname found for a plugin");
-					classname = nodePlugin.getAttributes().getNamedItem("classname").getNodeValue();
 					
 					/* parameters */
 					NodeList parameters = ((Element)nodePlugin).getElementsByTagName("parameter");
@@ -141,7 +138,7 @@ public class Config {
 					if (datas.getLength() == 1)
 						data = datas.item(0);
 										
-					plugins.add(new ConfigPlugin(namespace, classname, properties, data));
+					plugins.add(new ConfigPlugin(namespace, properties, data));
 				}
 			}
 		}	

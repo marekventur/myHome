@@ -13,15 +13,13 @@ import org.w3c.dom.Node;
  */
 public class ConfigPlugin {
 	private String namespace;
-	private String classname;
 	private Map<String, String> properties;
 	private org.w3c.dom.Node data;
 	
-	public ConfigPlugin(String namespace, String classname,
+	public ConfigPlugin(String namespace,
 			Map<String, String> properties, Node data) {
 		super();
 		this.namespace = namespace;
-		this.classname = classname;
 		this.properties = properties;
 		this.data = data;
 	}
@@ -30,9 +28,6 @@ public class ConfigPlugin {
 		return namespace;
 	}
 
-	public String getClassname() {
-		return classname;
-	}
 
 	public Map<String, String> getProperties() {
 		return properties;
