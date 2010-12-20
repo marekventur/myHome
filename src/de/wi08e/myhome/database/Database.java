@@ -3,6 +3,8 @@
  */
 package de.wi08e.myhome.database;
 
+import java.io.File;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -20,8 +22,9 @@ public class Database {
 		try {
 			// This step will read hibernate.cfg.xml
 
-			SessionFactory sessionFactory = new	Configuration().configure().buildSessionFactory();
+			SessionFactory sessionFactory = new	Configuration().configure(new File("hibernate.cfg.xml")).buildSessionFactory();
 			session = sessionFactory.openSession();
+		
 			// Create new instance of Contact and set
 
 			System.out.println("Inserting Record");
