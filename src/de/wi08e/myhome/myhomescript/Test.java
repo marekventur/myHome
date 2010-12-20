@@ -3,7 +3,9 @@
  */
 package de.wi08e.myhome.myhomescript;
 
-import javax.script.Invocable;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
@@ -20,14 +22,26 @@ public class Test {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-        // create a script engine manager
+		
         ScriptEngineManager factory = new ScriptEngineManager();
-        // create a JavaScript engine
         ScriptEngine engine = factory.getEngineByName("JavaScript");
       
+        /* Sensor */
+        List<ScriptingSensor> sensorList = new ArrayList<ScriptingSensor>();
+        sensorList.add(new ScriptingSensor());
+        sensorList.add(new ScriptingSensor());
+        sensorList.add(new ScriptingSensor());
+        ScriptingNodeList<ScriptingSensor> sensor = new ScriptingNodeList<ScriptingSensor>(sensorList);
         
-        ScriptingSensorList sensor = new ScriptingSensorList();
+        /* Actor */
+        List<ScriptingActor> actorList = new ArrayList<ScriptingActor>();
+        actorList.add(new ScriptingActor());
+        actorList.add(new ScriptingActor());
+        actorList.add(new ScriptingActor());
+        ScriptingNodeList<ScriptingActor> actor = new ScriptingNodeList<ScriptingActor>(actorList);
+        
         engine.put("Sensor", sensor);
+        engine.put("Actor", actor);
         
         engine.eval(new java.io.FileReader("test.js"));
  

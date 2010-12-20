@@ -1,5 +1,4 @@
 // Kamin-Fenster-Dunstabzugshaube-Schaltung
-println(Sensor.getByName('#kaminTemperaturFühler').getTemperatureCelsius());
 if (Sensor.getByName('#kaminTemperaturFühler').getTemperatureCelsius() > 50) {
 
     // Kamin ist an. Ist ein Fenster offen?
@@ -12,13 +11,15 @@ if (Sensor.getByName('#kaminTemperaturFühler').getTemperatureCelsius() > 50) {
 
     if (offeneFenster == 0) {
         // Kein Fenster offen, also darf Dunstabzugshaube nicht angehen
-        // Aktor.getByName('dunstabzugshaubeNetzspannung').setActivated(false);
+         Aktor.getByName('dunstabzugshaubeNetzspannung').setActivated(false);
     }
     else
     {
         // Mindestens 1 Fenster ist offen, Dunstabzugshaube darf also an sein
-        // Aktor.getByName('dunstabzugshaubeNetzspannung').setActivated(false);
+        Aktor.getByName('dunstabzugshaubeNetzspannung').setActivated(false);
     }
+    
+   
     
 }
 
