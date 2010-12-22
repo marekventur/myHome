@@ -18,4 +18,5 @@ public interface NodePlugin {
 	public void chainReceiveDatagram(Datagram datagram);
 	public void chainSendDatagramm(Datagram datagram);
 	public String getName();
+	public String getCategory();
 }

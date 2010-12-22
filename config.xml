@@ -5,7 +5,7 @@
 	<loging filename="log.txt" />
 	
 	<!-- This defines the database -->
-	<database type="mysql" host="localhost" port="3306" user="myhome" password="myhome" database="myhome" />
+	<database driver="mysql" host="vmax2.marekventur.de" port="3306" user="myhome" password="myhome" database="myhome" />
 	
 	<!-- This configures the soap interface -->
 	<soapinterface>
