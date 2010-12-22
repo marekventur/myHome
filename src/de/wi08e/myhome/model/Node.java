@@ -25,7 +25,7 @@ public class Node {
 	private String manufacturer;
 	private String id;
 	
-	private NodeType type;
+	private String type = "unknown";
 	
 	/**
 	 * Returns the type in lower case letters 
@@ -95,19 +95,15 @@ public class Node {
 	}
 	*/
 	
-	public NodeType getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(NodeType type) {
-		this.type = type;
+	public void setType(String type) {
+		this.type = type.toLowerCase();
 	}
 	
-	public void setType(int typeInt) {
-		for (NodeType t:NodeType.values())
-			if (t.getId() == typeInt)
-				this.type = t;
-	}
+	
 
 	/**
 	 * Returns the descriptor for this Node as a single string
