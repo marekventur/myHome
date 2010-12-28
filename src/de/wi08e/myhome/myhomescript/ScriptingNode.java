@@ -25,6 +25,4 @@ public abstract class ScriptingNode {
 		return node.getCategory();
 	}
 	
-	
->>>>>>> 31aae3b153637f059a9a4858f1da395e37bcc6d3
 }

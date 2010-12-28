@@ -5,15 +5,19 @@ package de.wi08e.myhome.myhomescript;
 
 import java.util.Random;
 
+import de.wi08e.myhome.model.NamedNode;
+
 /**
  * @author Marek
  *
  */
 public class ScriptingSensor extends ScriptingNode{
-	public ScriptingSensor() {
-		
-	}
+
 	
+	public ScriptingSensor(NamedNode node) {
+		super(node);
+	}
+
 	/**
 	 * Returns the temperature
 	 * @return Temperature in Celsius, null when no applicable
