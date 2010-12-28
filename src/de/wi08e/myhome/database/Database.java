@@ -4,10 +4,12 @@
 package de.wi08e.myhome.database;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import de.wi08e.myhome.Config;
+
 
 /**
  * @author Marek
@@ -16,36 +18,27 @@ import org.hibernate.cfg.Configuration;
 
 public class Database {
 
-	public Database() {
-		Session session = null;
+	private static Connection conn;
 
-		try {
-			// This step will read hibernate.cfg.xml
-
-			SessionFactory sessionFactory = new	Configuration().configure(new File("hibernate.cfg.xml")).buildSessionFactory();
-			session = sessionFactory.openSession();
+	public static void initiate() {
 		
-			// Create new instance of Contact and set
-
-			System.out.println("Inserting Record");
-			Test test = new Test();
-			test.setId(3);
-			test.setText("Text");
-			session.save(test);
-			System.out.println("Done");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		} finally {
-			// Actual contact insertion will happen at this step
-			session.flush();
-			session.close();
-
+		if (Config.getDatabaseType() == Config.DatabaseType.MYSQL) {
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			try {
+				conn = DriverManager.getConnection("jdbc:mysql://"+Config.getDatabaseHost()+":"+Config.getDatabasePort()+"/"+Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
+		
 	}
 
-	public static void main(String[] args) {
-		new Database();
+	public static Connection getConn() {
+		return conn;
 	}
 
 }

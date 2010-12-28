@@ -143,6 +143,7 @@ public class Main implements NodePlugin {
 		
 		gui = new GUI(properties.get("title"), nodePanels);
 		
+
 		/* Screenposition */
 		int left = 0;
 		int top = 0;
@@ -153,7 +154,7 @@ public class Main implements NodePlugin {
 			top = Integer.parseInt(properties.get("top"));
 		
 		gui.setLocation(left, top);
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
 		        gui.createAndShowGUI();
@@ -180,6 +181,12 @@ public class Main implements NodePlugin {
 	@Override
 	public String getName() {
 		return "Enocean Simulator";
+	}
+
+
+	@Override
+	public String getCategory() {
+		return "enocean";
 	}
 
 	
