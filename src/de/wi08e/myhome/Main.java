@@ -7,12 +7,14 @@ import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.httpserver.HTTPServer;
 import de.wi08e.myhome.myhomescript.ScriptingEngine;
 import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
+import de.wi08e.myhome.statusmanager.StatusManager;
 
 public class Main {
 	
 	private static ScriptingEngine scriptingEngine;
+	private static StatusManager statusManager;
 	private static Database database;
-	private static NodePluginRunnable nodePluginRunnable;
+	private static NodePluginRunnable nodePlugin;
 		
 	public static void main(String[] args) {
 		
@@ -33,8 +35,8 @@ public class Main {
 		LOGGER.info("myHome has been launched");
 		
 		/* Loading all NodePlugins */
-		nodePluginRunnable = new NodePluginRunnable();
-		Thread nodePluginThread = new Thread(nodePluginRunnable);
+		nodePlugin = new NodePluginRunnable();
+		Thread nodePluginThread = new Thread(nodePlugin);
 		nodePluginThread.start();
 		LOGGER.info("NodePlugins have been loaded");
 		
@@ -42,7 +44,11 @@ public class Main {
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
 		
 		/* Create scripting engine */
-		scriptingEngine = new ScriptingEngine(database, nodePluginRunnable);
+		scriptingEngine = new ScriptingEngine(database, nodePlugin);
+		
+		/* Create statusmanager */
+		statusManager = new StatusManager(database, nodePlugin, scriptingEngine);
+		nodePlugin.addReceiver(statusManager);
 		
 		/* Start SOAP service */
 		new HTTPServer();

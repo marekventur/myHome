@@ -23,8 +23,8 @@ import de.wi08e.myhome.model.datagram.Datagram;
 public class NodePluginRunnable implements Runnable {
 	
 	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
-
 	private List<NodePlugin> plugins;
+	private List<DatagramReceiver> receivers = new ArrayList<DatagramReceiver>();
 	
 	public void run() {
 		
@@ -65,6 +65,8 @@ public class NodePluginRunnable implements Runnable {
 					public void datagrammReceived(Datagram datagram) {			
 						for (NodePlugin plugin: plugins) 
 							plugin.chainReceiveDatagram(datagram);	
+						for (DatagramReceiver receiver: receivers) 
+							receiver.receiveDatagram(datagram);
 					}
 
 					@Override
@@ -94,5 +96,9 @@ public class NodePluginRunnable implements Runnable {
 		
 		
 		
+	}
+	
+	public void addReceiver(DatagramReceiver receiver) {
+		receivers.add(receiver);
 	}
 }

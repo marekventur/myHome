@@ -16,7 +16,7 @@ import javax.script.ScriptEngineManager;
 
 
 public class Test {
-
+/*
 	
 	/**
 	 * @param args
@@ -27,13 +27,15 @@ public class Test {
         ScriptEngine engine = factory.getEngineByName("JavaScript");
       
         /* Sensor */
+        /*
         List<ScriptingSensor> sensorList = new ArrayList<ScriptingSensor>();
         sensorList.add(new ScriptingSensor());
         sensorList.add(new ScriptingSensor());
         sensorList.add(new ScriptingSensor());
         ScriptingNodeList<ScriptingSensor> sensor = new ScriptingNodeList<ScriptingSensor>(sensorList);
-        
+        */
         /* Actor */
+        /*
         List<ScriptingActor> actorList = new ArrayList<ScriptingActor>();
         actorList.add(new ScriptingActor());
         actorList.add(new ScriptingActor());
@@ -44,7 +46,7 @@ public class Test {
         engine.put("Actor", actor);
         
         engine.eval(new java.io.FileReader("test.js"));
- 
+ */
         /*
         Invocable inv = (Invocable) engine;
 
