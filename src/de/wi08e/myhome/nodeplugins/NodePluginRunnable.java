@@ -5,7 +5,6 @@ package de.wi08e.myhome.nodeplugins;
 
 import java.awt.Image;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +14,7 @@ import de.wi08e.myhome.Config;
 import de.wi08e.myhome.ConfigPlugin;
 import de.wi08e.myhome.httpserver.HTTPServer;
 import de.wi08e.myhome.model.datagram.Datagram;
+import de.wi08e.myhome.nodemanager.NodeManager;
 
 /**
  * @author Marek
@@ -24,7 +24,8 @@ public class NodePluginRunnable implements Runnable {
 	
 	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
 	private List<NodePlugin> plugins;
-	private List<DatagramReceiver> receivers = new ArrayList<DatagramReceiver>();
+	
+	private NodeManager nodeManager = null;
 	
 	public void run() {
 		
@@ -65,8 +66,8 @@ public class NodePluginRunnable implements Runnable {
 					public void datagrammReceived(Datagram datagram) {			
 						for (NodePlugin plugin: plugins) 
 							plugin.chainReceiveDatagram(datagram);	
-						for (DatagramReceiver receiver: receivers) 
-							receiver.receiveDatagram(datagram);
+						if (nodeManager != null)
+							nodeManager.receiveDatagram(datagram);
 					}
 
 					@Override
@@ -98,7 +99,5 @@ public class NodePluginRunnable implements Runnable {
 		
 	}
 	
-	public void addReceiver(DatagramReceiver receiver) {
-		receivers.add(receiver);
-	}
+	
 }

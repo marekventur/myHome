@@ -14,26 +14,31 @@ import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.myhomescript.ScriptingEngine;
+import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.DatagramReceiver;
 import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
 
 public class StatusManager implements DatagramReceiver{
 	
 	private Database database;
-	private NodePluginRunnable nodePlugin;
 	private ScriptingEngine scriptingEngine;
+	
+	private TriggerManager triggerManager;
+	private NodeManager nodeManager;
 	
 	private List<SpecializedStatusManager> specializedStatusManagers = new ArrayList<SpecializedStatusManager>();
 	
-	public StatusManager(Database database, NodePluginRunnable nodePlugin,
+	public StatusManager(Database database, NodeManager nodeManager,
 			ScriptingEngine scriptingEngine) {
 		super();
 		this.database = database;
-		this.nodePlugin = nodePlugin;
+		this.nodeManager = nodeManager;
 		this.scriptingEngine = scriptingEngine;
 		
 		// Add StatusManager
 		specializedStatusManagers.add(new RockerSwitchStatusManager(this));
+		
+		triggerManager = new TriggerManager(database, nodeManager);
 		
 	}
 
@@ -116,109 +121,7 @@ public class StatusManager implements DatagramReceiver{
 		}
 	}
 	
-	private List<Node> generateNodeListFromSQLWhere(String sqlWhere) throws SQLException {
-		List<Node> result = new ArrayList<Node>();
-		
-		Statement getNodes = database.getConnection().createStatement();
-		if (getNodes.execute("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE "+sqlWhere+";")) {
-			ResultSet rs = getNodes.getResultSet();
-			while (rs.next()) {
-				
-				Node node;
-				
-				int databaseId = rs.getInt(1);
-				
-				if (rs.getString("name") == null) {
-					// This node is not named until now
-					node = new Node(rs.getString("category"), rs.getString("manufacturer"), rs.getString("hardware_id"));
 	
-				}	
-				else
-				{
-					// It's already named
-					NamedNode namedNode = new NamedNode(rs.getString("category"), rs.getString("manufacturer"), rs.getString("hardware_id"));
-					namedNode.setName(rs.getString("name"));
-					namedNode.setPositionX(rs.getFloat("pos_x"));
-					namedNode.setPositionY(rs.getFloat("pos_y"));
-					namedNode.setBlueprintId(rs.getInt("blueprint_id"));
-					node = namedNode;
-				}
-				
-				node.setType(rs.getString(5));
-				node.setDatabaseId(databaseId);
-				
-				// Get all status fields 
-				Statement getStatus = database.getConnection().createStatement();
-				if (getStatus.execute("SELECT `key`, value FROM node_status WHERE node_id="+String.valueOf(databaseId)+";")) {
-					ResultSet rs2 = getStatus.getResultSet();
-					while (rs2.next()) 
-						node.getStatus().put(rs2.getString("key"), rs2.getString("value"));
-				}
-				
-				result.add(node);
-			
-			}
-			
-		}
-	
-		
-		return result;
-	}
-	
-	public synchronized List<Node> getAllNodes() {
-		try {
-			return generateNodeListFromSQLWhere("1=1");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	/**
-	 * This returns all actors for one sensor
-	 * @param senderId Sensor id
-	 * @return Actor id
-	 */
-	public List<Integer> getReceiverIds(int senderId) {
-		List<Integer> result = new ArrayList<Integer>();
-		
-		try {
-			Statement getTriggerNodes = database.getConnection().createStatement();
-			if (getTriggerNodes.execute("SELECT receiver_node FROM node_triggers_node WHERE sender_node = "+String.valueOf(senderId)+";")) {
-				ResultSet rs = getTriggerNodes.getResultSet();
-				while (rs.next()) 
-					result.add(rs.getInt("receiver_node"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			
-		}
-		return result;
-		
-	}
-	
-	/**
-	 * This returns all sensors for one actor
-	 * @param triggerId Actor id
-	 * @return Sensor id
-	 */
-	public List<Integer> getSenderIds(int receiverId) {
-		List<Integer> result = new ArrayList<Integer>();
-		
-		try {
-			Statement getTriggerNodes = database.getConnection().createStatement();
-			if (getTriggerNodes.execute("SELECT sender_node FROM node_triggers_node WHERE receiver_node = "+String.valueOf(receiverId)+";")) {
-				ResultSet rs = getTriggerNodes.getResultSet();
-				while (rs.next()) 
-					result.add(rs.getInt("sender_node"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			
-		}
-		return result;
-		
-	}
 	
 	protected void writeStatusChangeToDatabase(int id, String key, String value) {
 		try {
@@ -269,5 +172,18 @@ public class StatusManager implements DatagramReceiver{
 			e.printStackTrace();
 		}
 		
+		
+		
 	}
+
+	public TriggerManager getTriggerManager() {
+		return triggerManager;
+	}
+
+	public NodeManager getNodeManager() {
+		return nodeManager;
+	}
+
+	
+	
 }

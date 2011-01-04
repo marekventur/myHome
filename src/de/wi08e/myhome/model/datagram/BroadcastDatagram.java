@@ -21,6 +21,11 @@ public class BroadcastDatagram extends Datagram {
 	public Node getSender() {
 		return sender;
 	}
+
+	public void setSender(Node sender) {
+		this.sender = sender;
+	}
+	
 	
 	
 }

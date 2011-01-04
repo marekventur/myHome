@@ -7,6 +7,7 @@ import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.frontend.FrontendInterface;
 import de.wi08e.myhome.httpserver.HTTPServer;
 import de.wi08e.myhome.myhomescript.ScriptingEngine;
+import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
 import de.wi08e.myhome.statusmanager.StatusManager;
 
@@ -16,6 +17,7 @@ public class Main {
 	private static StatusManager statusManager;
 	private static Database database;
 	private static NodePluginRunnable nodePlugin;
+	private static NodeManager nodeManager;
 		
 	public static void main(String[] args) {
 		
@@ -44,15 +46,18 @@ public class Main {
 		/* Create Database-Connection */
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
 		
+		/* Create Node Manager */
+		nodeManager = new NodeManager(database, nodePlugin);
+		
 		/* Create scripting engine */
-		scriptingEngine = new ScriptingEngine(database, nodePlugin);
+		scriptingEngine = new ScriptingEngine(database, nodeManager);
 		
 		/* Create statusmanager */
-		statusManager = new StatusManager(database, nodePlugin, scriptingEngine);
-		nodePlugin.addReceiver(statusManager);
+		statusManager = new StatusManager(database, nodeManager, scriptingEngine);
+		nodeManager.addReceiver(statusManager);
 		
 		/* New FrontendInterface */
-		FrontendInterface frontendInterface = new FrontendInterface(statusManager);
+		FrontendInterface frontendInterface = new FrontendInterface(nodeManager, statusManager);
 		
 		/* Start SOAP service */
 		new HTTPServer(frontendInterface);

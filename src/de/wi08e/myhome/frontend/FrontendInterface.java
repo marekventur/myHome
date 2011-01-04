@@ -1,16 +1,18 @@
 package de.wi08e.myhome.frontend;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
+
+
 import de.wi08e.myhome.frontend.exceptions.*;
 import de.wi08e.myhome.httpserver.HTTPServer;
-import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.SessionUserToken;
 
@@ -30,8 +32,10 @@ public class FrontendInterface {
 	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
 	
 	private StatusManager statusManager;
+	private NodeManager nodeManager;
 	
-	public FrontendInterface(StatusManager statusManager) {
+	public FrontendInterface(NodeManager nodeManager, StatusManager statusManager) {
+		this.nodeManager = nodeManager;
 		this.statusManager = statusManager;
 	}
 
@@ -272,7 +276,7 @@ public class FrontendInterface {
 	public NodeResponse[] getNodes(String userToken, int filterByBlueprint) throws NotLoggedIn, BlueprintNotFound {
 		requestUserRights(userToken);
 		
-		List<Node> nodes = statusManager.getAllNodes();
+		List<Node> nodes = nodeManager.getAllNodes();
 		
 		NodeResponse[] result = new NodeResponse[nodes.size()];
 		int i=0;
@@ -295,16 +299,40 @@ public class FrontendInterface {
 	/* Manage trigger (requires admin rights) */
 	
 	@SOAPBinding(style = Style.RPC)
-	public int[] getSender(String userToken, int ReceiverId) throws NotLoggedIn, NoAdminRights {
+	public NodeResponse[] getSenderForReceiverTrigger(String userToken, int receiverId) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		
-		List<Integer> ids = statusManager.getSenderIds(ReceiverId);
-		int[] result = new int[ids.size()];
+		List<Node> nodes = statusManager.getTriggerManager().getSender(receiverId);
+		NodeResponse[] result = new NodeResponse[nodes.size()];
 		int i=0;
-		for (Integer id: ids) 
-			result[i++] = id;
+		for (Node node: nodes) 
+			result[i++] = new NodeResponse(node);
 		
 		return result;
+	}
+	
+	@SOAPBinding(style = Style.RPC)
+	public void addSenderToReceiverTrigger(String userToken, int senderId, int receiverId) throws NotLoggedIn, NoAdminRights, NodeNotFound {
+		requestAdminRights(userToken);
+		
+		try {
+			statusManager.getTriggerManager().addSenderToReciver(senderId, receiverId);
+			
+		} catch (SQLException e) {
+			if (e.getMessage().contains("a foreign key constraint fails")) {
+				throw new NodeNotFound();
+			}
+			else
+			{
+				// Do nothing - Trigger is already in DB ("Duplicated primary key")
+			}
+		} 
+	}
+	
+	@SOAPBinding(style = Style.RPC)
+	public void deleteTrigger(String userToken, int senderId, int receiverId) throws NotLoggedIn, NoAdminRights {
+		requestAdminRights(userToken);
+		statusManager.getTriggerManager().deleteTrigger(senderId, receiverId);		
 	}
 	
 }
