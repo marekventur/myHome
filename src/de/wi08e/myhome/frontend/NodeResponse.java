@@ -31,6 +31,7 @@ public class NodeResponse {
 		category = node.getCategory();
 		manufacturer = node.getManufacturer();
 		hardwareId = node.getHardwareId();
+		type = node.getType();
 		
 		if (node instanceof NamedNode) {
 			blueprintId = ((NamedNode)node).getBlueprintId();

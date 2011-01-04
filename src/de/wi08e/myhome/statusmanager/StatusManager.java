@@ -33,7 +33,7 @@ public class StatusManager implements DatagramReceiver{
 		this.scriptingEngine = scriptingEngine;
 		
 		// Add StatusManager
-		specializedStatusManagers.add(new RockerSwitchStatusManager(database));
+		specializedStatusManagers.add(new RockerSwitchStatusManager(this));
 		
 	}
 
@@ -82,16 +82,31 @@ public class StatusManager implements DatagramReceiver{
 					else
 					{
 						throw new Exception("Can't get LAST_INSERT_ID");
-					}
-					
+					}	
 				}
 				
-				System.out.println(id);
-				
 				// Send to all specialized StatusManagers
-				for (SpecializedStatusManager statusManager: specializedStatusManagers) 
-					if (statusManager.handleDatagram(id, broadcastDatagram))
+				for (SpecializedStatusManager statusManager: specializedStatusManagers) {
+					String returnType = statusManager.handleDatagram(id, broadcastDatagram);
+					if (returnType.length() > 0) {
+						
+						if (type == null) {
+							type = returnType;
+							
+							// Write type to DB
+							PreparedStatement insertNode = database.getConnection().prepareStatement("UPDATE node SET type = ? WHERE id = ?;");
+							
+							insertNode.setInt(2, id);
+							insertNode.setString(1, type);
+							
+							insertNode.executeUpdate();
+						}
 						break;
+					}
+				}
+				
+				
+
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -158,5 +173,55 @@ public class StatusManager implements DatagramReceiver{
 			return null;
 		}
 	}
-
+	
+	protected void writeStatusChangeToDatabase(int id, String key, String value) {
+		try {
+			// is there already a status?
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT value FROM node_status WHERE node_id=? and `key`=?;"); 
+			getNodeStatus.setInt(1, id);
+			getNodeStatus.setString(2, key);
+			getNodeStatus.execute();
+			
+			ResultSet rs = getNodeStatus.getResultSet();
+			if (rs.next()) {
+				// Yep, it does
+				String oldValue = rs.getString("value");
+				
+				// is there a change?
+				if(!oldValue.contentEquals(value)) {
+					PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node_status SET value = ? WHERE node_id = ? AND `key` = ?;");
+					
+					updateNode.setString(1, value);
+					updateNode.setInt(2, id);
+					updateNode.setString(3, key);
+					
+					updateNode.executeUpdate();
+				}
+				
+			}
+			else
+			{
+				// No. Create it!
+				PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node_status (value, node_id, `key`) VALUES (?, ?, ?);");
+				
+				insertNode.setString(1, value);
+				insertNode.setInt(2, id);
+				insertNode.setString(3, key);
+				
+				insertNode.executeUpdate();
+			}
+			
+			// Create an history
+			PreparedStatement insertHistoryNode = database.getConnection().prepareStatement("INSERT INTO node_status_history (value, node_id, `key`) VALUES (?, ?, ?);");
+			
+			insertHistoryNode.setString(1, value);
+			insertHistoryNode.setInt(2, id);
+			insertHistoryNode.setString(3, key);
+			
+			insertHistoryNode.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }
