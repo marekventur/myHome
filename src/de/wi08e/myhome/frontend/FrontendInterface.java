@@ -295,16 +295,16 @@ public class FrontendInterface {
 	/* Manage trigger (requires admin rights) */
 	
 	@SOAPBinding(style = Style.RPC)
-	public int[] getSender(String userToken, int ReceiverId) throws NotLoggedIn {
+	public int[] getSender(String userToken, int ReceiverId) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		
 		List<Integer> ids = statusManager.getSenderIds(ReceiverId);
 		int[] result = new int[ids.size()];
+		int i=0;
+		for (Integer id: ids) 
+			result[i++] = id;
 		
-		NodeResponse node1 = new NodeResponse();
-		node1.status = new NodeStatusResponse[] {new NodeStatusResponse("key1", "value1"), new NodeStatusResponse("key2", "value2")}; 
-		
-		return new NodeResponse[] {node1}; 
+		return result;
 	}
 	
 }
