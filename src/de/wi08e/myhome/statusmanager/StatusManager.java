@@ -174,6 +174,52 @@ public class StatusManager implements DatagramReceiver{
 		}
 	}
 	
+	/**
+	 * This returns all actors for one sensor
+	 * @param senderId Sensor id
+	 * @return Actor id
+	 */
+	public List<Integer> getReceiverIds(int senderId) {
+		List<Integer> result = new ArrayList<Integer>();
+		
+		try {
+			Statement getTriggerNodes = database.getConnection().createStatement();
+			if (getTriggerNodes.execute("SELECT triggering_node FROM node_triggers_node WHERE trigger_node = "+String.valueOf(senderId)+";")) {
+				ResultSet rs = getTriggerNodes.getResultSet();
+				while (rs.next()) 
+					result.add(rs.getInt("triggering_node"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+		return result;
+		
+	}
+	
+	/**
+	 * This returns all sensors for one actor
+	 * @param triggerId Actor id
+	 * @return Sensor id
+	 */
+	public List<Integer> getSenderIds(int receiverId) {
+		List<Integer> result = new ArrayList<Integer>();
+		
+		try {
+			Statement getTriggerNodes = database.getConnection().createStatement();
+			if (getTriggerNodes.execute("SELECT trigger_node FROM node_triggers_node WHERE triggering_node = "+String.valueOf(receiverId)+";")) {
+				ResultSet rs = getTriggerNodes.getResultSet();
+				while (rs.next()) 
+					result.add(rs.getInt("trigger_node"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+		return result;
+		
+	}
+	
 	protected void writeStatusChangeToDatabase(int id, String key, String value) {
 		try {
 			// is there already a status?

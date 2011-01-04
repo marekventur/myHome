@@ -283,8 +283,23 @@ public class FrontendInterface {
 	}
 
 	@SOAPBinding(style = Style.RPC)
-	public NodeResponse[] getUnnamedNodes(String userToken) throws NotLoggedIn, BlueprintNotFound, NoAdminRights {
+	public NodeResponse[] getUnnamedNodes(String userToken) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
+		
+		NodeResponse node1 = new NodeResponse();
+		node1.status = new NodeStatusResponse[] {new NodeStatusResponse("key1", "value1"), new NodeStatusResponse("key2", "value2")}; 
+		
+		return new NodeResponse[] {node1}; 
+	}
+	
+	/* Manage trigger (requires admin rights) */
+	
+	@SOAPBinding(style = Style.RPC)
+	public int[] getSender(String userToken, int ReceiverId) throws NotLoggedIn {
+		requestAdminRights(userToken);
+		
+		List<Integer> ids = statusManager.getSenderIds(ReceiverId);
+		int[] result = new int[ids.size()];
 		
 		NodeResponse node1 = new NodeResponse();
 		node1.status = new NodeStatusResponse[] {new NodeStatusResponse("key1", "value1"), new NodeStatusResponse("key2", "value2")}; 
