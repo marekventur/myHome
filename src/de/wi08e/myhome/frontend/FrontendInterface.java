@@ -1,5 +1,7 @@
 package de.wi08e.myhome.frontend;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jws.WebService;
@@ -7,6 +9,9 @@ import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 import de.wi08e.myhome.frontend.exceptions.*;
 import de.wi08e.myhome.httpserver.HTTPServer;
+import de.wi08e.myhome.model.NamedNode;
+import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.SessionUserToken;
 
 /**
@@ -23,6 +28,21 @@ import de.wi08e.myhome.usermanager.SessionUserToken;
 public class FrontendInterface {
 
 	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
+	
+	private StatusManager statusManager;
+	
+	public FrontendInterface(StatusManager statusManager) {
+		this.statusManager = statusManager;
+	}
+
+
+	private void requestUserRights(String userToken) throws NotLoggedIn {
+		
+	}
+	
+	private void requestAdminRights(String userToken) throws NotLoggedIn, NoAdminRights {
+		
+	}
 	
 	/**
 	 * The main login method
@@ -198,5 +218,78 @@ public class FrontendInterface {
 			throw new PasswordTooShort(8);
 	}
 	
+	/* Blueprints */
+	
+	@SOAPBinding(style = Style.RPC)
+	public BlueprintResponse[] listBlueprints(String userToken) throws NotLoggedIn {
+
+		requestUserRights(userToken);
+		
+		BlueprintResponse erdgeschoss = new BlueprintResponse();
+		erdgeschoss.height = 300;
+		erdgeschoss.width = 200;
+		erdgeschoss.name = "erdgeschoss";
+		
+		BlueprintResponse obergeschoss = new BlueprintResponse();
+		obergeschoss.height = 400;
+		obergeschoss.width = 300;
+		obergeschoss.name = "obergeschoss";
+		
+		return new BlueprintResponse[] {erdgeschoss, obergeschoss};  
+	}
+	
+	@SOAPBinding(style = Style.RPC)
+	public BlueprintResponse getBlueprint(String userToken, int blueprintId, int maxHeight, int maxWidth) throws NotLoggedIn, BlueprintNotFound {
+
+		requestUserRights(userToken);
+		
+		BlueprintResponse erdgeschoss = new BlueprintResponse();
+		erdgeschoss.height = 300;
+		erdgeschoss.width = 200;
+		erdgeschoss.name = "erdgeschoss";
+		erdgeschoss.image = "pngblabla";
+		
+		return erdgeschoss;  
+	}
+	
+	@SOAPBinding(style = Style.RPC)
+	public void addBlueprint(String userToken, String name, String image, String imageType) throws NotLoggedIn, NoAdminRights {
+		requestAdminRights(userToken); 
+	}
+
+	@SOAPBinding(style = Style.RPC)
+	public void deleteBlueprint(String userToken, int id) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
+		requestAdminRights(userToken); 
+	}
+	
+	/* Nodes */
+	
+	/**
+	 * Returns nodes
+	 * @param filterByBlueprint -1 when no filtering should be applied, else any valid Blueprint ID
+	 */
+	@SOAPBinding(style = Style.RPC)
+	public NodeResponse[] getNodes(String userToken, int filterByBlueprint) throws NotLoggedIn, BlueprintNotFound {
+		requestUserRights(userToken);
+		
+		List<Node> nodes = statusManager.getAllNodes();
+		
+		NodeResponse[] result = new NodeResponse[nodes.size()];
+		int i=0;
+		for (Node node: nodes) 
+			result[i++] = new NodeResponse(node);
+		
+		return result; 
+	}
+
+	@SOAPBinding(style = Style.RPC)
+	public NodeResponse[] getUnnamedNodes(String userToken) throws NotLoggedIn, BlueprintNotFound, NoAdminRights {
+		requestAdminRights(userToken);
+		
+		NodeResponse node1 = new NodeResponse();
+		node1.status = new NodeStatusResponse[] {new NodeStatusResponse("key1", "value1"), new NodeStatusResponse("key2", "value2")}; 
+		
+		return new NodeResponse[] {node1}; 
+	}
 	
 }

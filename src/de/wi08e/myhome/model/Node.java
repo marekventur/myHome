@@ -1,5 +1,9 @@
 package de.wi08e.myhome.model;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This is a class to identify nodes (=external components). 
  * It is identified by a type, a manufacture and an id.
@@ -21,9 +25,13 @@ package de.wi08e.myhome.model;
  */
 public class Node {
 	
+	private int databaseId = -1;
+	
+	private Map<String, String> status = Collections.synchronizedMap(new HashMap<String, String>());
+	
 	private String category;
 	private String manufacturer;
-	private String id;
+	private String hardwareId;
 	
 	private String type = "unknown";
 	
@@ -44,31 +52,31 @@ public class Node {
 	/**
 	 * Returns the id 
 	 */
-	public String getId() {
-		return id;
+	public String getHardwareId() {
+		return hardwareId;
 	}
 	
 	/**
 	 * initiates the object from type, manufacturer and id
 	 * @param category Category
 	 * @param manufacturer Manufacturer
-	 * @param id Id
+	 * @param hardwareId Id
 	 * @throws IllegalArgumentException Is thrown when ":" is used in the parameters or any parameter is left blank
 	 */
-	public Node(String category, String manufacturer, String id) {
+	public Node(String category, String manufacturer, String hardwareId) {
 		super();
 		
 		if (category.contains(":") || 
 				manufacturer.contains(":") || 
-				id.contains(":") || 
+				hardwareId.contains(":") || 
 				category.length() == 0 ||
 				manufacturer.length() == 0 ||
-				id.length() == 0)
+				hardwareId.length() == 0)
 			throw new IllegalArgumentException();
 		
 		this.category = category.toLowerCase();
 		this.manufacturer = manufacturer.toLowerCase();
-		this.id = id;
+		this.hardwareId = hardwareId;
 	}
 	
 	/**
@@ -100,16 +108,29 @@ public class Node {
 	}
 
 	public void setType(String type) {
-		this.type = type.toLowerCase();
+		if (type == null)
+			this.type = "";
+		else
+			this.type = type.toLowerCase();
 	}
-	
-	
+
+	public Map<String, String> getStatus() {
+		return status;
+	}
+
+	public int getDatabaseId() {
+		return databaseId;
+	}
+
+	public synchronized void setDatabaseId(int databaseId) {
+		this.databaseId = databaseId;
+	}
 
 	/**
 	 * Returns the descriptor for this Node as a single string
 	 */
 	public String toString() {
-		return category+':'+manufacturer+':'+id;
+		return category+':'+manufacturer+':'+hardwareId;
 	}
 
 	public boolean equals(Node node) {

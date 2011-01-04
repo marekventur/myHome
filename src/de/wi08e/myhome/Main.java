@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.database.MySQLDatabase;
+import de.wi08e.myhome.frontend.FrontendInterface;
 import de.wi08e.myhome.httpserver.HTTPServer;
 import de.wi08e.myhome.myhomescript.ScriptingEngine;
 import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
@@ -50,8 +51,11 @@ public class Main {
 		statusManager = new StatusManager(database, nodePlugin, scriptingEngine);
 		nodePlugin.addReceiver(statusManager);
 		
+		/* New FrontendInterface */
+		FrontendInterface frontendInterface = new FrontendInterface(statusManager);
+		
 		/* Start SOAP service */
-		new HTTPServer();
+		new HTTPServer(frontendInterface);
 		LOGGER.info("SOAP service has been started");
 		
 		/* Bye-bye from here */

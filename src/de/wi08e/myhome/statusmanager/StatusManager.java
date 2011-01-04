@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.wi08e.myhome.database.Database;
+import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
@@ -50,7 +51,7 @@ public class StatusManager implements DatagramReceiver{
 				PreparedStatement alreadyInDBStatement = database.getConnection().prepareStatement("SELECT id, type, name FROM node WHERE category=? AND manufacturer=? AND hardware_id=? LIMIT 1;"); 
 				alreadyInDBStatement.setString(1, sender.getCategory());
 				alreadyInDBStatement.setString(2, sender.getManufacturer());
-				alreadyInDBStatement.setString(3, sender.getId());
+				alreadyInDBStatement.setString(3, sender.getHardwareId());
 				if (!alreadyInDBStatement.execute()) 
 					throw new Exception("Can't SELECT from db.");
 				ResultSet rs = alreadyInDBStatement.getResultSet();
@@ -68,7 +69,7 @@ public class StatusManager implements DatagramReceiver{
 					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id) VALUES (?, ?, ?);");
 					insertNode.setString(1, sender.getCategory());
 					insertNode.setString(2, sender.getManufacturer());
-					insertNode.setString(3, sender.getId());
+					insertNode.setString(3, sender.getHardwareId());
 					insertNode.executeUpdate();
 					
 					// Get this id
@@ -97,6 +98,64 @@ public class StatusManager implements DatagramReceiver{
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	private List<Node> generateNodeListFromSQLWhere(String sqlWhere) throws SQLException {
+		List<Node> result = new ArrayList<Node>();
+		
+		Statement getNodes = database.getConnection().createStatement();
+		if (getNodes.execute("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE "+sqlWhere+";")) {
+			ResultSet rs = getNodes.getResultSet();
+			while (rs.next()) {
+				
+				Node node;
+				
+				int databaseId = rs.getInt(1);
+				
+				if (rs.getString("name") == null) {
+					// This node is not named until now
+					node = new Node(rs.getString("category"), rs.getString("manufacturer"), rs.getString("hardware_id"));
+	
+				}	
+				else
+				{
+					// It's already named
+					NamedNode namedNode = new NamedNode(rs.getString("category"), rs.getString("manufacturer"), rs.getString("hardware_id"));
+					namedNode.setName(rs.getString("name"));
+					namedNode.setPositionX(rs.getFloat("pos_x"));
+					namedNode.setPositionY(rs.getFloat("pos_y"));
+					namedNode.setBlueprintId(rs.getInt("blueprint_id"));
+					node = namedNode;
+				}
+				
+				node.setType(rs.getString(5));
+				node.setDatabaseId(databaseId);
+				
+				// Get all status fields 
+				Statement getStatus = database.getConnection().createStatement();
+				if (getStatus.execute("SELECT `key`, value FROM node_status WHERE node_id="+String.valueOf(databaseId)+";")) {
+					ResultSet rs2 = getStatus.getResultSet();
+					while (rs2.next()) 
+						node.getStatus().put(rs2.getString("key"), rs2.getString("value"));
+				}
+				
+				result.add(node);
+			
+			}
+			
+		}
+	
+		
+		return result;
+	}
+	
+	public synchronized List<Node> getAllNodes() {
+		try {
+			return generateNodeListFromSQLWhere("1=1");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
