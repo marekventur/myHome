@@ -14,8 +14,8 @@ import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.myhomescript.ScriptingEngine;
+import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
-import de.wi08e.myhome.nodeplugins.DatagramReceiver;
 import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
 
 public class StatusManager implements DatagramReceiver{
@@ -42,83 +42,41 @@ public class StatusManager implements DatagramReceiver{
 		
 	}
 
-	public void receiveDatagram(Datagram datagram) {
-		if (datagram instanceof BroadcastDatagram) {
-			BroadcastDatagram broadcastDatagram = (BroadcastDatagram) datagram;
-			Node sender = broadcastDatagram.getSender();
-			
-			int id;
-	    	String type = null;
-	    	String name = null;
-			
-			// Is this Node already in DB?
-			try {
-				PreparedStatement alreadyInDBStatement = database.getConnection().prepareStatement("SELECT id, type, name FROM node WHERE category=? AND manufacturer=? AND hardware_id=? LIMIT 1;"); 
-				alreadyInDBStatement.setString(1, sender.getCategory());
-				alreadyInDBStatement.setString(2, sender.getManufacturer());
-				alreadyInDBStatement.setString(3, sender.getHardwareId());
-				if (!alreadyInDBStatement.execute()) 
-					throw new Exception("Can't SELECT from db.");
-				ResultSet rs = alreadyInDBStatement.getResultSet();
-				
-				
-				if (rs.next()) {
-					// Found!
-			    	id = rs.getInt(1);
-			    	type = rs.getString(2);
-			    	name = rs.getString(3);
-			    }
-				else
-				{
-					// Not found, insert node
-					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id) VALUES (?, ?, ?);");
-					insertNode.setString(1, sender.getCategory());
-					insertNode.setString(2, sender.getManufacturer());
-					insertNode.setString(3, sender.getHardwareId());
-					insertNode.executeUpdate();
+	public void receiveBroadcastDatagram(BroadcastDatagram broadcastDatagram) {
+		
+		
+		String type = null;
+		
+		try {
+			// Send to all specialized StatusManagers
+			for (SpecializedStatusManager statusManager: specializedStatusManagers) {
+				String returnType = statusManager.handleBroadcastDatagram(broadcastDatagram);
+				if (returnType != null) {
 					
-					// Get this id
-					Statement getId = database.getConnection().createStatement();
-					if (getId.execute("SELECT LAST_INSERT_ID()")) {
-						ResultSet rs2 = getId.getResultSet();
-						rs2.first();
-						id = rs2.getInt(1);
-					}
-					else
-					{
-						throw new Exception("Can't get LAST_INSERT_ID");
-					}	
-				}
-				
-				// Send to all specialized StatusManagers
-				for (SpecializedStatusManager statusManager: specializedStatusManagers) {
-					String returnType = statusManager.handleDatagram(id, broadcastDatagram);
-					if (returnType.length() > 0) {
+					if (type == null) {
+						type = returnType;
 						
-						if (type == null) {
-							type = returnType;
-							
-							// Write type to DB
-							PreparedStatement insertNode = database.getConnection().prepareStatement("UPDATE node SET type = ? WHERE id = ?;");
-							
-							insertNode.setInt(2, id);
-							insertNode.setString(1, type);
-							
-							insertNode.executeUpdate();
-						}
-						break;
+						// Write type to DB
+						PreparedStatement insertNode = database.getConnection().prepareStatement("UPDATE node SET type = ? WHERE id = ?;");
+						
+						insertNode.setInt(2, broadcastDatagram.getSender().getDatabaseId());
+						insertNode.setString(1, type);
+						
+						insertNode.executeUpdate();
 					}
+					break;
 				}
-				
-				
-
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
+			
+			
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 	}
 	
 	

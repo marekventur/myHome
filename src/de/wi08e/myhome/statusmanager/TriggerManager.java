@@ -44,7 +44,10 @@ public class TriggerManager {
 			
 		}
 		return result;
-		
+	}
+	
+	public List<Node> getReceiver(Node sender) {
+		return getReceiver(sender.getDatabaseId());
 	}
 	
 	/**
@@ -65,8 +68,11 @@ public class TriggerManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return result;
-		
+		return result;	
+	}
+	
+	public List<Node> getSender(Node receiver) {
+		return getSender(receiver.getDatabaseId());
 	}
 	
 	public void addSenderToReciver(int senderId, int receiverId) throws SQLException {

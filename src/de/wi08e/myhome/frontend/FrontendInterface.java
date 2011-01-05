@@ -287,14 +287,40 @@ public class FrontendInterface {
 	}
 
 	@SOAPBinding(style = Style.RPC)
-	public NodeResponse[] getUnnamedNodes(String userToken) throws NotLoggedIn, NoAdminRights {
+	public NodeResponse[] getUnnamedNodes(String userToken) throws NotLoggedIn {
+		requestUserRights(userToken);
+		
+		List<Node> nodes = nodeManager.getUnnamedNodes();
+		
+		NodeResponse[] result = new NodeResponse[nodes.size()];
+		int i=0;
+		for (Node node: nodes) 
+			result[i++] = new NodeResponse(node);
+		
+		return result; 
+	}
+	
+	/* User defined nodes */
+	@SOAPBinding(style = Style.RPC)
+	public NodeResponse[] getUserdefinedNodes(String userToken) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		
-		NodeResponse node1 = new NodeResponse();
-		node1.status = new NodeStatusResponse[] {new NodeStatusResponse("key1", "value1"), new NodeStatusResponse("key2", "value2")}; 
+		List<Node> nodes = nodeManager.getUserdefinedNodes();
 		
-		return new NodeResponse[] {node1}; 
+		NodeResponse[] result = new NodeResponse[nodes.size()];
+		int i=0;
+		for (Node node: nodes) 
+			result[i++] = new NodeResponse(node);
+		
+		return result; 
 	}
+	
+	@SOAPBinding(style = Style.RPC)
+	public int addUserdefinedNodes(String userToken, String name, String category, String type) throws NotLoggedIn, NoAdminRights {
+		requestAdminRights(userToken);		
+		return nodeManager.addUserDefinedNode(name, category, type); 
+	}
+	
 	
 	/* Manage trigger (requires admin rights) */
 	

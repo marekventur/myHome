@@ -7,7 +7,7 @@ public interface SpecializedStatusManager {
 	 * 
 	 * @param senderDatabaseId
 	 * @param datagram
-	 * @return empty String when not handled, type when handled
+	 * @return null when not handled, type as String when handled
 	 */
-	public String handleDatagram(int senderDatabaseId, BroadcastDatagram datagram);
+	public String handleBroadcastDatagram(BroadcastDatagram datagram);
 }

@@ -42,8 +42,7 @@ public class NodePluginRunnable implements Runnable {
 			
 			Class<?> loadedClass;
 			try {
-				loadedClass = ClassLoader.getSystemClassLoader()
-					.loadClass(configPlugin.getNamespace()+".Main");
+				loadedClass = ClassLoader.getSystemClassLoader().loadClass(configPlugin.getNamespace()+".Main");
 			
 				Constructor<?> cs = loadedClass.getConstructor();
 			
@@ -98,6 +97,8 @@ public class NodePluginRunnable implements Runnable {
 		
 		
 	}
-	
-	
+
+	public void setNodeManager(NodeManager nodeManager) {
+		this.nodeManager = nodeManager;
+	}	
 }
