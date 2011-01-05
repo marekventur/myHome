@@ -76,10 +76,25 @@ public class TriggerManager {
 	}
 	
 	public void addSenderToReciver(int senderId, int receiverId) throws SQLException {
+		deleteTrigger(senderId, receiverId);
+		
 		PreparedStatement insertTrigger = database.getConnection().prepareStatement("INSERT INTO node_triggers_node (sender_node_id, receiver_node_id) VALUES (?, ?);");
 		
 		insertTrigger.setInt(1, senderId);
 		insertTrigger.setInt(2, receiverId);
+		
+		insertTrigger.executeUpdate();
+		
+	}
+	
+	public void addSenderToReciver(int senderId, int receiverId, char channel) throws SQLException {
+		deleteTrigger(senderId, receiverId);
+		
+		PreparedStatement insertTrigger = database.getConnection().prepareStatement("INSERT INTO node_triggers_node (sender_node_id, receiver_node_id, channel) VALUES (?, ?, ?);");
+		
+		insertTrigger.setInt(1, senderId);
+		insertTrigger.setInt(2, receiverId);
+		insertTrigger.setString(3, (""+channel).toLowerCase()); // Is there a less dirty way to convert from char to String?
 		
 		insertTrigger.executeUpdate();
 		

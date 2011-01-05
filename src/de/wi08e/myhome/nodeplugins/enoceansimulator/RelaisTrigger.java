@@ -12,19 +12,19 @@ import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
  */
 public class RelaisTrigger {
 	private Node node;
-	private RockerSwitchDatagram.Button button;
+	private RockerSwitchDatagram.Channel channel;
 	
-	public RelaisTrigger(Node node, RockerSwitchDatagram.Button button) {
+	public RelaisTrigger(Node node, RockerSwitchDatagram.Channel channel) {
 		super();
 		this.node = node;
-		this.button = button;
+		this.channel = channel;
 	}
 
 	public Node getNode() {
 		return node;
 	}
 
-	public RockerSwitchDatagram.Button getButton() {
-		return button;
+	public RockerSwitchDatagram.Channel getChannel() {
+		return channel;
 	}
 }

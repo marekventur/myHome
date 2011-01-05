@@ -22,11 +22,13 @@ public class RockerSwitchStatusManager implements SpecializedStatusManager {
 			RockerSwitchDatagram rockerSwitchDatagram = (RockerSwitchDatagram) datagram;
 	
 			// Find all triggered nodes
-			List<Node> receiver = statusManager.getTriggerManager().getReceiver(datagram.getSender());
+			List<Node> receivers = statusManager.getTriggerManager().getReceiver(datagram.getSender());
+			for (Node receiver: receivers) {
+				float light = rockerSwitchDatagram.getOnOff() == RockerSwitchDatagram.State.ON?1:0;
+				statusManager.writeStatusChangeToDatabase(receiver.getDatabaseId(), "light", String.valueOf(light));
+			}
 			
-			
-			float light = rockerSwitchDatagram.getOnOff() == RockerSwitchDatagram.OnOff.ON?1:0;
-			statusManager.writeStatusChangeToDatabase(datagram.getSender().getDatabaseId(), "light", String.valueOf(light)); 
+			 
 			
 			return "rockerswitch";
 		}

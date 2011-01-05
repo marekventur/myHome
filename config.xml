@@ -51,12 +51,12 @@
 					<trigger>
 						<manufacturer>simulator</manufacturer>
 						<id>ababab01</id>
-						<button>a</button>
+						<channel>a</channel>
 					</trigger>
 					<trigger>
 						<manufacturer>simulator</manufacturer>
 						<id>ababab04</id>
-						<button>b</button>
+						<channel>b</channel>
 					</trigger>
 					
 				</node>
@@ -69,12 +69,12 @@
 					<trigger>
 						<manufacturer>simulator</manufacturer>
 						<id>ababab01</id>
-						<button>b</button>
+						<channel>b</channel>
 					</trigger>
 					<trigger>
 						<manufacturer>simulator</manufacturer>
 						<id>ababab04</id>
-						<button>b</button>
+						<channel>b</channel>
 					</trigger>
 					
 				</node>
@@ -116,7 +116,7 @@
 					<trigger>
 						<manufacturer>simulator</manufacturer>
 						<id>ababab04</id>
-						<button>a</button>
+						<channel>a</channel>
 					</trigger>
 					
 				</node>
@@ -129,7 +129,7 @@
 					<trigger>
 						<manufacturer>simulator</manufacturer>
 						<id>ababab04</id>
-						<button>a</button>
+						<channel>a</channel>
 					</trigger>
 					
 				</node>
@@ -142,7 +142,7 @@
 					<trigger>
 						<manufacturer>simulator</manufacturer>
 						<id>ababab04</id>
-						<button>a</button>
+						<channel>a</channel>
 					</trigger>
 					
 				</node>

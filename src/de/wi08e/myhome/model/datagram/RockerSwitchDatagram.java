@@ -8,17 +8,17 @@ import de.wi08e.myhome.model.Node;
  */
 public class RockerSwitchDatagram extends BroadcastDatagram {
 
-	public enum State {PRESSED, RELEASED}
-	public enum Button {A, B}
-	public enum OnOff {ON, OFF}
-	private Button button;
-	private OnOff onOff;
-	private State state;
+	public enum Action {PRESSED, RELEASED}
+	public enum Channel {A, B}
+	public enum State {ON, OFF}
+	private Channel button;
+	private State onOff;
+	private Action state;
 	
 	/**
 	 * @param sender
 	 */
-	public RockerSwitchDatagram(Node sender, Button button, OnOff onOff, State state) {
+	public RockerSwitchDatagram(Node sender, Channel button, State onOff, Action state) {
 		super(sender);	
 		this.button = button;
 		this.state = state;
@@ -26,15 +26,15 @@ public class RockerSwitchDatagram extends BroadcastDatagram {
 
 	}
 	
-	public Button getButton() {
+	public Channel getButton() {
 		return button;
 	}
 	
-	public State getState() {
+	public Action getState() {
 		return state;
 	}
 
-	public OnOff getOnOff() {
+	public State getOnOff() {
 		return onOff;
 	}
 	

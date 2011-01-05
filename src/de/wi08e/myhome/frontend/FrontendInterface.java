@@ -270,13 +270,18 @@ public class FrontendInterface {
 	
 	/**
 	 * Returns nodes
-	 * @param filterByBlueprint -1 when no filtering should be applied, else any valid Blueprint ID
+	 * @param filterByBlueprint 0(=left blank) when no filtering should be applied, else any valid Blueprint ID
 	 */
 	@SOAPBinding(style = Style.RPC)
-	public NodeResponse[] getNodes(String userToken, int filterByBlueprint) throws NotLoggedIn, BlueprintNotFound {
+	public NodeResponse[] getNodes(String userToken, int blueprint) throws NotLoggedIn, BlueprintNotFound {
 		requestUserRights(userToken);
 		
-		List<Node> nodes = nodeManager.getAllNodes();
+		List<Node> nodes;
+		
+		if (blueprint > 0)
+			nodes = nodeManager.getAllNodesFilteredByBlueprint(blueprint);
+		else
+			nodes = nodeManager.getAllNodes();
 		
 		NodeResponse[] result = new NodeResponse[nodes.size()];
 		int i=0;
@@ -337,12 +342,28 @@ public class FrontendInterface {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param userToken
+	 * @param senderId
+	 * @param receiverId
+	 * @param channel empty(=0) for no channel, or A, B, C or D
+	 * @throws NotLoggedIn
+	 * @throws NoAdminRights
+	 * @throws NodeNotFound
+	 */
+	
 	@SOAPBinding(style = Style.RPC)
-	public void addSenderToReceiverTrigger(String userToken, int senderId, int receiverId) throws NotLoggedIn, NoAdminRights, NodeNotFound {
+	public void addSenderToReceiverTrigger(String userToken, int senderId, int receiverId, char channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
 		requestAdminRights(userToken);
 		
+		
+		
 		try {
-			statusManager.getTriggerManager().addSenderToReciver(senderId, receiverId);
+			if ((int)channel == 0) 
+				statusManager.getTriggerManager().addSenderToReciver(senderId, receiverId);
+			else
+				statusManager.getTriggerManager().addSenderToReciver(senderId, receiverId, channel);
 			
 		} catch (SQLException e) {
 			if (e.getMessage().contains("a foreign key constraint fails")) {

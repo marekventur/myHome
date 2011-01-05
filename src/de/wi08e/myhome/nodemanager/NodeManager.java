@@ -159,6 +159,15 @@ public class NodeManager {
 		}
 	}
 	
+	public synchronized List<Node> getAllNodesFilteredByBlueprint(int blueprintId) {
+		try {
+			return generateNodeListFromSQLWhere("blueprint_id="+String.valueOf(blueprintId), true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public synchronized List<Node> getUnnamedNodes() {
 		try {
 			return generateNodeListFromSQLWhere("name IS NULL", true);

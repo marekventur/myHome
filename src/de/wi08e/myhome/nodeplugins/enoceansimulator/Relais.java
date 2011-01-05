@@ -4,7 +4,6 @@
 package de.wi08e.myhome.nodeplugins.enoceansimulator;
 
 import java.awt.GridLayout;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -22,6 +21,10 @@ import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
  */
 public class Relais extends NodePanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JCheckBox checkBox = new JCheckBox("Activated");
 	private final List<RelaisTrigger> triggers;
 	/**
@@ -58,9 +61,9 @@ public class Relais extends NodePanel {
 				if (trigger.getNode().equals(broadcastDatagram.getSender()))
 					if (broadcastDatagram instanceof RockerSwitchDatagram) {
 						RockerSwitchDatagram rockerSwitchDatagram = (RockerSwitchDatagram)broadcastDatagram;
-						if (rockerSwitchDatagram.getButton() == trigger.getButton()) 
-							if (rockerSwitchDatagram.getState() == RockerSwitchDatagram.State.RELEASED) {
-								if (rockerSwitchDatagram.getOnOff() == RockerSwitchDatagram.OnOff.OFF)
+						if (rockerSwitchDatagram.getButton() == trigger.getChannel()) 
+							if (rockerSwitchDatagram.getState() == RockerSwitchDatagram.Action.RELEASED) {
+								if (rockerSwitchDatagram.getOnOff() == RockerSwitchDatagram.State.OFF)
 									switchOff();
 								else
 									switchOn();

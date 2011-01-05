@@ -26,8 +26,8 @@ public class TwoRockerSwitch extends NodePanel {
 	
 	private class RockerSwitchMouseListener implements MouseListener {
 		
-		private RockerSwitchDatagram.Button button ;
-		private RockerSwitchDatagram.OnOff onOff ;
+		private RockerSwitchDatagram.Channel channel ;
+		private RockerSwitchDatagram.State state ;
 		private Node node;
 		
 		@Override
@@ -41,19 +41,19 @@ public class TwoRockerSwitch extends NodePanel {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			nodePanelEventHandler.receive(new RockerSwitchDatagram(node, button, onOff, RockerSwitchDatagram.State.PRESSED));
+			nodePanelEventHandler.receive(new RockerSwitchDatagram(node, channel, state, RockerSwitchDatagram.Action.PRESSED));
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			nodePanelEventHandler.receive(new RockerSwitchDatagram(node, button, onOff, RockerSwitchDatagram.State.RELEASED));
+			nodePanelEventHandler.receive(new RockerSwitchDatagram(node, channel, state, RockerSwitchDatagram.Action.RELEASED));
 		}
 		
-		public RockerSwitchMouseListener(Node node, RockerSwitchDatagram.Button button, RockerSwitchDatagram.OnOff onOff) {
+		public RockerSwitchMouseListener(Node node, RockerSwitchDatagram.Channel button, RockerSwitchDatagram.State onOff) {
 			super();
-			this.button = button;
+			this.channel = button;
 			this.node = node;
-			this.onOff = onOff;
+			this.state = onOff;
 		}
 	}
 	
@@ -73,10 +73,10 @@ public class TwoRockerSwitch extends NodePanel {
 		setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), title));
 		setSize(250, 150);
 		
-		a1.addMouseListener(new RockerSwitchMouseListener(node, RockerSwitchDatagram.Button.A, RockerSwitchDatagram.OnOff.ON));
-		a0.addMouseListener(new RockerSwitchMouseListener(node, RockerSwitchDatagram.Button.A, RockerSwitchDatagram.OnOff.OFF));
-		b1.addMouseListener(new RockerSwitchMouseListener(node, RockerSwitchDatagram.Button.B, RockerSwitchDatagram.OnOff.ON));
-		b0.addMouseListener(new RockerSwitchMouseListener(node, RockerSwitchDatagram.Button.B, RockerSwitchDatagram.OnOff.OFF));
+		a1.addMouseListener(new RockerSwitchMouseListener(node, RockerSwitchDatagram.Channel.A, RockerSwitchDatagram.State.ON));
+		a0.addMouseListener(new RockerSwitchMouseListener(node, RockerSwitchDatagram.Channel.A, RockerSwitchDatagram.State.OFF));
+		b1.addMouseListener(new RockerSwitchMouseListener(node, RockerSwitchDatagram.Channel.B, RockerSwitchDatagram.State.ON));
+		b0.addMouseListener(new RockerSwitchMouseListener(node, RockerSwitchDatagram.Channel.B, RockerSwitchDatagram.State.OFF));
 		
 		add(a1);
 		add(b1);

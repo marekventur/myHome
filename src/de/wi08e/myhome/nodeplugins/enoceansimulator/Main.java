@@ -111,24 +111,24 @@ public class Main implements NodePlugin {
 							/* Read trigger from xml */
 							manufacturerNodes = ((Element) triggerNode).getElementsByTagName("manufacturer");
 							idNodes = ((Element) triggerNode).getElementsByTagName("id");
-							NodeList buttonNodes = ((Element) triggerNode).getElementsByTagName("button");
-							RockerSwitchDatagram.Button button;
+							NodeList channelNodes = ((Element) triggerNode).getElementsByTagName("channel");
+							RockerSwitchDatagram.Channel channel;
 							
 							if (manufacturerNodes.getLength() > 0)
 								manufacturer = manufacturerNodes.item(0).getChildNodes().item(0).getNodeValue().toString();
 							if (idNodes.getLength() == 0)
 								throw new NodePluginException("Enocean Simulator", "Tag 'id' not found for tag 'trigger'");
 							id = idNodes.item(0).getChildNodes().item(0).getNodeValue().toString();
-							if (buttonNodes.getLength() == 0)
-								throw new NodePluginException("Enocean Simulator", "Tag 'button' not found for tag 'trigger'");
-							if (buttonNodes.item(0).getChildNodes().item(0).getNodeValue().toString().equalsIgnoreCase("A"))
-								button = RockerSwitchDatagram.Button.A;
+							if (channelNodes.getLength() == 0)
+								throw new NodePluginException("Enocean Simulator", "Tag 'channel' not found for tag 'trigger'");
+							if (channelNodes.item(0).getChildNodes().item(0).getNodeValue().toString().equalsIgnoreCase("A"))
+								channel = RockerSwitchDatagram.Channel.A;
 							else
-								button = RockerSwitchDatagram.Button.B;
+								channel = RockerSwitchDatagram.Channel.B;
 							
 							
 							
-							triggers.add(new RelaisTrigger(new Node("enocean", manufacturer, id), button));
+							triggers.add(new RelaisTrigger(new Node("enocean", manufacturer, id), channel));
 							
 							
 							
