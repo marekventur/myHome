@@ -61,9 +61,9 @@ public class Relais extends NodePanel {
 				if (trigger.getNode().equals(broadcastDatagram.getSender()))
 					if (broadcastDatagram instanceof RockerSwitchDatagram) {
 						RockerSwitchDatagram rockerSwitchDatagram = (RockerSwitchDatagram)broadcastDatagram;
-						if (rockerSwitchDatagram.getButton() == trigger.getChannel()) 
-							if (rockerSwitchDatagram.getState() == RockerSwitchDatagram.Action.RELEASED) {
-								if (rockerSwitchDatagram.getOnOff() == RockerSwitchDatagram.State.OFF)
+						if (rockerSwitchDatagram.getChannel() == trigger.getChannel()) 
+							if (rockerSwitchDatagram.getAction() == RockerSwitchDatagram.Action.RELEASED) {
+								if (rockerSwitchDatagram.getState() == RockerSwitchDatagram.State.OFF)
 									switchOff();
 								else
 									switchOn();

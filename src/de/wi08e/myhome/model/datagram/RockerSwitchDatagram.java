@@ -9,7 +9,15 @@ import de.wi08e.myhome.model.Node;
 public class RockerSwitchDatagram extends BroadcastDatagram {
 
 	public enum Action {PRESSED, RELEASED}
-	public enum Channel {A, B}
+	public enum Channel {
+		A, B, C, D;
+		public char getChar() {
+			if (this == A) return 'a';
+			if (this == B) return 'b';
+			if (this == C) return 'c';
+			return 'd';
+		}
+	}
 	public enum State {ON, OFF}
 	private Channel button;
 	private State onOff;
@@ -26,15 +34,15 @@ public class RockerSwitchDatagram extends BroadcastDatagram {
 
 	}
 	
-	public Channel getButton() {
+	public Channel getChannel() {
 		return button;
 	}
 	
-	public Action getState() {
+	public Action getAction() {
 		return state;
 	}
 
-	public State getOnOff() {
+	public State getState() {
 		return onOff;
 	}
 	

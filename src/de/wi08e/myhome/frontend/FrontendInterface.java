@@ -12,6 +12,7 @@ import javax.jws.soap.SOAPBinding.Style;
 import de.wi08e.myhome.frontend.exceptions.*;
 import de.wi08e.myhome.httpserver.HTTPServer;
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.SessionUserToken;
@@ -330,14 +331,15 @@ public class FrontendInterface {
 	/* Manage trigger (requires admin rights) */
 	
 	@SOAPBinding(style = Style.RPC)
-	public NodeResponse[] getSenderForReceiverTrigger(String userToken, int receiverId) throws NotLoggedIn, NoAdminRights {
+	public TriggerResponse[] getSenderForReceiverTrigger(String userToken, int receiverId) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		
-		List<Node> nodes = statusManager.getTriggerManager().getSender(receiverId);
-		NodeResponse[] result = new NodeResponse[nodes.size()];
+		List<Trigger> triggers = statusManager.getTriggerManager().getSender(receiverId);
+		TriggerResponse[] result = new TriggerResponse[triggers.size()];
 		int i=0;
-		for (Node node: nodes) 
-			result[i++] = new NodeResponse(node);
+		for (Trigger trigger: triggers) 
+			result[i++] = new TriggerResponse(new NodeResponse(trigger.getSender()), trigger.getChannel()+"");
+		
 		
 		return result;
 	}
@@ -347,23 +349,21 @@ public class FrontendInterface {
 	 * @param userToken
 	 * @param senderId
 	 * @param receiverId
-	 * @param channel empty(=0) for no channel, or A, B, C or D
+	 * @param channel empty for no channel, or A, B, C or D
 	 * @throws NotLoggedIn
 	 * @throws NoAdminRights
 	 * @throws NodeNotFound
 	 */
 	
 	@SOAPBinding(style = Style.RPC)
-	public void addSenderToReceiverTrigger(String userToken, int senderId, int receiverId, char channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
+	public void addOrUpdateSenderToReceiverTrigger(String userToken, int senderId, int receiverId, String channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
 		requestAdminRights(userToken);
 		
-		
-		
 		try {
-			if ((int)channel == 0) 
+			if (channel == null || channel.length() != 1) 
 				statusManager.getTriggerManager().addSenderToReciver(senderId, receiverId);
 			else
-				statusManager.getTriggerManager().addSenderToReciver(senderId, receiverId, channel);
+				statusManager.getTriggerManager().addSenderToReciver(senderId, receiverId, channel.charAt(0));
 			
 		} catch (SQLException e) {
 			if (e.getMessage().contains("a foreign key constraint fails")) {

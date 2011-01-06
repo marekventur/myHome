@@ -9,6 +9,7 @@ import java.util.List;
 
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.nodemanager.NodeManager;
 
 
@@ -28,15 +29,18 @@ public class TriggerManager {
 	 * @param senderId Sensor id
 	 * @return Actor id
 	 */
-	public List<Node> getReceiver(int senderId) {
-		List<Node> result = new ArrayList<Node>();
+	public List<Trigger> getReceiver(int senderId) {
+		List<Trigger> result = new ArrayList<Trigger>();
 		
 		try {
 			Statement getTriggerNodes = database.getConnection().createStatement();
-			if (getTriggerNodes.execute("SELECT receiver_node_id FROM node_triggers_node WHERE sender_node_id = "+String.valueOf(senderId)+";")) {
+			if (getTriggerNodes.execute("SELECT receiver_node_id, channel FROM node_triggers_node WHERE sender_node_id = "+String.valueOf(senderId)+";")) {
 				ResultSet rs = getTriggerNodes.getResultSet();
 				while (rs.next()) {
-					result.add(nodeManager.getNode(rs.getInt("receiver_node_id"), false));
+					char channel = 0;
+					if (rs.getString("channel")!=null && rs.getString("channel").length()>0)
+						channel = rs.getString("channel").charAt(0);
+					result.add(new Trigger(null, nodeManager.getNode(rs.getInt("receiver_node_id"), false), channel));
 				}
 			}
 		} catch (SQLException e) {
@@ -46,7 +50,7 @@ public class TriggerManager {
 		return result;
 	}
 	
-	public List<Node> getReceiver(Node sender) {
+	public List<Trigger> getReceiver(Node sender) {
 		return getReceiver(sender.getDatabaseId());
 	}
 	
@@ -55,15 +59,21 @@ public class TriggerManager {
 	 * @param triggerId Actor id
 	 * @return Sensor id
 	 */
-	public List<Node> getSender(int receiverId) {
-		List<Node> result = new ArrayList<Node>();
+	public List<Trigger> getSender(int receiverId) {
+		List<Trigger> result = new ArrayList<Trigger>();
 		
 		try {
 			Statement getTriggerNodes = database.getConnection().createStatement();
-			if (getTriggerNodes.execute("SELECT sender_node_id FROM node_triggers_node WHERE receiver_node_id = "+String.valueOf(receiverId)+";")) {
+			if (getTriggerNodes.execute("SELECT sender_node_id, channel FROM node_triggers_node WHERE receiver_node_id = "+String.valueOf(receiverId)+";")) {
 				ResultSet rs = getTriggerNodes.getResultSet();
-				while (rs.next()) 
-					result.add(nodeManager.getNode(rs.getInt("sender_node_id"), false));
+				while (rs.next()) {
+					
+					char channel = 0;
+					if (rs.getString("channel")!=null && rs.getString("channel").length()>0)
+						channel = rs.getString("channel").charAt(0);
+				
+					result.add(new Trigger(nodeManager.getNode(rs.getInt("sender_node_id"), false), null, channel));
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -71,7 +81,7 @@ public class TriggerManager {
 		return result;	
 	}
 	
-	public List<Node> getSender(Node receiver) {
+	public List<Trigger> getSender(Node receiver) {
 		return getSender(receiver.getDatabaseId());
 	}
 	

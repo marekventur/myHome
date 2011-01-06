@@ -6,14 +6,12 @@ package de.wi08e.myhome.nodeplugins.enoceansimulator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import de.wi08e.myhome.httpserver.HTTPServer;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
@@ -26,8 +24,6 @@ import de.wi08e.myhome.nodeplugins.NodePluginException;
  *
  */
 public class Main implements NodePlugin {
-	
-	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
 	
 	private final List<NodePanel> nodePanels = new ArrayList<NodePanel>();
 	private GUI gui;
