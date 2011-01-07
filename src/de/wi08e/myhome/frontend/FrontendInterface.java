@@ -4,13 +4,16 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
+import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
+import javax.xml.ws.WebServiceContext;
 
 
 import de.wi08e.myhome.frontend.exceptions.*;
-import de.wi08e.myhome.httpserver.HTTPServer;
+import de.wi08e.myhome.frontend.httpserver.HTTPServer;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.nodemanager.NodeManager;
@@ -27,8 +30,11 @@ import de.wi08e.myhome.usermanager.SessionUserToken;
  *
  */
 
-@WebService
+@SOAPBinding(style = Style.RPC)
+@WebService(name="myHome") 
 public class FrontendInterface {
+	
+	@Resource WebServiceContext wsContext;
 
 	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
 	
@@ -56,17 +62,16 @@ public class FrontendInterface {
 	 * @throws LoginUsernameOrPasswordWrong Thrown when password or username is wrong
 	 * @return LoginReponse The returning class contains an "isAdmin"-boolean and the newly generated userToken
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public LoginResponse login(String username, String password) throws LoginUsernameOrPasswordWrong {
+	public LoginResponse login(@WebParam(name="username") String username, @WebParam(name="password")  String password) throws LoginUsernameOrPasswordWrong {
 		LOGGER.info("Login attempt: "+username);
 	
+		System.out.println(wsContext.getUserPrincipal());
+		
 		if (username.length() == 0)
 			throw new LoginUsernameOrPasswordWrong();
 		
-		LoginResponse result = new LoginResponse();
-		result.isAdmin = true;
-		result.userToken = SessionUserToken.INSTANCE.generate();
-		return result;	
+		return new LoginResponse(true, SessionUserToken.INSTANCE.generate());
+	
 	}
 	
 	/**
@@ -74,8 +79,7 @@ public class FrontendInterface {
 	 * @param userToken
 	 * @return true if valid
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public boolean checkUserToken(String userToken) {
+	public boolean checkUserToken(@WebParam(name="userToken") String userToken) {
 		return userToken.length() > 0;	
 	}
 	
@@ -85,8 +89,7 @@ public class FrontendInterface {
 	 * @return true if valid
 	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public void logout(String userToken) throws NotLoggedIn {
+	public void logout(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		if ("".equals(userToken))
 			throw new NotLoggedIn();
 	}
@@ -98,8 +101,7 @@ public class FrontendInterface {
 	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't see this list.
 	 * @return Array of UserResponse containing username, fullname and isAdmin flag
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public UserResponse[] listUsers(String userToken) throws NotLoggedIn, NoAdminRights {
+	public UserResponse[] listUsers(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 
 		if ("".equals(userToken))
 			throw new NotLoggedIn();
@@ -130,8 +132,7 @@ public class FrontendInterface {
 	 * @throws UserNotFound Thrown when username is not found in database
 	 * @return UserResponse UserResponse object containing username, fullname and isAdmin flag
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public UserResponse getUser(String userToken, String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
+	public UserResponse getUser(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
 
 		if ("".equals(userToken))
 			throw new NotLoggedIn();
@@ -153,8 +154,7 @@ public class FrontendInterface {
 	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
 	 * @throws UserNotFound Thrown when username is not found in database
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public void deleteUser(String userToken, String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
+	public void deleteUser(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
 
 		if ("".equals(userToken))
 			throw new NotLoggedIn();
@@ -176,8 +176,7 @@ public class FrontendInterface {
 	 * @throws UserNotFound Thrown when username is not found in database
 	 * @throws PasswordTooShort Thrown when the password is too short
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public void changePassword(String userToken, String username, String password) throws NotLoggedIn, NoAdminRights, UserNotFound, PasswordTooShort {
+	public void changePassword(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username,@WebParam(name="password")  String password) throws NotLoggedIn, NoAdminRights, UserNotFound, PasswordTooShort {
 
 		if ("".equals(userToken))
 			throw new NotLoggedIn();
@@ -204,8 +203,7 @@ public class FrontendInterface {
 	 * @throws UsernameTooShortOrInvalid Thrown when username is too short or invalid
 	 * @throws UsernameAlreadyInUse Thrown when username is already used by someone else
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public void addUser(String userToken, String username, String password) throws NotLoggedIn, NoAdminRights, PasswordTooShort, UsernameTooShortOrInvalid, UsernameAlreadyInUse {
+	public void addUser(@WebParam(name="userToken") String userToken,@WebParam(name="username") String username,@WebParam(name="password") String password) throws NotLoggedIn, NoAdminRights, PasswordTooShort, UsernameTooShortOrInvalid, UsernameAlreadyInUse {
 
 		if ("".equals(userToken))
 			throw new NotLoggedIn();
@@ -225,8 +223,7 @@ public class FrontendInterface {
 	
 	/* Blueprints */
 	
-	@SOAPBinding(style = Style.RPC)
-	public BlueprintResponse[] listBlueprints(String userToken) throws NotLoggedIn {
+	public BlueprintResponse[] listBlueprints(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 
 		requestUserRights(userToken);
 		
@@ -243,8 +240,7 @@ public class FrontendInterface {
 		return new BlueprintResponse[] {erdgeschoss, obergeschoss};  
 	}
 	
-	@SOAPBinding(style = Style.RPC)
-	public BlueprintResponse getBlueprint(String userToken, int blueprintId, int maxHeight, int maxWidth) throws NotLoggedIn, BlueprintNotFound {
+	public BlueprintResponse getBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId,@WebParam(name="maxHeight") int maxHeight,@WebParam(name="maxWidth") int maxWidth) throws NotLoggedIn, BlueprintNotFound {
 
 		requestUserRights(userToken);
 		
@@ -257,13 +253,11 @@ public class FrontendInterface {
 		return erdgeschoss;  
 	}
 	
-	@SOAPBinding(style = Style.RPC)
-	public void addBlueprint(String userToken, String name, String image, String imageType) throws NotLoggedIn, NoAdminRights {
+	public void addBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="name") String name,@WebParam(name="image") String image,@WebParam(name="imageType") String imageType) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken); 
 	}
 
-	@SOAPBinding(style = Style.RPC)
-	public void deleteBlueprint(String userToken, int id) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
+	public void deleteBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
 		requestAdminRights(userToken); 
 	}
 	
@@ -273,14 +267,14 @@ public class FrontendInterface {
 	 * Returns nodes
 	 * @param filterByBlueprint 0(=left blank) when no filtering should be applied, else any valid Blueprint ID
 	 */
-	@SOAPBinding(style = Style.RPC)
-	public NodeResponse[] getNodes(String userToken, int blueprint) throws NotLoggedIn, BlueprintNotFound {
+	
+	public NodeResponse[] getNodes(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, BlueprintNotFound {
 		requestUserRights(userToken);
 		
 		List<Node> nodes;
 		
-		if (blueprint > 0)
-			nodes = nodeManager.getAllNodesFilteredByBlueprint(blueprint);
+		if (blueprintId > 0)
+			nodes = nodeManager.getAllNodesFilteredByBlueprint(blueprintId);
 		else
 			nodes = nodeManager.getAllNodes();
 		
@@ -292,8 +286,7 @@ public class FrontendInterface {
 		return result; 
 	}
 
-	@SOAPBinding(style = Style.RPC)
-	public NodeResponse[] getUnnamedNodes(String userToken) throws NotLoggedIn {
+	public NodeResponse[] getUnnamedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);
 		
 		List<Node> nodes = nodeManager.getUnnamedNodes();
@@ -307,8 +300,7 @@ public class FrontendInterface {
 	}
 	
 	/* User defined nodes */
-	@SOAPBinding(style = Style.RPC)
-	public NodeResponse[] getUserdefinedNodes(String userToken) throws NotLoggedIn, NoAdminRights {
+	public NodeResponse[] getUserdefinedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		
 		List<Node> nodes = nodeManager.getUserdefinedNodes();
@@ -321,8 +313,7 @@ public class FrontendInterface {
 		return result; 
 	}
 	
-	@SOAPBinding(style = Style.RPC)
-	public int addUserdefinedNodes(String userToken, String name, String category, String type) throws NotLoggedIn, NoAdminRights {
+	public int addUserdefinedNodes(@WebParam(name="userToken")String userToken,@WebParam(name="name") String name,@WebParam(name="category") String category,@WebParam(name="type") String type) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);		
 		return nodeManager.addUserDefinedNode(name, category, type); 
 	}
@@ -330,15 +321,14 @@ public class FrontendInterface {
 	
 	/* Manage trigger (requires admin rights) */
 	
-	@SOAPBinding(style = Style.RPC)
-	public TriggerResponse[] getSenderForReceiverTrigger(String userToken, int receiverId) throws NotLoggedIn, NoAdminRights {
+	public TriggerResponse[] getSenderForReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="receiverId") int receiverId) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		
 		List<Trigger> triggers = statusManager.getTriggerManager().getSender(receiverId);
 		TriggerResponse[] result = new TriggerResponse[triggers.size()];
 		int i=0;
 		for (Trigger trigger: triggers) 
-			result[i++] = new TriggerResponse(new NodeResponse(trigger.getSender()), trigger.getChannel()+"");
+			result[i++] = new TriggerResponse(trigger);
 		
 		
 		return result;
@@ -355,8 +345,7 @@ public class FrontendInterface {
 	 * @throws NodeNotFound
 	 */
 	
-	@SOAPBinding(style = Style.RPC)
-	public void addOrUpdateSenderToReceiverTrigger(String userToken, int senderId, int receiverId, String channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
+	public void addOrUpdateSenderToReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="senderId") int senderId,@WebParam(name="receiverId") int receiverId,@WebParam(name="channel") String channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
 		requestAdminRights(userToken);
 		
 		try {
@@ -376,8 +365,7 @@ public class FrontendInterface {
 		} 
 	}
 	
-	@SOAPBinding(style = Style.RPC)
-	public void deleteTrigger(String userToken, int senderId, int receiverId) throws NotLoggedIn, NoAdminRights {
+	public void deleteTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="senderId") int senderId,@WebParam(name="receiverId") int receiverId) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		statusManager.getTriggerManager().deleteTrigger(senderId, receiverId);		
 	}

@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.frontend.FrontendInterface;
-import de.wi08e.myhome.httpserver.HTTPServer;
+import de.wi08e.myhome.frontend.httpserver.HTTPServer;
 import de.wi08e.myhome.myhomescript.ScriptingEngine;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
