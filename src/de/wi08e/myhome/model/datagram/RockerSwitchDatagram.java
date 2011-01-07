@@ -11,6 +11,15 @@ public class RockerSwitchDatagram extends BroadcastDatagram {
 	public enum Action {PRESSED, RELEASED}
 	public enum Channel {
 		A, B, C, D;
+		
+		public static Channel convertFromChar(char channel) {
+			if (channel == 'a' || channel == 'A') return A;
+			if (channel == 'b' || channel == 'B') return B;
+			if (channel == 'c' || channel == 'C') return C;
+			if (channel == 'd' || channel == 'D') return D;
+			throw new IllegalArgumentException("Only chars from 'a' to 'd' are allowed.");
+		}
+		
 		public char getChar() {
 			if (this == A) return 'a';
 			if (this == B) return 'b';
@@ -19,31 +28,31 @@ public class RockerSwitchDatagram extends BroadcastDatagram {
 		}
 	}
 	public enum State {ON, OFF}
-	private Channel button;
-	private State onOff;
-	private Action state;
+	private Channel channel;
+	private State state;
+	private Action action;
 	
 	/**
 	 * @param sender
 	 */
-	public RockerSwitchDatagram(Node sender, Channel button, State onOff, Action state) {
+	public RockerSwitchDatagram(Node sender, Channel channel, State state, Action action) {
 		super(sender);	
-		this.button = button;
+		this.channel = channel;
+		this.action = action;
 		this.state = state;
-		this.onOff = onOff;
 
 	}
 	
 	public Channel getChannel() {
-		return button;
+		return channel;
 	}
 	
 	public Action getAction() {
-		return state;
+		return action;
 	}
 
 	public State getState() {
-		return onOff;
+		return state;
 	}
 	
 	

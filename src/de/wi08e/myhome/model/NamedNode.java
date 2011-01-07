@@ -3,6 +3,8 @@
  */
 package de.wi08e.myhome.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +25,14 @@ public class NamedNode extends Node {
 	public NamedNode(String type, String manufacturer, String id) {
 		super(type, manufacturer, id);
 		// TODO Auto-generated constructor stub
+	}
+	
+	public NamedNode(ResultSet resultSet) throws SQLException  {
+		super(resultSet);
+		setName(resultSet.getString("name"));
+		setPositionX(resultSet.getFloat("pos_x"));
+		setPositionY(resultSet.getFloat("pos_y"));
+		setBlueprintId(resultSet.getInt("blueprint_id"));
 	}
 
 	public String getName() {

@@ -17,6 +17,7 @@ import de.wi08e.myhome.frontend.httpserver.HTTPServer;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.nodemanager.NodeManager;
+import de.wi08e.myhome.statusmanager.InvalidStatusValueException;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.SessionUserToken;
 
@@ -46,7 +47,8 @@ public class FrontendInterface {
 		this.statusManager = statusManager;
 	}
 
-
+	/* Helper */
+	
 	private void requestUserRights(String userToken) throws NotLoggedIn {
 		
 	}
@@ -54,6 +56,24 @@ public class FrontendInterface {
 	private void requestAdminRights(String userToken) throws NotLoggedIn, NoAdminRights {
 		
 	}
+	
+	private NodeResponse[] convertListToResponseArray(List<Node> nodes) {
+		NodeResponse[] result = new NodeResponse[nodes.size()];
+		int i=0;
+		for (Node node: nodes) 
+			result[i++] = new NodeResponse(node);
+		return result;
+	}
+	
+	private TriggerResponse[] convertListToResponseArray(List<Trigger> triggers) {
+		TriggerResponse[] result = new TriggerResponse[triggers.size()];
+		int i=0;
+		for (Trigger trigger: triggers) 
+			result[i++] = new TriggerResponse(trigger);
+		return result;
+	}	
+	
+	/* Usermanager */
 	
 	/**
 	 * The main login method
@@ -271,47 +291,25 @@ public class FrontendInterface {
 	public NodeResponse[] getNodes(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, BlueprintNotFound {
 		requestUserRights(userToken);
 		
-		List<Node> nodes;
-		
 		if (blueprintId > 0)
-			nodes = nodeManager.getAllNodesFilteredByBlueprint(blueprintId);
+			return convertListToResponseArray(nodeManager.getAllNodesFilteredByBlueprint(blueprintId));
 		else
-			nodes = nodeManager.getAllNodes();
-		
-		NodeResponse[] result = new NodeResponse[nodes.size()];
-		int i=0;
-		for (Node node: nodes) 
-			result[i++] = new NodeResponse(node);
-		
-		return result; 
+			return convertListToResponseArray(nodeManager.getAllNodes());
+		 
 	}
 
 	public NodeResponse[] getUnnamedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);
-		
-		List<Node> nodes = nodeManager.getUnnamedNodes();
-		
-		NodeResponse[] result = new NodeResponse[nodes.size()];
-		int i=0;
-		for (Node node: nodes) 
-			result[i++] = new NodeResponse(node);
-		
-		return result; 
+		return convertListToResponseArray(nodeManager.getUnnamedNodes());
 	}
 	
 	/* User defined nodes */
 	public NodeResponse[] getUserdefinedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
-		
-		List<Node> nodes = nodeManager.getUserdefinedNodes();
-		
-		NodeResponse[] result = new NodeResponse[nodes.size()];
-		int i=0;
-		for (Node node: nodes) 
-			result[i++] = new NodeResponse(node);
-		
-		return result; 
+		return convertListToResponseArray(nodeManager.getUserdefinedNodes());
 	}
+	
+	
 	
 	public int addUserdefinedNodes(@WebParam(name="userToken")String userToken,@WebParam(name="name") String name,@WebParam(name="category") String category,@WebParam(name="type") String type) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);		
@@ -324,14 +322,7 @@ public class FrontendInterface {
 	public TriggerResponse[] getSenderForReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="receiverId") int receiverId) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		
-		List<Trigger> triggers = statusManager.getTriggerManager().getSender(receiverId);
-		TriggerResponse[] result = new TriggerResponse[triggers.size()];
-		int i=0;
-		for (Trigger trigger: triggers) 
-			result[i++] = new TriggerResponse(trigger);
-		
-		
-		return result;
+		return convertListToResponseArray(statusManager.getTriggerManager().getSender(receiverId));
 	}
 	
 	/**
@@ -368,6 +359,17 @@ public class FrontendInterface {
 	public void deleteTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="senderId") int senderId,@WebParam(name="receiverId") int receiverId) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		statusManager.getTriggerManager().deleteTrigger(senderId, receiverId);		
+	}
+	
+	/* Set Status */
+	
+	public NodeResponse[] setStatus(@WebParam(name="userToken") String userToken,@WebParam(name="nodeId") int nodeId, @WebParam(name="key") String key, @WebParam(name="value") String value) throws NotLoggedIn, StatusValueInvalid {
+		requestUserRights(userToken);
+		try {
+			return convertListToResponseArray(statusManager.setStatus(nodeManager.getNode(nodeId, true), key, value));
+		} catch (InvalidStatusValueException e) {
+			throw new StatusValueInvalid();
+		}
 	}
 	
 }

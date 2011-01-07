@@ -1,8 +1,13 @@
 package de.wi08e.myhome.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.wi08e.myhome.database.Database;
 
 /**
  * This is a class to identify nodes (=external components). 
@@ -103,6 +108,17 @@ public class Node {
 	}
 	*/
 	
+	/**
+	 * @throws SQLException 
+	 * Create node from ResultSet. 
+	 * @throws  
+	 */
+	public Node(ResultSet resultSet) throws SQLException  {
+		this(resultSet.getString("category"), resultSet.getString("manufacturer"), resultSet.getString("hardware_id"));
+		setType(resultSet.getString("type"));
+		setDatabaseId(resultSet.getInt("id"));
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -135,6 +151,20 @@ public class Node {
 
 	public boolean equals(Node node) {
 		return (node.toString().contentEquals(toString()));
+	}
+	
+	public void loadStatus(Database database) {
+		Statement getStatus;
+		try {
+			getStatus = database.getConnection().createStatement();
+			if (getStatus.execute("SELECT `key`, value FROM node_status WHERE node_id="+String.valueOf(databaseId)+";")) {
+				ResultSet rs2 = getStatus.getResultSet();
+				while (rs2.next()) 
+					getStatus().put(rs2.getString("key"), rs2.getString("value"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

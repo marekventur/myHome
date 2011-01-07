@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import de.wi08e.myhome.Config;
 import de.wi08e.myhome.ConfigPlugin;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
+import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodemanager.NodeManager;
 
@@ -100,5 +101,12 @@ public class NodePluginRunnable implements Runnable {
 
 	public void setNodeManager(NodeManager nodeManager) {
 		this.nodeManager = nodeManager;
-	}	
+	}
+
+	public void sendDatagram(Datagram datagram) {
+		for (NodePlugin plugin: plugins) 
+			plugin.chainSendDatagramm(datagram);	
+	}
+
+	
 }

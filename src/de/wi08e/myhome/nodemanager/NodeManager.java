@@ -98,40 +98,16 @@ public class NodeManager {
 		
 	}
 	
-	private Node createNodeFromResultSet(ResultSet resultSet, boolean withStatus) throws SQLException {
-		
+	public Node createNodeFromResultSet(ResultSet resultSet, boolean withStatus) throws SQLException {
 		Node result;
 		
-		int databaseId = resultSet.getInt(1);
-		
-		if (resultSet.getString("name") == null) {
-			// This node is not named until now
-			result = new Node(resultSet.getString("category"), resultSet.getString("manufacturer"), resultSet.getString("hardware_id"));
-
-		}	
+		if (!Database.columnExist(resultSet, "name") || resultSet.getString("name") == null) 
+			result = new Node(resultSet);	
 		else
-		{
-			// It's already named
-			NamedNode namedNode = new NamedNode(resultSet.getString("category"), resultSet.getString("manufacturer"), resultSet.getString("hardware_id"));
-			namedNode.setName(resultSet.getString("name"));
-			namedNode.setPositionX(resultSet.getFloat("pos_x"));
-			namedNode.setPositionY(resultSet.getFloat("pos_y"));
-			namedNode.setBlueprintId(resultSet.getInt("blueprint_id"));
-			result = namedNode;
-		}
+			result = new NamedNode(resultSet);
 		
-		result.setType(resultSet.getString(5));
-		result.setDatabaseId(databaseId);
-		
-		if (withStatus) {
-			// Get all status fields 
-			Statement getStatus = database.getConnection().createStatement();
-			if (getStatus.execute("SELECT `key`, value FROM node_status WHERE node_id="+String.valueOf(databaseId)+";")) {
-				ResultSet rs2 = getStatus.getResultSet();
-				while (rs2.next()) 
-					result.getStatus().put(rs2.getString("key"), rs2.getString("value"));
-			}
-		}
+		if (withStatus) 
+			result.loadStatus(database);
 		
 		return result;
 	}
@@ -258,8 +234,12 @@ public class NodeManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		 
 		return nodeId;
+	}
+
+	public void sendDatagram(Datagram datagram) {
+		nodePlugin.sendDatagram(datagram);
 	}
 
 	
