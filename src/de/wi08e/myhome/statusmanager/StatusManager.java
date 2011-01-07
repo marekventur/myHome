@@ -142,6 +142,16 @@ public class StatusManager implements DatagramReceiver{
 		return nodeManager;
 	}
 
+	/**
+	 * Change status of this node by sending an datagram that triggers the least other nodes
+	 * @param node
+	 * @param value
+	 * @param key
+	 * @return all changed nodes, empty list when not successfull
+	 */
+	public List<Node> setStatus(Node node, String value, String key) {
+		
+	}
 	
 	
 }
