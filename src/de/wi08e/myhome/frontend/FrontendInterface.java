@@ -57,7 +57,7 @@ public class FrontendInterface {
 		
 	}
 	
-	private NodeResponse[] convertListToResponseArray(List<Node> nodes) {
+	private NodeResponse[] convertListToResponseArrayNode(List<Node> nodes) {
 		NodeResponse[] result = new NodeResponse[nodes.size()];
 		int i=0;
 		for (Node node: nodes) 
@@ -65,7 +65,7 @@ public class FrontendInterface {
 		return result;
 	}
 	
-	private TriggerResponse[] convertListToResponseArray(List<Trigger> triggers) {
+	private TriggerResponse[] convertListToResponseArrayTrigger(List<Trigger> triggers) {
 		TriggerResponse[] result = new TriggerResponse[triggers.size()];
 		int i=0;
 		for (Trigger trigger: triggers) 
@@ -292,21 +292,21 @@ public class FrontendInterface {
 		requestUserRights(userToken);
 		
 		if (blueprintId > 0)
-			return convertListToResponseArray(nodeManager.getAllNodesFilteredByBlueprint(blueprintId));
+			return convertListToResponseArrayNode(nodeManager.getAllNodesFilteredByBlueprint(blueprintId));
 		else
-			return convertListToResponseArray(nodeManager.getAllNodes());
+			return convertListToResponseArrayNode(nodeManager.getAllNodes());
 		 
 	}
 
 	public NodeResponse[] getUnnamedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);
-		return convertListToResponseArray(nodeManager.getUnnamedNodes());
+		return convertListToResponseArrayNode(nodeManager.getUnnamedNodes());
 	}
 	
 	/* User defined nodes */
 	public NodeResponse[] getUserdefinedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
-		return convertListToResponseArray(nodeManager.getUserdefinedNodes());
+		return convertListToResponseArrayNode(nodeManager.getUserdefinedNodes());
 	}
 	
 	
@@ -322,7 +322,7 @@ public class FrontendInterface {
 	public TriggerResponse[] getSenderForReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="receiverId") int receiverId) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		
-		return convertListToResponseArray(statusManager.getTriggerManager().getSender(receiverId));
+		return convertListToResponseArrayTrigger(statusManager.getTriggerManager().getSender(receiverId));
 	}
 	
 	/**
@@ -366,7 +366,7 @@ public class FrontendInterface {
 	public NodeResponse[] setStatus(@WebParam(name="userToken") String userToken,@WebParam(name="nodeId") int nodeId, @WebParam(name="key") String key, @WebParam(name="value") String value) throws NotLoggedIn, StatusValueInvalid {
 		requestUserRights(userToken);
 		try {
-			return convertListToResponseArray(statusManager.setStatus(nodeManager.getNode(nodeId, true), key, value));
+			return convertListToResponseArrayNode(statusManager.setStatus(nodeManager.getNode(nodeId, true), key, value));
 		} catch (InvalidStatusValueException e) {
 			throw new StatusValueInvalid();
 		}
