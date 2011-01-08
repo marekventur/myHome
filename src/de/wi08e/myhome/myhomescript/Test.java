@@ -8,12 +8,26 @@ import java.util.List;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 /**
  * @author Marek
  *
  */
 
+
+class TestInner {
+	public void test(Object a) {
+		ScriptEngineManager factory = new ScriptEngineManager();
+        ScriptEngine engine = factory.getEngineByName("JavaScript");
+        engine.put("run", a);
+        try {
+			engine.eval("run('World')");
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		}
+	}
+}
 
 public class Test {
 /*
@@ -44,9 +58,11 @@ public class Test {
         
         engine.put("Sensor", sensor);
         engine.put("Actor", actor);
-        
+        */
+        engine.put("Test", new TestInner());
         engine.eval(new java.io.FileReader("test.js"));
- */
+        
+        
         /*
         Invocable inv = (Invocable) engine;
 

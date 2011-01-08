@@ -1,5 +1,6 @@
 // Kamin-Fenster-Dunstabzugshaube-Schaltung
-if (Sensor.getByName('#kaminTemperaturFühler').getTemperatureCelsius() > 50) {
+/*
+ * if (Sensor.getByName('#kaminTemperaturFühler').getTemperatureCelsius() > 50) {
 
     // Kamin ist an. Ist ein Fenster offen?
     var offeneFenster = 0;
@@ -21,7 +22,11 @@ if (Sensor.getByName('#kaminTemperaturFühler').getTemperatureCelsius() > 50) {
     
    
     
-}
+}*/
+
+Test.test(function(a) {
+	println('Hello '+a);
+});
 
 /*
 // Licht in der Garage soll nur nur Parameter('garageLichtDauerMinuten') Minuten nach letzten Schalterdruck an bleiben. 
