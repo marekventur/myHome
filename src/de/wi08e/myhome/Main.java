@@ -2,6 +2,7 @@ package de.wi08e.myhome;
 
 import java.util.logging.Logger;
 
+import de.wi08e.myhome.blueprintmanager.BlueprintManager;
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.frontend.FrontendInterface;
@@ -18,6 +19,7 @@ public class Main {
 	private static Database database;
 	private static NodePluginRunnable nodePlugin;
 	private static NodeManager nodeManager;
+	private static BlueprintManager blueprintManager;
 		
 	public static void main(String[] args) {
 		
@@ -56,8 +58,11 @@ public class Main {
 		statusManager = new StatusManager(database, nodeManager, scriptingEngine);
 		nodeManager.addReceiver(statusManager);
 		
+		/* Create Blueprint Manager */
+		blueprintManager = new BlueprintManager(database);
+		
 		/* New FrontendInterface */
-		FrontendInterface frontendInterface = new FrontendInterface(nodeManager, statusManager);
+		FrontendInterface frontendInterface = new FrontendInterface(nodeManager, statusManager, blueprintManager);
 		
 		/* Start SOAP service */
 		new HTTPServer(frontendInterface);
