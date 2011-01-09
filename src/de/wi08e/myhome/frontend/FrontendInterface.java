@@ -285,6 +285,17 @@ public class FrontendInterface {
 			return convertListToResponseArrayNode(nodeManager.getAllNodes());
 		 
 	}
+	
+	public NodeResponse getNode(@WebParam(name="userToken") String userToken,@WebParam(name="nodeId") int nodeId) throws NotLoggedIn, NodeNotFound {
+		requestUserRights(userToken);
+		
+		Node node = nodeManager.getNode(nodeId, true);
+		
+		if (node == null) 
+			throw new NodeNotFound();
+		
+		return new NodeResponse(node); 
+	}
 
 	public NodeResponse[] getUnnamedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);
@@ -304,6 +315,17 @@ public class FrontendInterface {
 		return nodeManager.addUserDefinedNode(name, category, type); 
 	}
 	
+	/* Manage tags */
+	
+	public boolean addTag(@WebParam(name="userToken")String userToken, @WebParam(name="nodeId")int nodeId, @WebParam(name="tag")String tag) throws NotLoggedIn, NoAdminRights {
+		requestAdminRights(userToken);
+		return nodeManager.addTag(nodeId, tag);
+	}
+	
+	public boolean deleteTag(@WebParam(name="userToken")String userToken, @WebParam(name="nodeId")int nodeId, @WebParam(name="tag")String tag) throws NotLoggedIn, NoAdminRights {
+		requestAdminRights(userToken);
+		return nodeManager.deleteTag(nodeId, tag);
+	}
 	
 	/* Manage trigger (requires admin rights) */
 	

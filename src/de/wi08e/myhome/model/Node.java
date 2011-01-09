@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import de.wi08e.myhome.database.Database;
 
@@ -37,6 +39,8 @@ public class Node {
 	private String category;
 	private String manufacturer;
 	private String hardwareId;
+	
+	private Set<String> tags = Collections.synchronizedSet(new HashSet<String>());
 	
 	private String type = "unknown";
 	
@@ -117,6 +121,11 @@ public class Node {
 		this(resultSet.getString("category"), resultSet.getString("manufacturer"), resultSet.getString("hardware_id"));
 		setType(resultSet.getString("type"));
 		setDatabaseId(resultSet.getInt("id"));
+		if (Database.columnExist(resultSet, "tags") && resultSet.getString("tags") != null) {
+			String[] tagList = resultSet.getString("tags").split(",");
+			for (String tag: tagList) 
+				tags.add(tag);
+		}
 	}
 	
 	public String getType() {
@@ -153,7 +162,7 @@ public class Node {
 		return (node.toString().contentEquals(toString()));
 	}
 	
-	public void loadStatus(Database database) {
+	public synchronized void loadStatus(Database database) {
 		Statement getStatus;
 		try {
 			getStatus = database.getConnection().createStatement();
@@ -165,6 +174,10 @@ public class Node {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Set<String> getTags() {
+		return tags;
 	}
 	
 }
