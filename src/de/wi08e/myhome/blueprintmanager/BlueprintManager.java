@@ -1,17 +1,8 @@
 package de.wi08e.myhome.blueprintmanager;
 
 import java.awt.BorderLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
-import java.awt.image.PixelGrabber;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Blob;
@@ -45,14 +36,14 @@ public class BlueprintManager {
 	public void addBlueprint(String name, Image image) {
 
 		try {
-			PreparedStatement insertTrigger = database
+			PreparedStatement insertBlueprint = database
 					.getConnection()
 					.prepareStatement(
 							"INSERT INTO blueprint (name, width, height, image) VALUES (?, ?, ?, ?);");
 
-			insertTrigger.setString(1, name);
-			insertTrigger.setInt(2, image.getWidth(null));
-			insertTrigger.setInt(3, image.getHeight(null));
+			insertBlueprint.setString(1, name);
+			insertBlueprint.setInt(2, image.getWidth(null));
+			insertBlueprint.setInt(3, image.getHeight(null));
 
 			Blob imageBlob = database.getConnection().createBlob();
 			ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -61,9 +52,9 @@ public class BlueprintManager {
 			bs.flush();
 			bs.close();
 
-			insertTrigger.setBlob(4, imageBlob);
+			insertBlueprint.setBlob(4, imageBlob);
 
-			insertTrigger.executeUpdate();
+			insertBlueprint.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -114,6 +105,41 @@ public class BlueprintManager {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @return true if successfull, false if not (id not found)
+	 */
+	public boolean renameBlueprint(int blueprintId, String name) {
+		try {
+			PreparedStatement updateBlueprint = database
+				.getConnection()
+				.prepareStatement("UPDATE blueprint SET name = ? WHERE id = ?;");
+
+			updateBlueprint.setString(1, name);
+			updateBlueprint.setInt(2, blueprintId);
+			return (updateBlueprint.executeUpdate() == 1);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean deleteBlueprint(int blueprintId) {
+		try {
+			PreparedStatement deleteBlueprint = database
+				.getConnection()
+				.prepareStatement("DELETE FROM blueprint WHERE id = ?;");
+
+			deleteBlueprint.setInt(1, blueprintId);
+			return (deleteBlueprint.executeUpdate() == 1);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public Blueprint getBlueprint(int blueprintId, int height, int width) {
 		try {
 			Statement getBlueprints = database.getConnection()
@@ -144,7 +170,7 @@ public class BlueprintManager {
 				
 					Image resizedImage = ImageHelper.getScaledInstance(ImageHelper.toBufferedImage(blueprint.getImage()), newWidth, newHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 
-					preview(resizedImage);
+					//preview(resizedImage);
 					blueprint.setImage(resizedImage);
 
 					return blueprint;
