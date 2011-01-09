@@ -1,6 +1,7 @@
 package de.wi08e.myhome.frontend;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,8 +13,10 @@ import javax.jws.soap.SOAPBinding.Style;
 import javax.xml.ws.WebServiceContext;
 
 
+import de.wi08e.myhome.blueprintmanager.BlueprintManager;
 import de.wi08e.myhome.frontend.exceptions.*;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
+import de.wi08e.myhome.model.Blueprint;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.nodemanager.NodeManager;
@@ -41,10 +44,12 @@ public class FrontendInterface {
 	
 	private StatusManager statusManager;
 	private NodeManager nodeManager;
+	private BlueprintManager blueprintManager;
 	
-	public FrontendInterface(NodeManager nodeManager, StatusManager statusManager) {
+	public FrontendInterface(NodeManager nodeManager, StatusManager statusManager, BlueprintManager blueprintManager) {
 		this.nodeManager = nodeManager;
 		this.statusManager = statusManager;
+		this.blueprintManager = blueprintManager;
 	}
 
 	/* Helper */
@@ -70,6 +75,14 @@ public class FrontendInterface {
 		int i=0;
 		for (Trigger trigger: triggers) 
 			result[i++] = new TriggerResponse(trigger);
+		return result;
+	}	
+	
+	private BlueprintResponse[] convertListToResponseArrayBlueprint(List<Blueprint> blueprints) {
+		BlueprintResponse[] result = new BlueprintResponse[blueprints.size()];
+		int i=0;
+		for (Blueprint blueprint: blueprints) 
+			result[i++] = new BlueprintResponse(blueprint);
 		return result;
 	}	
 	
@@ -110,8 +123,7 @@ public class FrontendInterface {
 	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
 	 */
 	public void logout(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
-		if ("".equals(userToken))
-			throw new NotLoggedIn();
+		requestUserRights(userToken);
 	}
 	
 	/**
@@ -123,11 +135,7 @@ public class FrontendInterface {
 	 */
 	public UserResponse[] listUsers(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 
-		if ("".equals(userToken))
-			throw new NotLoggedIn();
-
-		if (!"1234".equals(userToken))
-			throw new NoAdminRights();
+		requestAdminRights(userToken);
 
 		UserResponse hans = new UserResponse();;
 		hans.username = "hans";
@@ -154,11 +162,7 @@ public class FrontendInterface {
 	 */
 	public UserResponse getUser(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
 
-		if ("".equals(userToken))
-			throw new NotLoggedIn();
-
-		if (!"1234".equals(userToken))
-			throw new NoAdminRights();
+		requestAdminRights(userToken);
 		
 		if ("".equals(username))
 			throw new UserNotFound();
@@ -176,11 +180,7 @@ public class FrontendInterface {
 	 */
 	public void deleteUser(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
 
-		if ("".equals(userToken))
-			throw new NotLoggedIn();
-
-		if (!"1234".equals(userToken))
-			throw new NoAdminRights();	
+		requestAdminRights(userToken);
 		
 		if ("".equals(username))
 			throw new UserNotFound();
@@ -198,11 +198,10 @@ public class FrontendInterface {
 	 */
 	public void changePassword(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username,@WebParam(name="password")  String password) throws NotLoggedIn, NoAdminRights, UserNotFound, PasswordTooShort {
 
-		if ("".equals(userToken))
-			throw new NotLoggedIn();
-
-		if (!"1234".equals(userToken) && !"hans".equals(username))
-			throw new NoAdminRights();	
+		if ("hans".equals(username))
+			requestUserRights(userToken);
+		else
+			requestAdminRights(userToken);
 		
 		if ("".equals(username))
 			throw new UserNotFound();
@@ -225,11 +224,7 @@ public class FrontendInterface {
 	 */
 	public void addUser(@WebParam(name="userToken") String userToken,@WebParam(name="username") String username,@WebParam(name="password") String password) throws NotLoggedIn, NoAdminRights, PasswordTooShort, UsernameTooShortOrInvalid, UsernameAlreadyInUse {
 
-		if ("".equals(userToken))
-			throw new NotLoggedIn();
-
-		if (!"1234".equals(userToken))
-			throw new NoAdminRights();	
+		requestAdminRights(userToken);
 		
 		if (username.length() < 4)
 			throw new UsernameTooShortOrInvalid(4);
@@ -243,38 +238,25 @@ public class FrontendInterface {
 	
 	/* Blueprints */
 	
-	public BlueprintResponse[] listBlueprints(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
+	public BlueprintResponse[] getAllBlueprints(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 
 		requestUserRights(userToken);
 		
-		BlueprintResponse erdgeschoss = new BlueprintResponse();
-		erdgeschoss.height = 300;
-		erdgeschoss.width = 200;
-		erdgeschoss.name = "erdgeschoss";
+		System.out.println(convertListToResponseArrayBlueprint(blueprintManager.getAllBlueprints())[0].getName());
 		
-		BlueprintResponse obergeschoss = new BlueprintResponse();
-		obergeschoss.height = 400;
-		obergeschoss.width = 300;
-		obergeschoss.name = "obergeschoss";
-		
-		return new BlueprintResponse[] {erdgeschoss, obergeschoss};  
+		return convertListToResponseArrayBlueprint(blueprintManager.getAllBlueprints());  
 	}
 	
 	public BlueprintResponse getBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId,@WebParam(name="maxHeight") int maxHeight,@WebParam(name="maxWidth") int maxWidth) throws NotLoggedIn, BlueprintNotFound {
-
 		requestUserRights(userToken);
-		
-		BlueprintResponse erdgeschoss = new BlueprintResponse();
-		erdgeschoss.height = 300;
-		erdgeschoss.width = 200;
-		erdgeschoss.name = "erdgeschoss";
-		erdgeschoss.image = "pngblabla";
-		
-		return erdgeschoss;  
+
+		return new BlueprintResponse(blueprintManager.getBlueprint(blueprintId, maxHeight, maxWidth));  
 	}
 	
-	public void addBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="name") String name,@WebParam(name="image") String image,@WebParam(name="imageType") String imageType) throws NotLoggedIn, NoAdminRights {
+	public void addBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="name") String name,@WebParam(name="image") java.awt.Image image,@WebParam(name="imageType") String imageType) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken); 
+		blueprintManager.addBlueprint(name, image);
+		
 	}
 
 	public void deleteBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
