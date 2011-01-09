@@ -6,6 +6,8 @@ import de.wi08e.myhome.model.Blueprint;
 
 @XmlRootElement(name="blueprintResponse")
 public class BlueprintResponse {
+
+	private int id;
 	private String name;
 	private int width;
 	private int height;
@@ -16,6 +18,8 @@ public class BlueprintResponse {
 	}
 	
 	public BlueprintResponse(Blueprint blueprint) {
+		id = blueprint.getDatabseId();
+
 		name = blueprint.getName();
 		width = blueprint.getWidth();
 		height = blueprint.getHeight();
@@ -53,6 +57,15 @@ public class BlueprintResponse {
 	public void setImage(java.awt.Image image) {
 		this.image = image;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	
 	
 }

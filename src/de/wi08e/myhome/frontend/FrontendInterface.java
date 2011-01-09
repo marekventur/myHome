@@ -241,26 +241,32 @@ public class FrontendInterface {
 	public BlueprintResponse[] getAllBlueprints(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 
 		requestUserRights(userToken);
-		
-		System.out.println(convertListToResponseArrayBlueprint(blueprintManager.getAllBlueprints())[0].getName());
-		
 		return convertListToResponseArrayBlueprint(blueprintManager.getAllBlueprints());  
 	}
 	
 	public BlueprintResponse getBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId,@WebParam(name="maxHeight") int maxHeight,@WebParam(name="maxWidth") int maxWidth) throws NotLoggedIn, BlueprintNotFound {
 		requestUserRights(userToken);
 
+
 		return new BlueprintResponse(blueprintManager.getBlueprint(blueprintId, maxHeight, maxWidth));  
 	}
 	
 	public void addBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="name") String name,@WebParam(name="image") java.awt.Image image,@WebParam(name="imageType") String imageType) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken); 
-		blueprintManager.addBlueprint(name, image);
-		
+		blueprintManager.addBlueprint(name, image);  
 	}
+	
 
 	public void deleteBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
 		requestAdminRights(userToken); 
+		if (!blueprintManager.deleteBlueprint(blueprintId)) 
+			throw new BlueprintNotFound();
+	}
+	
+	public void renameBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId, @WebParam(name="name") String name) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
+		requestAdminRights(userToken); 
+		if (!blueprintManager.renameBlueprint(blueprintId, name)) 
+			throw new BlueprintNotFound();
 	}
 	
 	/* Nodes */
