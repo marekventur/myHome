@@ -117,8 +117,6 @@ public class NodeManager {
 		
 		Statement getNodes = database.getConnection().createStatement();
 		
-		System.out.println("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE "+sqlWhere+" GROUP BY node.id;");
-		
 		if (getNodes.execute("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE "+sqlWhere+" GROUP BY node.id;")) {
 			ResultSet rs = getNodes.getResultSet();
 			while (rs.next()) 
@@ -159,6 +157,28 @@ public class NodeManager {
 	public synchronized List<Node> getUserdefinedNodes() {
 		try {
 			return generateNodeListFromSQLWhere("manufacturer = 'userdefined'", true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public synchronized List<Node> getTaggedNodes(String tag) {
+		try {
+			List<Node> result = new ArrayList<Node>();
+			
+			PreparedStatement getNodes = database.getConnection().prepareStatement("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id IN (SELECT node_id FROM node_tag WHERE tag=? GROUP BY node_id) GROUP BY node.id;"); 
+			getNodes.setString(1, tag);
+			getNodes.execute();
+			
+			if (getNodes.execute()) {
+				ResultSet rs = getNodes.getResultSet();
+				while (rs.next()) 
+					result.add(createNodeFromResultSet(rs, true));	
+			}
+		
+			
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -270,5 +290,7 @@ public class NodeManager {
 		}
 		return false;
 	}
+	
+	
 	
 }

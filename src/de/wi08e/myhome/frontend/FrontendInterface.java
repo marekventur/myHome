@@ -302,6 +302,11 @@ public class FrontendInterface {
 		return convertListToResponseArrayNode(nodeManager.getUnnamedNodes());
 	}
 	
+	public NodeResponse[] getTaggedNodes(@WebParam(name="userToken") String userToken, @WebParam(name="tag") String tag) throws NotLoggedIn {
+		requestUserRights(userToken);
+		return convertListToResponseArrayNode(nodeManager.getTaggedNodes(tag));
+	}
+	
 	/* User defined nodes */
 	public NodeResponse[] getUserdefinedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
