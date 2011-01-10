@@ -1,5 +1,6 @@
 package de.wi08e.myhome.frontend.httpserver;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.ws.Endpoint;
@@ -25,6 +26,14 @@ public class HTTPServer {
 		String uri = "http://"+config.getHost()+":"+config.getPort()+config.getPath();
 		
 		endpoint.publish(uri);
+		
+		Map<String, Object> properties = endpoint.getProperties();
+		
+		for (String a: properties.keySet()) {
+			System.out.println(a+": "+properties.get(a));
+		}
+		
+		System.out.println(properties.size());
 		LOGGER.info("SOAP server has started. WSDL can be found at "+uri+"?wsdl");
 	}	
 }
