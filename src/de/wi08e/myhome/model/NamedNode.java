@@ -5,8 +5,6 @@ package de.wi08e.myhome.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Marek
@@ -15,7 +13,6 @@ import java.util.Set;
 public class NamedNode extends Node {
 
 	private String name;
-	private final Set<String> tags = new HashSet<String>();
 	
 	private float positionX = 0;
 	private float positionY = 0;
@@ -41,10 +38,6 @@ public class NamedNode extends Node {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Set<String> getTags() {
-		return tags;
 	}
 
 	public float getPositionX() {

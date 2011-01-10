@@ -17,6 +17,7 @@ public class NodeResponse {
 	public float positionY = 0;
 	public int blueprintId = -1;
 	public NodeStatusResponse[] status = null;
+	public String[] tags;
 	
 	public NodeResponse() {
 		
@@ -40,9 +41,14 @@ public class NodeResponse {
 			name = ((NamedNode)node).getName();
 		}
 		
+		tags = new String[node.getTags().size()];
+		int i = 0;
+		for (String tag: node.getTags())
+			tags[i++] = tag;
+		
 		
 		status = new NodeStatusResponse[node.getStatus().keySet().size()];
-		int i=0;
+		i=0;
 		for (String key: node.getStatus().keySet()) 
 			status[i++] = new NodeStatusResponse(key, node.getStatus().get(key));
 		

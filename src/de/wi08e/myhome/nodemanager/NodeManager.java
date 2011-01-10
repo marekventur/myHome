@@ -12,14 +12,14 @@ import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
-import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
+import de.wi08e.myhome.nodeplugins.NodePluginManager;
 
 public class NodeManager {
 	private Database database;
-	private NodePluginRunnable nodePlugin;
+	private NodePluginManager nodePlugin;
 	private List<DatagramReceiver> receivers = new ArrayList<DatagramReceiver>();
 
-	public NodeManager(Database database, NodePluginRunnable nodePlugin) {
+	public NodeManager(Database database, NodePluginManager nodePlugin) {
 		super();
 		this.database = database;
 		this.nodePlugin = nodePlugin;
@@ -116,7 +116,8 @@ public class NodeManager {
 		List<Node> result = new ArrayList<Node>();
 		
 		Statement getNodes = database.getConnection().createStatement();
-		if (getNodes.execute("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE "+sqlWhere+";")) {
+		
+		if (getNodes.execute("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE "+sqlWhere+" GROUP BY node.id;")) {
 			ResultSet rs = getNodes.getResultSet();
 			while (rs.next()) 
 				result.add(createNodeFromResultSet(rs, withStatus));	
@@ -162,10 +163,32 @@ public class NodeManager {
 		}
 	}
 	
+	public synchronized List<Node> getTaggedNodes(String tag) {
+		try {
+			List<Node> result = new ArrayList<Node>();
+			
+			PreparedStatement getNodes = database.getConnection().prepareStatement("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id IN (SELECT node_id FROM node_tag WHERE tag=? GROUP BY node_id) GROUP BY node.id;"); 
+			getNodes.setString(1, tag);
+			getNodes.execute();
+			
+			if (getNodes.execute()) {
+				ResultSet rs = getNodes.getResultSet();
+				while (rs.next()) 
+					result.add(createNodeFromResultSet(rs, true));	
+			}
+		
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public synchronized Node getNode(int nodeId, boolean withStatus) {
 		try {
 			Statement getNodes = database.getConnection().createStatement();
-			if (getNodes.execute("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE id="+String.valueOf(nodeId)+";")) {
+			if (getNodes.execute("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id="+String.valueOf(nodeId)+";")) {
 				ResultSet rs = getNodes.getResultSet();
 				if (rs.next()) 
 					return createNodeFromResultSet(rs, withStatus);	
@@ -241,7 +264,33 @@ public class NodeManager {
 	public void sendDatagram(Datagram datagram) {
 		nodePlugin.sendDatagram(datagram);
 	}
+	
+	public boolean addTag(int nodeId, String tag) {
+		try {
+			PreparedStatement insertTag = database.getConnection().prepareStatement("INSERT into node_tag (node_id, tag) VALUES (?, ?);");
+			insertTag.setInt(1, nodeId);
+			insertTag.setString(2, tag);
+			insertTag.executeUpdate();
+			insertTag.close();
+			return true;
+			
+		} catch (SQLException e) {
+		}
+		return false;
+	}
+	
+	public boolean deleteTag(int nodeId, String tag) {
+		try {
+			PreparedStatement deleteTagStatement = database.getConnection().prepareStatement("DELETE FROM node_tag WHERE node_id = ? AND tag = ?;");
+			deleteTagStatement.setInt(1, nodeId);
+			deleteTagStatement.setString(2, tag);
+			return (deleteTagStatement.executeUpdate() == 1);
 
+		} catch (SQLException e) {
+		}
+		return false;
+	}
+	
 	
 	
 }

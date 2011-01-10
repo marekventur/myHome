@@ -6,6 +6,7 @@ package de.wi08e.myhome.nodeplugins.enoceansimulator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 import javax.swing.SwingUtilities;
 
@@ -15,6 +16,7 @@ import org.w3c.dom.NodeList;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
+import de.wi08e.myhome.nodeplugins.DatagramQueueHolder;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;
@@ -30,6 +32,8 @@ public class Main implements NodePlugin {
 	private NodePluginEvent event;
 
 	private String identifier = "";
+	
+	private boolean running = true;
 	
 	public Main() {
 
@@ -184,6 +188,8 @@ public class Main implements NodePlugin {
 	public String getCategory() {
 		return "enocean";
 	}
+
+
 
 	
 

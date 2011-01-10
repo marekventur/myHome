@@ -2,6 +2,7 @@ package de.wi08e.myhome.blueprintmanager;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Blob;

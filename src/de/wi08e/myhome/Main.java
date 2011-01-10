@@ -9,7 +9,7 @@ import de.wi08e.myhome.frontend.FrontendInterface;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
 import de.wi08e.myhome.myhomescript.ScriptingEngine;
 import de.wi08e.myhome.nodemanager.NodeManager;
-import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
+import de.wi08e.myhome.nodeplugins.NodePluginManager;
 import de.wi08e.myhome.statusmanager.StatusManager;
 
 public class Main {
@@ -17,7 +17,7 @@ public class Main {
 	private static ScriptingEngine scriptingEngine;
 	private static StatusManager statusManager;
 	private static Database database;
-	private static NodePluginRunnable nodePlugin;
+	private static NodePluginManager nodePluginManager;
 	private static NodeManager nodeManager;
 	private static BlueprintManager blueprintManager;
 		
@@ -37,19 +37,16 @@ public class Main {
 		
 		/* Get Logger for this class */
 		final Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
-		LOGGER.info("myHome has been launched");
 		
 		/* Loading all NodePlugins */
-		nodePlugin = new NodePluginRunnable();
-		Thread nodePluginThread = new Thread(nodePlugin);
-		nodePluginThread.start();
-		LOGGER.info("NodePlugins have been loaded");
+		nodePluginManager = new NodePluginManager();
+		new Thread(nodePluginManager).start();
 		
 		/* Create Database-Connection */
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
 		
 		/* Create Node Manager */
-		nodeManager = new NodeManager(database, nodePlugin);
+		nodeManager = new NodeManager(database, nodePluginManager);
 		
 		/* Create scripting engine */
 		scriptingEngine = new ScriptingEngine(database, nodeManager);
