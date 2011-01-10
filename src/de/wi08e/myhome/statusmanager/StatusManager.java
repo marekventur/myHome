@@ -17,7 +17,7 @@ import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.myhomescript.ScriptingEngine;
 import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
-import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
+import de.wi08e.myhome.nodeplugins.NodePluginManager;
 
 public class StatusManager implements DatagramReceiver{
 	

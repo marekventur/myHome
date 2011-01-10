@@ -4,6 +4,7 @@
 package de.wi08e.myhome.nodeplugins;
 
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 import de.wi08e.myhome.model.datagram.Datagram;
 

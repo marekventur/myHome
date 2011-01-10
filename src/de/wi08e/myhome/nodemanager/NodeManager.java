@@ -12,14 +12,14 @@ import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
-import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
+import de.wi08e.myhome.nodeplugins.NodePluginManager;
 
 public class NodeManager {
 	private Database database;
-	private NodePluginRunnable nodePlugin;
+	private NodePluginManager nodePlugin;
 	private List<DatagramReceiver> receivers = new ArrayList<DatagramReceiver>();
 
-	public NodeManager(Database database, NodePluginRunnable nodePlugin) {
+	public NodeManager(Database database, NodePluginManager nodePlugin) {
 		super();
 		this.database = database;
 		this.nodePlugin = nodePlugin;

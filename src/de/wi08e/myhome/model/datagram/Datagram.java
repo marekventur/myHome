@@ -14,7 +14,7 @@ public abstract class Datagram {
 	private Date timestamp = new Date();
 	private boolean processed = false;
 
-	public boolean isProcessed() {
+	public synchronized boolean isProcessed() {
 		return processed;
 	}
 
