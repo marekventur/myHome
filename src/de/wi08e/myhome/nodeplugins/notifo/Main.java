@@ -4,12 +4,11 @@
 package de.wi08e.myhome.nodeplugins.notifo;
 
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 
 import org.w3c.dom.Node;
 
 import de.wi08e.myhome.model.datagram.Datagram;
-import de.wi08e.myhome.nodeplugins.DatagramQueueHolder;
+import de.wi08e.myhome.model.datagram.TextMessageDatagram;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;
@@ -20,40 +19,32 @@ import de.wi08e.myhome.nodeplugins.NodePluginException;
  */
 public class Main implements NodePlugin {
 
-	/**
-	 * 
-	 */
-	
-	
+	private NotifoHTTPClient client;
 	
 	public Main() {
-		// TODO Auto-generated constructor stub
 		
 	}
 
-	
 	@Override
 	public void initiate(NodePluginEvent event, Map<String, String> properties,
 			Node data) throws NodePluginException {
-		// TODO Auto-generated method stub
-
+		client = new NotifoHTTPClient(properties.get("username"), properties.get("apisecret"));
 	}
-
 	
 	@Override
 	public void chainReceiveDatagram(Datagram datagram) {
-		// TODO Auto-generated method stub
 
 	}
 
-	
 	@Override
 	public void chainSendDatagramm(Datagram datagram) {
-		// TODO Auto-generated method stub
-
+		if (datagram instanceof TextMessageDatagram) {
+			TextMessageDatagram textMessageDatagram = (TextMessageDatagram)datagram;
+			client.sendNotification(textMessageDatagram.getReceiver().getHardwareId(), "", textMessageDatagram.getMessage(), "");
+			datagram.setProcessed(true);
+		}
 	}
 
-	
 	@Override
 	public String getName() {
 		return "Notifo Push Messages";
@@ -63,7 +54,5 @@ public class Main implements NodePlugin {
 	public String getCategory() {
 		return "notifo";
 	}
-
-
 
 }
