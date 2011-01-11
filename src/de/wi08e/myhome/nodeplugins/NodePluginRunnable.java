@@ -1,14 +1,10 @@
 package de.wi08e.myhome.nodeplugins;
 
-import java.awt.Image;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.w3c.dom.Node;
-
 import de.wi08e.myhome.model.datagram.Datagram;
-import de.wi08e.myhome.nodeplugins.enoceansimulator.NodePanel;
 
 public class NodePluginRunnable implements Runnable {
 	
@@ -51,7 +47,7 @@ public class NodePluginRunnable implements Runnable {
 					
 					// Chain 
 					if (holder.getType() == DatagramQueueHolder.Type.SEND) 
-						nodePlugin.chainReceiveDatagram(datagram);
+						nodePlugin.chainSendDatagramm(datagram);
 					
 
 			}
