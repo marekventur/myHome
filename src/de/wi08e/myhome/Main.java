@@ -7,6 +7,8 @@ import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.frontend.FrontendInterface;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
+import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.datagram.TextMessageDatagram;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
 import de.wi08e.myhome.scriptmanager.ScriptManager;
@@ -68,6 +70,9 @@ public class Main {
 		
 		/* Start SOAP service */
 		new HTTPServer(frontendInterface);
+		
+		Node to = userManager.getPreferedCommunicationNode("marekventur");
+		nodePluginManager.sendDatagram(new TextMessageDatagram(to, "Start"));
 		
 		/* Bye-bye from here */
 		LOGGER.info("Terminating the original user thread");

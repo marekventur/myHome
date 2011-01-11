@@ -150,6 +150,18 @@
 			</data>
 		</nodeplugin>
 		
+		
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.notifo">
+			<parameter>
+				<key>username</key>
+				<value>myhomedevelopment</value>	
+			</parameter>
+			<parameter>
+				<key>apisecret</key>
+				<value>8e7f2a3a32b1f21418c2b6036514ff7454cfa820</value>	
+			</parameter>
+		</nodeplugin>
+		
 		<!-- There might be some more plugins added here -->
 	</nodeplugins>
 </config>

@@ -17,7 +17,7 @@ public class UserManager {
 		this.database = database;
 	}
 	
-	public Node getPreferedCommunicationNode(int id) {
-		return new Node("marekventur", "notifo", "notifo");
+	public Node getPreferedCommunicationNode(String username) {
+		return new Node("notifo", "notifo", username);
 	}
 }

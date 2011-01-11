@@ -97,8 +97,10 @@ public class NodePluginManager implements Runnable {
 	}
 
 	public void sendDatagram(Datagram datagram) {
+
 		for (NodePluginRunnable pluginRunnable: plugins) 
 			pluginRunnable.chainSendDatagramm(datagram);	
+
 	}
 
 	@Override
