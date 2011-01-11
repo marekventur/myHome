@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.wi08e.myhome.myhomescript;
+package de.wi08e.myhome.scriptmanager;
 
 /**
  * @author Marek

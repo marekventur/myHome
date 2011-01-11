@@ -9,20 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.wi08e.myhome.database.Database;
-import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
-import de.wi08e.myhome.myhomescript.ScriptingEngine;
 import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
-import de.wi08e.myhome.nodeplugins.NodePluginManager;
+import de.wi08e.myhome.scriptmanager.ScriptManager;
 
 public class StatusManager implements DatagramReceiver{
 	
 	private Database database;
-	private ScriptingEngine scriptingEngine;
+	private ScriptManager scriptManager;
 	
 	private TriggerManager triggerManager;
 	private NodeManager nodeManager;
@@ -30,11 +28,11 @@ public class StatusManager implements DatagramReceiver{
 	private List<SpecializedStatusManager> specializedStatusManagers = new ArrayList<SpecializedStatusManager>();
 	
 	public StatusManager(Database database, NodeManager nodeManager,
-			ScriptingEngine scriptingEngine) {
+			ScriptManager scriptingEngine) {
 		super();
 		this.database = database;
 		this.nodeManager = nodeManager;
-		this.scriptingEngine = scriptingEngine;
+		this.scriptManager = scriptingEngine;
 		
 		// Add StatusManager
 		specializedStatusManagers.add(new RockerSwitchStatusManager(this));
