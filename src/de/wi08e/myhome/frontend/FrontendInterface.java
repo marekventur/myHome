@@ -23,6 +23,7 @@ import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.statusmanager.InvalidStatusValueException;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.SessionUserToken;
+import de.wi08e.myhome.usermanager.UserManager;
 
 /**
  * This is the main frontend interface. It is modeled to be a SOAP-Interface via javax.jws.WebService
@@ -45,11 +46,13 @@ public class FrontendInterface {
 	private StatusManager statusManager;
 	private NodeManager nodeManager;
 	private BlueprintManager blueprintManager;
+	private UserManager userManager;
 	
-	public FrontendInterface(NodeManager nodeManager, StatusManager statusManager, BlueprintManager blueprintManager) {
+	public FrontendInterface(NodeManager nodeManager, StatusManager statusManager, BlueprintManager blueprintManager, UserManager userManager) {
 		this.nodeManager = nodeManager;
 		this.statusManager = statusManager;
 		this.blueprintManager = blueprintManager;
+		this.userManager = userManager;
 	}
 
 	/* Helper */

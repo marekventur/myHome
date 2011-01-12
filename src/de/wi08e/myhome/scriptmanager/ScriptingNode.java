@@ -1,4 +1,4 @@
-package de.wi08e.myhome.myhomescript;
+package de.wi08e.myhome.scriptmanager;
 
 import de.wi08e.myhome.model.NamedNode;
 

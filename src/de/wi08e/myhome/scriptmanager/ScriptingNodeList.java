@@ -1,4 +1,4 @@
-package de.wi08e.myhome.myhomescript;
+package de.wi08e.myhome.scriptmanager;
 
 import java.util.ArrayList;
 import java.util.List;

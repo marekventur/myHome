@@ -7,19 +7,23 @@ import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.frontend.FrontendInterface;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
-import de.wi08e.myhome.myhomescript.ScriptingEngine;
+import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.datagram.TextMessageDatagram;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
+import de.wi08e.myhome.scriptmanager.ScriptManager;
 import de.wi08e.myhome.statusmanager.StatusManager;
+import de.wi08e.myhome.usermanager.UserManager;
 
 public class Main {
 	
-	private static ScriptingEngine scriptingEngine;
+	private static ScriptManager scriptManager;
 	private static StatusManager statusManager;
 	private static Database database;
 	private static NodePluginManager nodePluginManager;
 	private static NodeManager nodeManager;
 	private static BlueprintManager blueprintManager;
+	private static UserManager userManager;
 		
 	/**
 	 * This mtehod starts everything!
@@ -49,26 +53,28 @@ public class Main {
 		/* Create Database-Connection */
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
 		
+		/* Create Usermanager */
+		userManager = new UserManager(database);
+		
 		/* Create Node Manager */
 		nodeManager = new NodeManager(database, nodePluginManager);
 		
 		/* Create scripting engine */
-		scriptingEngine = new ScriptingEngine(database, nodeManager);
+		scriptManager = new ScriptManager(database, nodeManager);
 		
 		/* Create statusmanager */
-		statusManager = new StatusManager(database, nodeManager, scriptingEngine);
+		statusManager = new StatusManager(database, nodeManager, scriptManager);
 		nodeManager.addReceiver(statusManager);
 		
 		/* Create Blueprint Manager */
-		blueprintManager = new BlueprintManager(database);
+		blueprintManager = new BlueprintManager(database);		
 		
 		/* New FrontendInterface */
-		FrontendInterface frontendInterface = new FrontendInterface(nodeManager, statusManager, blueprintManager);
+		FrontendInterface frontendInterface = new FrontendInterface(nodeManager, statusManager, blueprintManager, userManager);
 		
 		/* Start SOAP service */
 		new HTTPServer(frontendInterface);
-		LOGGER.info("SOAP service has been started");
-		
+
 		/* Bye-bye from here */
 		LOGGER.info("Terminating the original user thread");
 	}
