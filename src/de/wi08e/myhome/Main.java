@@ -61,6 +61,8 @@ public class Main {
 		
 		/* Create scripting engine */
 		scriptManager = new ScriptManager(database, nodeManager);
+		nodeManager.addReceiver(scriptManager);
+		new Thread(scriptManager).start();
 		
 		/* Create statusmanager */
 		statusManager = new StatusManager(database, nodeManager, scriptManager);

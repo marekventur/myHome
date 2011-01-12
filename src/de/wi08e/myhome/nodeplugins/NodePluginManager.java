@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import de.wi08e.myhome.Config;
 import de.wi08e.myhome.ConfigPlugin;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
-import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodemanager.NodeManager;
 

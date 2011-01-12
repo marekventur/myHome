@@ -1,20 +1,23 @@
 package de.wi08e.myhome.scriptmanager;
 
 import de.wi08e.myhome.model.NamedNode;
+import de.wi08e.myhome.model.Node;
 
 /**
  * @author Marek
  *
  */
-public abstract class ScriptingNode {
-	private NamedNode node;
+public class ScriptingNode {
+	private Node node;
 	
-	public ScriptingNode(NamedNode node) {
+	public ScriptingNode(Node node) {
 		this.node = node;
 	}
 	
 	public String getName() {
-		return node.getName();
+		if (node instanceof NamedNode)
+			return ((NamedNode)node).getName();
+		return null;
 	}
 	
 	public String getCategory() {
@@ -24,5 +27,15 @@ public abstract class ScriptingNode {
 	public String getType() {
 		return node.getCategory();
 	}
+	
+	public String getHardwareId() {
+		return node.getHardwareId();
+	}
+	
+	public int getDatabaseId() {
+		return node.getDatabaseId();
+	}
+	
+	
 	
 }
