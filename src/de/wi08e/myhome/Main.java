@@ -21,6 +21,10 @@ public class Main {
 	private static NodeManager nodeManager;
 	private static BlueprintManager blueprintManager;
 		
+	/**
+	 * This mtehod starts everything!
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		/* Loading config.xml */
