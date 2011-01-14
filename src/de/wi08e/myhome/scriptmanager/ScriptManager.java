@@ -20,6 +20,9 @@ import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
+import de.wi08e.myhome.nodeplugins.NodePluginManager;
+import de.wi08e.myhome.statusmanager.StatusManager;
+import de.wi08e.myhome.usermanager.UserManager;
 
 /**
  * @author Marek
@@ -29,14 +32,26 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 
 	private Database database;
 	private NodeManager nodeManager;
+	private UserManager userManager;
+	private NodePluginManager nodePluginManager;
+	private StatusManager statusManager;
+	
+	private ScriptingUsers scriptingUsers;
+	private ScriptingNodes scriptingNodes;
 	
 	private BlockingQueue<TriggeringEvent> triggeringEvents = new LinkedBlockingQueue<TriggeringEvent>();
 
 	private boolean running = true;
 	
-	public ScriptManager(Database database, NodeManager nodeManager) {
+	
+	public ScriptManager(Database database, NodeManager nodeManager, UserManager userManager, NodePluginManager nodePluginManager, StatusManager statusManager) {
 		this.database = database;
 		this.nodeManager = nodeManager;
+		this.nodePluginManager = nodePluginManager;
+		this.userManager = userManager;
+		this.statusManager = statusManager;
+		scriptingUsers = new ScriptingUsers(userManager, nodePluginManager);
+		scriptingNodes = new ScriptingNodes(nodeManager, statusManager);
 	}
 	
 	@Override
@@ -56,7 +71,7 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 						for (Script script: scripts) {
 							
 							ScriptEngine engine = createNewEngine();
-							engine.put("sender", new ScriptingNode(sender));
+							engine.put("sender", new ScriptingNode(sender, statusManager));
 							engine.put("datagram", new ScriptingDatagram(datagram));
 							
 					        try {
@@ -66,6 +81,31 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 							}
 						}
 					}	
+				}
+				
+				// Is it a status-change event?
+				if (triggeringEvent instanceof TriggeringEventStatusChange) {
+					TriggeringEventStatusChange event = ((TriggeringEventStatusChange)triggeringEvent);
+					Node node = event.getNode();
+					String key = event.getKey();
+					String value = event.getValue();
+	
+					// Is there a script waiting for this trigger?
+					List<Script> scripts = getScriptByTriggeringNode(node.getDatabaseId());
+					for (Script script: scripts) {
+						
+						ScriptEngine engine = createNewEngine();
+						engine.put("node", new ScriptingNode(node, statusManager));
+						engine.put("key", key);
+						engine.put("value", value);
+						
+				        try {
+							engine.eval(script.getScript());
+						} catch (ScriptException e) {
+							e.printStackTrace();
+						}
+					}
+					
 				}
 				
 			} catch (InterruptedException e) {
@@ -78,6 +118,10 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 	@Override
 	public void receiveBroadcastDatagram(BroadcastDatagram datagram) {
 		triggeringEvents.add(new TriggeringEventDatagram(datagram));		
+	}
+	
+	public void receiveStatusChange(Node node, String key, String value) {
+		triggeringEvents.add(new TriggeringEventStatusChange(node, key, value));	
 	}
 	
 	private List<Script> getScriptByTriggeringNode(int node) {
@@ -103,6 +147,9 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 		ScriptEngineManager factory = new ScriptEngineManager();
 	    ScriptEngine engine = factory.getEngineByName("JavaScript");
 	    
+	    engine.put("Users", scriptingUsers);
+	    engine.put("Nodes", scriptingNodes);
+	    engine.put("System", new ScriptingSystem(engine));
 	    
 		return engine;
 	    

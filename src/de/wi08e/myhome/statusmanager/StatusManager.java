@@ -42,7 +42,7 @@ public class StatusManager implements DatagramReceiver{
 	}
 
 	public void receiveBroadcastDatagram(BroadcastDatagram broadcastDatagram) {
-		
+
 		
 		String type = null;
 		
@@ -80,11 +80,13 @@ public class StatusManager implements DatagramReceiver{
 	
 	
 	
-	protected void writeStatusChangeToDatabase(int id, String key, String value) {
+	protected void writeStatusChangeToDatabase(Node node, String key, String value) {
+		scriptManager.receiveStatusChange(node, key, value);
+		
 		try {
 			// is there already a status?
 			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT value FROM node_status WHERE node_id=? and `key`=?;"); 
-			getNodeStatus.setInt(1, id);
+			getNodeStatus.setInt(1, node.getDatabaseId());
 			getNodeStatus.setString(2, key);
 			getNodeStatus.execute();
 			
@@ -98,7 +100,7 @@ public class StatusManager implements DatagramReceiver{
 					PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node_status SET value = ? WHERE node_id = ? AND `key` = ?;");
 					
 					updateNode.setString(1, value);
-					updateNode.setInt(2, id);
+					updateNode.setInt(2, node.getDatabaseId());
 					updateNode.setString(3, key);
 					
 					updateNode.executeUpdate();
@@ -111,7 +113,7 @@ public class StatusManager implements DatagramReceiver{
 				PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node_status (value, node_id, `key`) VALUES (?, ?, ?);");
 				
 				insertNode.setString(1, value);
-				insertNode.setInt(2, id);
+				insertNode.setInt(2, node.getDatabaseId());
 				insertNode.setString(3, key);
 				
 				insertNode.executeUpdate();
@@ -121,7 +123,7 @@ public class StatusManager implements DatagramReceiver{
 			PreparedStatement insertHistoryNode = database.getConnection().prepareStatement("INSERT INTO node_status_history (value, node_id, `key`) VALUES (?, ?, ?);");
 			
 			insertHistoryNode.setString(1, value);
-			insertHistoryNode.setInt(2, id);
+			insertHistoryNode.setInt(2, node.getDatabaseId());
 			insertHistoryNode.setString(3, key);
 			
 			insertHistoryNode.executeUpdate();
@@ -206,8 +208,9 @@ public class StatusManager implements DatagramReceiver{
 							// Change status and return changed Nodes
 							List<Node> result = new ArrayList<Node>();
 							for (int i=0; i<receiverIds.length; i++) {
-								writeStatusChangeToDatabase(receiverIds[i], key, value);
-								result.add(nodeManager.getNode(receiverIds[i], true));
+								Node node = nodeManager.getNode(receiverIds[i], true);
+								writeStatusChangeToDatabase(node, key, value);
+								result.add(node);
 							}
 							
 							// Leave this methode

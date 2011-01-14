@@ -65,6 +65,10 @@ public class FrontendInterface {
 		
 	}
 	
+	private int[] getAllowedBlueprintIds(String userToken) {
+		return new int[] {1,2,3,4,5};
+	}
+	
 	private NodeResponse[] convertListToResponseArrayNode(List<Node> nodes) {
 		NodeResponse[] result = new NodeResponse[nodes.size()];
 		int i=0;
@@ -99,10 +103,7 @@ public class FrontendInterface {
 	 * @return LoginReponse The returning class contains an "isAdmin"-boolean and the newly generated userToken
 	 */
 	public LoginResponse login(@WebParam(name="username") String username, @WebParam(name="password")  String password) throws LoginUsernameOrPasswordWrong {
-		LOGGER.info("Login attempt: "+username);
 	
-		System.out.println(wsContext.getUserPrincipal());
-		
 		if (username.length() == 0)
 			throw new LoginUsernameOrPasswordWrong();
 		
@@ -318,9 +319,19 @@ public class FrontendInterface {
 	
 	
 	
-	public int addUserdefinedNodes(@WebParam(name="userToken")String userToken,@WebParam(name="name") String name,@WebParam(name="category") String category,@WebParam(name="type") String type) throws NotLoggedIn, NoAdminRights {
+	public int addUserdefinedNode(@WebParam(name="userToken")String userToken,@WebParam(name="name") String name,@WebParam(name="category") String category,@WebParam(name="type") String type) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);		
 		return nodeManager.addUserDefinedNode(name, category, type); 
+	}
+	
+	public String[] getCategories(@WebParam(name="userToken")String userToken) throws NotLoggedIn {
+		requestUserRights(userToken);	
+		return new String[] {"enocean", "camera"};
+	}
+	
+	public String[] getType(@WebParam(name="userToken")String userToken) throws NotLoggedIn {
+		requestUserRights(userToken);	
+		return new String[] {"light", "relais", "camera"};
 	}
 	
 	/* Manage tags */
@@ -354,7 +365,7 @@ public class FrontendInterface {
 	 * @throws NodeNotFound
 	 */
 	
-	public void addOrUpdateSenderToReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="senderId") int senderId,@WebParam(name="receiverId") int receiverId,@WebParam(name="channel") String channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
+	public void addSenderToReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="senderId") int senderId,@WebParam(name="receiverId") int receiverId,@WebParam(name="channel") String channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
 		requestAdminRights(userToken);
 		
 		try {
