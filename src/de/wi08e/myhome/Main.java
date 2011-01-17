@@ -67,7 +67,7 @@ public class Main {
 		nodeManager = new NodeManager(database, nodePluginManager);
 		
 		/* Create scripting engine */
-		scriptManager = new ScriptManager(database, nodeManager);
+		scriptManager = new ScriptManager(database, nodeManager, userManager, nodePluginManager, statusManager);
 		nodeManager.addReceiver(scriptManager);
 		new Thread(scriptManager).start();
 		

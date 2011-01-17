@@ -154,6 +154,27 @@ public class NodeManager {
 		}
 	}
 	
+	public synchronized List<Node> getNodesByType(String type, boolean withStatus) {
+		try {
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE type=?;"); 
+			getNodeStatus.setString(1, type);
+			getNodeStatus.execute();
+			
+			ResultSet rs = getNodeStatus.getResultSet();
+			
+			List<Node> results = new ArrayList<Node>();
+			
+			if (rs.next()) 
+				results.add(createNodeFromResultSet(rs, withStatus));	
+			
+			return results;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public synchronized List<Node> getUserdefinedNodes() {
 		try {
 			return generateNodeListFromSQLWhere("manufacturer = 'userdefined'", true);
@@ -219,6 +240,43 @@ public class NodeManager {
 	
 	public synchronized Node getNode(Node node, boolean withStatus) {
 		return getNode(node.getHardwareId(), node.getManufacturer(), node.getCategory(), withStatus);
+	}
+	
+	public List<Node> getNodesByTag(String tag, boolean withStatus) {
+		try {
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE id IN (SELECT node_id FROM node_tag WHERE tag=?);"); 
+			getNodeStatus.setString(1, tag);
+			getNodeStatus.execute();
+			
+			ResultSet rs = getNodeStatus.getResultSet();
+			
+			List<Node> results = new ArrayList<Node>();
+			
+			if (rs.next()) 
+				results.add(createNodeFromResultSet(rs, withStatus));	
+			
+			return results;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public synchronized Node getNode(String name, boolean withStatus) {
+		try {
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE name=?;"); 
+			getNodeStatus.setString(1, name);
+			getNodeStatus.execute();
+			
+			ResultSet rs = getNodeStatus.getResultSet();
+			if (rs.next()) 
+				return createNodeFromResultSet(rs, withStatus);	
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public synchronized int addUserDefinedNode(String name, String category, String type) {
@@ -290,6 +348,8 @@ public class NodeManager {
 		}
 		return false;
 	}
+
+	
 	
 	
 	
