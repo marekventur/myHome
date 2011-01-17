@@ -3,6 +3,7 @@ package de.wi08e.myhome;
 import java.util.logging.Logger;
 
 import de.wi08e.myhome.blueprintmanager.BlueprintManager;
+import de.wi08e.myhome.communicationplugins.CommunicationManager;
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.frontend.FrontendInterface;
@@ -24,6 +25,7 @@ public class Main {
 	private static NodeManager nodeManager;
 	private static BlueprintManager blueprintManager;
 	private static UserManager userManager;
+	private static CommunicationManager communicationManager;
 		
 	/**
 	 * This mtehod starts everything!
@@ -55,6 +57,11 @@ public class Main {
 		
 		/* Create Usermanager */
 		userManager = new UserManager(database);
+		
+		/* Create CommunicationManager */
+		communicationManager = new CommunicationManager(userManager);
+		new Thread(communicationManager).start();
+		
 		
 		/* Create Node Manager */
 		nodeManager = new NodeManager(database, nodePluginManager);

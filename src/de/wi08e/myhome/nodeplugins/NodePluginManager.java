@@ -3,7 +3,6 @@
  */
 package de.wi08e.myhome.nodeplugins;
 
-import java.awt.Image;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +33,8 @@ public class NodePluginManager implements Runnable {
 
 	public void setNodeManager(NodeManager nodeManager) {
 		this.nodeManager = nodeManager;
+		/* Create thread-safe plugin list (not sure, if needed) */
+		
 	}
 	
 	public NodePluginManager() {
@@ -41,12 +42,11 @@ public class NodePluginManager implements Runnable {
 		/* Add all the plugins from a specific directory */
 		// NodePluginLoader.addFile("nodeplugins/xyz.jar");
 		// LOGGER.info("Added plugin xyz.jar");
-		
-		/* Create thread-safe plugin list (not sure, if needed) */
 		plugins = Collections.synchronizedList(new ArrayList<NodePluginRunnable>());
 		
+		
 		/* Loop plugin list */
-		List<ConfigPlugin> configPlugins = Config.getPlugins();
+		List<ConfigPlugin> configPlugins = Config.getNodePlugins();
 		for (ConfigPlugin configPlugin: configPlugins) {
 			
 			Class<?> loadedClass;
@@ -62,21 +62,6 @@ public class NodePluginManager implements Runnable {
 				pluginThread.start();
 				
 				plugins.add(pluginRunnable);
-				
-				/*
-				plugin.initiate(new NodePluginEvent() {
-
-					@Override
-					public void datagrammReceived(Datagram datagram) {			
-						for (NodePlugin plugin: plugins) 
-							plugin.chainReceiveDatagram(datagram);	
-						if (nodeManager != null)
-							nodeManager.receiveDatagram(datagram);
-					}
-					
-					}, configPlugin.getProperties(), configPlugin.getData());
-					LOGGER.info("Intiated '"+plugin.getName()+"'");
-				*/
 				
 				
 			} catch (ClassNotFoundException e) {
