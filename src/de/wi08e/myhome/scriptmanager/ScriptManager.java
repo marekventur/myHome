@@ -14,10 +14,12 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import de.wi08e.myhome.communicationplugins.CommunicationManager;
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
+import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
@@ -33,8 +35,8 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 	private Database database;
 	private NodeManager nodeManager;
 	private UserManager userManager;
-	private NodePluginManager nodePluginManager;
 	private StatusManager statusManager;
+	private CommunicationManager communicationManager;
 	
 	private ScriptingUsers scriptingUsers;
 	private ScriptingNodes scriptingNodes;
@@ -44,13 +46,13 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 	private boolean running = true;
 	
 	
-	public ScriptManager(Database database, NodeManager nodeManager, UserManager userManager, NodePluginManager nodePluginManager, StatusManager statusManager) {
+	public ScriptManager(Database database, NodeManager nodeManager, UserManager userManager, CommunicationManager communicationManager, StatusManager statusManager) {
 		this.database = database;
 		this.nodeManager = nodeManager;
-		this.nodePluginManager = nodePluginManager;
+		this.communicationManager = communicationManager;
 		this.userManager = userManager;
 		this.statusManager = statusManager;
-		scriptingUsers = new ScriptingUsers(userManager, nodePluginManager);
+		scriptingUsers = new ScriptingUsers(userManager, communicationManager);
 		scriptingNodes = new ScriptingNodes(nodeManager, statusManager);
 	}
 	
@@ -67,7 +69,7 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 						Node sender = ((BroadcastDatagram)datagram).getSender();
 						
 						// Is there a script waiting for this trigger?
-						List<Script> scripts = getScriptByTriggeringNode(sender.getDatabaseId());
+						List<Script> scripts = getScriptBySenderNode(sender.getDatabaseId());
 						for (Script script: scripts) {
 							
 							ScriptEngine engine = createNewEngine();
@@ -91,7 +93,7 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 					String value = event.getValue();
 	
 					// Is there a script waiting for this trigger?
-					List<Script> scripts = getScriptByTriggeringNode(node.getDatabaseId());
+					List<Script> scripts = getScriptByStatusChangeNode(node.getDatabaseId());
 					for (Script script: scripts) {
 						
 						ScriptEngine engine = createNewEngine();
@@ -124,11 +126,30 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 		triggeringEvents.add(new TriggeringEventStatusChange(node, key, value));	
 	}
 	
-	private List<Script> getScriptByTriggeringNode(int node) {
+	private List<Script> getScriptBySenderNode(int node) {
 		List<Script> result = new ArrayList<Script>();
 		
 		try {
-			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, name, script, triggering_node_id FROM script WHERE triggering_node_id = ?"); 
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, name, script FROM script WHERE sender_node_id = ?"); 
+			getNodeStatus.setInt(1, node);
+			getNodeStatus.execute();
+			
+			ResultSet rs = getNodeStatus.getResultSet();
+			while (rs.next()) 
+				result.add(new Script(rs));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	private List<Script> getScriptByStatusChangeNode(int node) {
+		List<Script> result = new ArrayList<Script>();
+		
+		try {
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, name, script FROM script WHERE status_change_node_id = ?"); 
 			getNodeStatus.setInt(1, node);
 			getNodeStatus.execute();
 			
@@ -153,5 +174,10 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 	    
 		return engine;
 	    
+	}
+
+	@Override
+	public void receiveStatusDatagram(StatusDatagram datagram) {
+		// Don't really know (now) what to call here... 		
 	}
 }

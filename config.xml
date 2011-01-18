@@ -17,18 +17,6 @@
 	<!-- This describes all used plugins -->
 	<nodeplugins>
 		<!-- every nodeplugin is described here -->
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.aleks">
-			<!-- There can be zero to many parameter tags -->
-			<parameter>
-				<key>title</key>
-				<value>Test</value>	
-			</parameter>
-			
-			<parameter>
-				<key>title2</key>
-				<value>Test2</value>	
-			</parameter>
-		</nodeplugin>
 		
 		
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
@@ -181,6 +169,9 @@
 				<key>title</key>
 				<value>myHome</value>	
 			</parameter>
+		</communicationplugin>
+		
+		<communicationplugin namespace="de.wi08e.myhome.communicationplugins.dialog">
 		</communicationplugin>
 	</communicationplugins>	
 		

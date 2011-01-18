@@ -13,6 +13,7 @@ import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
+import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.scriptmanager.ScriptManager;
@@ -209,6 +210,7 @@ public class StatusManager implements DatagramReceiver{
 							List<Node> result = new ArrayList<Node>();
 							for (int i=0; i<receiverIds.length; i++) {
 								Node node = nodeManager.getNode(receiverIds[i], true);
+								node.getStatus().put(key, value);
 								writeStatusChangeToDatabase(node, key, value);
 								result.add(node);
 							}
@@ -218,11 +220,25 @@ public class StatusManager implements DatagramReceiver{
 						}
 					}
 				}
-			}	
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<Node>();
+		
+		// No trigger found		
+		writeStatusChangeToDatabase(receiver, key, value);
+		receiver.getStatus().put(key, value);
+		nodeManager.sendDatagram(new StatusDatagram(receiver, key, value));
+		
+		ArrayList<Node> list = new ArrayList<Node>();
+		list.add(receiver);
+		return list;
+	}
+
+	@Override
+	public void receiveStatusDatagram(StatusDatagram datagram) {
+		writeStatusChangeToDatabase(datagram.getNode(), datagram.getKey(), datagram.getValue());
 	}
 	
 	

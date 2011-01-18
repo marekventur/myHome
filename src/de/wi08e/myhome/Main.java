@@ -8,8 +8,6 @@ import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.frontend.FrontendInterface;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
-import de.wi08e.myhome.model.Node;
-import de.wi08e.myhome.model.datagram.TextMessageDatagram;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
 import de.wi08e.myhome.scriptmanager.ScriptManager;
@@ -67,7 +65,7 @@ public class Main {
 		nodeManager = new NodeManager(database, nodePluginManager);
 		
 		/* Create scripting engine */
-		scriptManager = new ScriptManager(database, nodeManager, userManager, nodePluginManager, statusManager);
+		scriptManager = new ScriptManager(database, nodeManager, userManager, communicationManager, statusManager);
 		nodeManager.addReceiver(scriptManager);
 		new Thread(scriptManager).start();
 		

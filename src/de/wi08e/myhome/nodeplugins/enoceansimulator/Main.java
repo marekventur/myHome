@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
+import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodeplugins.DatagramQueueHolder;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
@@ -173,6 +174,14 @@ public class Main implements NodePlugin {
 	
 	@Override
 	public void chainSendDatagramm(Datagram datagram) {
+		
+		if (datagram instanceof StatusDatagram) {
+			System.out.println(((StatusDatagram)datagram).getNode());
+			System.out.println(((StatusDatagram)datagram).getKey()+": "+((StatusDatagram)datagram).getValue());
+			
+			event.datagrammReceived(new StatusDatagram(((StatusDatagram)datagram).getNode(), ((StatusDatagram)datagram).getKey(),((StatusDatagram)datagram).getValue() +"+"));
+		}
+		
 		for(NodePanel nodePanel: nodePanels)
 			nodePanel.handleDatagram(datagram);		
 	}
