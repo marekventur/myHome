@@ -167,6 +167,11 @@
 				<value>300</value>	
 			</parameter>
 			
+			<parameter>
+				<key>node</key>
+				<value>123:miele:mieleathome</value>	
+			</parameter>
+			
 		</nodeplugin>
 		
 		<!-- There might be some more plugins added here -->
