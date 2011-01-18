@@ -104,7 +104,7 @@ public class FrontendInterface {
 	 */
 	public LoginResponse login(@WebParam(name="username") String username, @WebParam(name="password")  String password) throws LoginUsernameOrPasswordWrong {
 	
-		if (username.length() == 0)
+		if (!username.contentEquals("admin") || !username.contentEquals("admin"))
 			throw new LoginUsernameOrPasswordWrong();
 		
 		return new LoginResponse(true, SessionUserToken.INSTANCE.generate());
