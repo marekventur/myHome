@@ -26,6 +26,7 @@ public class Config {
 	private static String databaseUser;
 	private static String databasePassword;
 	private static String databaseName;
+	private static String securitySalt = "";
 	
 	private static List<ConfigSOAPInterface> soapInterfaces = new ArrayList<ConfigSOAPInterface>();
 	private static List<ConfigPlugin> nodePlugins = new ArrayList<ConfigPlugin>();
@@ -55,6 +56,12 @@ public class Config {
 			Node loging = logings.item(0);
 			if (loging.getAttributes().getNamedItem("filename") != null) 
 				logFile = loging.getAttributes().getNamedItem("filename").getNodeValue();
+		}
+		
+		/* Logger output file */
+		NodeList securitysalts = doc.getElementsByTagName("securitysalt");
+		if (securitysalts.getLength() > 0) {
+			securitySalt = securitysalts.item(0).getChildNodes().item(0).getNodeValue().toString();
 		}
 		
 		
@@ -222,6 +229,7 @@ public class Config {
 		return communicationPlugins;
 	}
 
-	
-	
+	public static String getSecuritySalt() {
+		return securitySalt;
+	}
 }
