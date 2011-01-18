@@ -62,7 +62,8 @@ public class Main implements NodePlugin {
 		
 		/* Go through data */
 		NodeList configNodes = ((Element)data).getElementsByTagName("node");
-		for (int i = 0; i < configNodes.getLength(); i++) {
+		for (int i = 0; i < configNodes.getLength(); i++) 
+		{
 			org.w3c.dom.Node configNode = configNodes.item(i);
 			
 			/* Get type */
@@ -98,12 +99,14 @@ public class Main implements NodePlugin {
 				}
 				
 				/* Relais */
-				if (type.equalsIgnoreCase("Relais")) {
+				if (type.equalsIgnoreCase("Relais")) 
+				{
 					List<RelaisTrigger> triggers = new ArrayList<RelaisTrigger>();
 					
 					NodeList triggerNodes = ((Element) configNode).getElementsByTagName("trigger");
 					
-					for (int j=0; j<triggerNodes.getLength(); j++) {
+					for (int j=0; j<triggerNodes.getLength(); j++) 
+					{
 						
 						org.w3c.dom.Node triggerNode = triggerNodes.item(j); 
 						if (triggerNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {

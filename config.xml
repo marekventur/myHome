@@ -150,6 +150,25 @@
 			</data>
 		</nodeplugin>
 		
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.mielesimulator">
+		
+			<parameter>
+				<key>titel</key>
+				<value>Küche</value>
+			</parameter>
+			
+			<parameter>
+				<key>left</key>
+				<value>300</value>	
+			</parameter>
+			
+			<parameter>
+				<key>top</key>
+				<value>300</value>	
+			</parameter>
+			
+		</nodeplugin>
+		
 		<!-- There might be some more plugins added here -->
 	</nodeplugins>
 </config>
