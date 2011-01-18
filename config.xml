@@ -152,7 +152,47 @@
 			</data>
 		</nodeplugin>
 
-		
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
+			<!-- There can be zero to many parameter tags -->
+			<parameter>
+				<key>title</key>
+				<value>Garage</value>	
+			</parameter>
+			
+			<parameter>
+				<key>left</key>
+				<value>700</value>	
+			</parameter>
+			
+			<parameter>
+				<key>top</key>
+				<value>100</value>	
+			</parameter>
+			
+			<!-- There can be zero or one data tags-->
+			<data>
+				<!-- might be different for every plugin -->
+				<node type="TwoRockerSwitch">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab09</id>
+					<title>Lichtschalter</title>
+				</node>
+				
+				<node type="Relais">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab10</id>
+					<title>Garagenlicht</title>
+					
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab09</id>
+						<channel>a</channel>
+					</trigger>
+					
+				</node>
+	
+			</data>
+		</nodeplugin>
 
 		<!-- There might be some more plugins added here -->
 	</nodeplugins>

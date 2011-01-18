@@ -22,7 +22,7 @@ import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
-import de.wi08e.myhome.nodeplugins.NodePluginManager;
+import de.wi08e.myhome.statusmanager.StatusChangeReceiver;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.UserManager;
 
@@ -30,7 +30,7 @@ import de.wi08e.myhome.usermanager.UserManager;
  * @author Marek
  *
  */
-public class ScriptManager implements Runnable, DatagramReceiver {
+public class ScriptManager implements Runnable, DatagramReceiver, StatusChangeReceiver {
 
 	private Database database;
 	private NodeManager nodeManager;
@@ -122,10 +122,6 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 		triggeringEvents.add(new TriggeringEventDatagram(datagram));		
 	}
 	
-	public void receiveStatusChange(Node node, String key, String value) {
-		triggeringEvents.add(new TriggeringEventStatusChange(node, key, value));	
-	}
-	
 	private List<Script> getScriptBySenderNode(int node) {
 		List<Script> result = new ArrayList<Script>();
 		
@@ -179,5 +175,10 @@ public class ScriptManager implements Runnable, DatagramReceiver {
 	@Override
 	public void receiveStatusDatagram(StatusDatagram datagram) {
 		// Don't really know (now) what to call here... 		
+	}
+
+	@Override
+	public void statusChanged(Node node, String key, String value) {
+		triggeringEvents.add(new TriggeringEventStatusChange(node, key, value));	
 	}
 }

@@ -21,19 +21,17 @@ import de.wi08e.myhome.scriptmanager.ScriptManager;
 public class StatusManager implements DatagramReceiver{
 	
 	private Database database;
-	private ScriptManager scriptManager;
 	
 	private TriggerManager triggerManager;
 	private NodeManager nodeManager;
 	
+	private List<StatusChangeReceiver> statusChangeReceivers = new ArrayList<StatusChangeReceiver>();
 	private List<SpecializedStatusManager> specializedStatusManagers = new ArrayList<SpecializedStatusManager>();
 	
-	public StatusManager(Database database, NodeManager nodeManager,
-			ScriptManager scriptingEngine) {
+	public StatusManager(Database database, NodeManager nodeManager) {
 		super();
 		this.database = database;
 		this.nodeManager = nodeManager;
-		this.scriptManager = scriptingEngine;
 		
 		// Add StatusManager
 		specializedStatusManagers.add(new RockerSwitchStatusManager(this));
@@ -82,7 +80,8 @@ public class StatusManager implements DatagramReceiver{
 	
 	
 	protected void writeStatusChangeToDatabase(Node node, String key, String value) {
-		scriptManager.receiveStatusChange(node, key, value);
+		
+		
 		
 		try {
 			// is there already a status?
@@ -98,6 +97,11 @@ public class StatusManager implements DatagramReceiver{
 				
 				// is there a change?
 				if(!oldValue.contentEquals(value)) {
+					
+					// Inform all statusChangeReceiver
+					for (StatusChangeReceiver statusChangeReceiver: statusChangeReceivers) 
+						statusChangeReceiver.statusChanged(node, key, value);
+					
 					PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node_status SET value = ? WHERE node_id = ? AND `key` = ?;");
 					
 					updateNode.setString(1, value);
@@ -239,6 +243,10 @@ public class StatusManager implements DatagramReceiver{
 	@Override
 	public void receiveStatusDatagram(StatusDatagram datagram) {
 		writeStatusChangeToDatabase(datagram.getNode(), datagram.getKey(), datagram.getValue());
+	}
+	
+	public void addStatusChangeReceiver(StatusChangeReceiver statusChangeReceiver) {
+		statusChangeReceivers.add(statusChangeReceiver);
 	}
 	
 	

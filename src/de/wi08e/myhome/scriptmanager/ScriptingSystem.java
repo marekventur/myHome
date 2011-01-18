@@ -1,5 +1,6 @@
 package de.wi08e.myhome.scriptmanager;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,8 @@ import javax.script.ScriptEngine;
 public class ScriptingSystem {
 	
 	private ScriptEngine scriptingEngine;
-	private Map<String, Timer> timeoutList = new HashMap<String, Timer>(); 
+	private static Map<String, Timeout> timeoutList = Collections.synchronizedMap(new HashMap<String, Timeout>()); 
+	private Timer timer = new Timer();
 	
 	
 	public ScriptingSystem(ScriptEngine scriptingEngine) {
@@ -29,15 +31,15 @@ public class ScriptingSystem {
 	}
 	
 	public void setTimeout(Object code, int milliseconds, String id) {
-		Timer timer = new Timer();
-	    timer.schedule (new Timeout(scriptingEngine, code, timeoutList, id), milliseconds );
-	    timeoutList.put(id, timer);
+		Timeout timeout = new Timeout(scriptingEngine, code, timeoutList);
+	    timer.schedule (timeout, milliseconds);
+	    timeoutList.put(id, timeout);
 	}
 	
 	public void clearTimeout(String id) {
-		Timer timer = timeoutList.get(id);
-		timer.cancel();
-		timeoutList.remove(id);
+		Timeout timeout = timeoutList.get(id);
+		if (timeout != null) 
+			timeout.stop();
 	}
 	
 	public void alert(String text) {
