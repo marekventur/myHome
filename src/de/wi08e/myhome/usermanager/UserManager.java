@@ -17,6 +17,6 @@ public class UserManager {
 	}
 	
 	public String getPreferedCommunicationIdentifier(String username) {
-		return "marekventur::notifo";
+		return "marekventur::dialog";
 	}
 }
