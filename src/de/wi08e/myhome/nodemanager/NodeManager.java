@@ -12,6 +12,8 @@ import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
+import de.wi08e.myhome.model.datagram.NodeInformDatagram;
+import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
 
 public class NodeManager {
@@ -70,6 +72,7 @@ public class NodeManager {
 						ResultSet rs2 = getId.getResultSet();
 						rs2.first();
 						id = rs2.getInt(1);
+						sender.setDatabaseId(id);
 					}
 					else
 					{
@@ -95,6 +98,122 @@ public class NodeManager {
 			
 		}
 
+		if (datagram instanceof StatusDatagram) {
+			
+			// Update sender node to most accurate node. Insert to db if not found 
+			StatusDatagram statusDatagram = (StatusDatagram) datagram;
+			Node node = statusDatagram.getNode();
+			
+			int id;
+	    	String type = null;
+	    	String name = null;
+			
+			// Is this Node already in DB?
+			try {
+				PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
+				getNodeStatus.setString(1, node.getHardwareId());
+				getNodeStatus.setString(2, node.getManufacturer());
+				getNodeStatus.setString(3, node.getCategory());
+				getNodeStatus.execute();
+				
+				ResultSet rs = getNodeStatus.getResultSet();
+				if (rs.next()) { 
+					// Found!
+					node = createNodeFromResultSet(rs, false);	
+				}
+				else
+				{
+					// Not found, insert node
+					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id) VALUES (?, ?, ?);");
+					insertNode.setString(1, node.getCategory());
+					insertNode.setString(2, node.getManufacturer());
+					insertNode.setString(3, node.getHardwareId());
+					insertNode.executeUpdate();
+					
+					// Get this id
+					Statement getId = database.getConnection().createStatement();
+					if (getId.execute("SELECT LAST_INSERT_ID()")) {
+						ResultSet rs2 = getId.getResultSet();
+						rs2.first();
+						id = rs2.getInt(1);
+						node.setDatabaseId(id);
+					}
+					else
+					{
+						throw new Exception("Can't get LAST_INSERT_ID");
+					}	
+				}
+				
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			// Update Sender (It might now be a named node)
+			statusDatagram = new StatusDatagram(node, statusDatagram.getKey(), statusDatagram.getValue());
+			
+			// Forward to all receiver	
+			for (DatagramReceiver receiver: receivers) 
+				receiver.receiveStatusDatagram(statusDatagram);
+			
+		}
+		
+		if (datagram instanceof NodeInformDatagram) {
+			
+			// Update sender node to most accurate node. Insert to db if not found 
+			NodeInformDatagram nodeInformDatagram = (NodeInformDatagram) datagram;
+			Node node = nodeInformDatagram.getNode();
+			
+			int id;
+	    	String type = null;
+	    	String name = null;
+			
+			// Is this Node already in DB?
+			try {
+				PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
+				getNodeStatus.setString(1, node.getHardwareId());
+				getNodeStatus.setString(2, node.getManufacturer());
+				getNodeStatus.setString(3, node.getCategory());
+				getNodeStatus.execute();
+				
+				ResultSet rs = getNodeStatus.getResultSet();
+				if (rs.next()) { 
+					// Found!
+					node = createNodeFromResultSet(rs, false);	
+				}
+				else
+				{
+					// Not found, insert node
+					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id) VALUES (?, ?, ?);");
+					insertNode.setString(1, node.getCategory());
+					insertNode.setString(2, node.getManufacturer());
+					insertNode.setString(3, node.getHardwareId());
+					insertNode.executeUpdate();
+					
+					// Get this id
+					Statement getId = database.getConnection().createStatement();
+					if (getId.execute("SELECT LAST_INSERT_ID()")) {
+						ResultSet rs2 = getId.getResultSet();
+						rs2.first();
+						id = rs2.getInt(1);
+						node.setDatabaseId(id);
+					}
+					else
+					{
+						throw new Exception("Can't get LAST_INSERT_ID");
+					}	
+				}
+				
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
 		
 	}
 	
@@ -152,6 +271,27 @@ public class NodeManager {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public synchronized List<Node> getNodesByType(String type, boolean withStatus) {
+		try {
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE type=?;"); 
+			getNodeStatus.setString(1, type);
+			getNodeStatus.execute();
+			
+			ResultSet rs = getNodeStatus.getResultSet();
+			
+			List<Node> results = new ArrayList<Node>();
+			
+			if (rs.next()) 
+				results.add(createNodeFromResultSet(rs, withStatus));	
+			
+			return results;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public synchronized List<Node> getUserdefinedNodes() {
@@ -219,6 +359,43 @@ public class NodeManager {
 	
 	public synchronized Node getNode(Node node, boolean withStatus) {
 		return getNode(node.getHardwareId(), node.getManufacturer(), node.getCategory(), withStatus);
+	}
+	
+	public List<Node> getNodesByTag(String tag, boolean withStatus) {
+		try {
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE id IN (SELECT node_id FROM node_tag WHERE tag=?);"); 
+			getNodeStatus.setString(1, tag);
+			getNodeStatus.execute();
+			
+			ResultSet rs = getNodeStatus.getResultSet();
+			
+			List<Node> results = new ArrayList<Node>();
+			
+			if (rs.next()) 
+				results.add(createNodeFromResultSet(rs, withStatus));	
+			
+			return results;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public synchronized Node getNode(String name, boolean withStatus) {
+		try {
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE name=?;"); 
+			getNodeStatus.setString(1, name);
+			getNodeStatus.execute();
+			
+			ResultSet rs = getNodeStatus.getResultSet();
+			if (rs.next()) 
+				return createNodeFromResultSet(rs, withStatus);	
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public synchronized int addUserDefinedNode(String name, String category, String type) {
@@ -290,6 +467,8 @@ public class NodeManager {
 		}
 		return false;
 	}
+
+	
 	
 	
 	

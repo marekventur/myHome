@@ -17,6 +17,8 @@
 	<!-- This describes all used plugins -->
 	<nodeplugins>
 		<!-- every nodeplugin is described here -->
+		
+		
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
@@ -149,26 +151,30 @@
 				<!-- end of data tag -->
 			</data>
 		</nodeplugin>
+
 		
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.mielesimulator">
-		
-			<parameter>
-				<key>titel</key>
-				<value>Küche</value>
-			</parameter>
-			
-			<parameter>
-				<key>left</key>
-				<value>300</value>	
-			</parameter>
-			
-			<parameter>
-				<key>top</key>
-				<value>300</value>	
-			</parameter>
-			
-		</nodeplugin>
-		
+
 		<!-- There might be some more plugins added here -->
 	</nodeplugins>
+	
+	<communicationplugins>
+		<communicationplugin namespace="de.wi08e.myhome.communicationplugins.notifo">
+			<parameter>
+				<key>username</key>
+				<value>myhomedevelopment</value>	
+			</parameter>
+			<parameter>
+				<key>apisecret</key>
+				<value>8e7f2a3a32b1f21418c2b6036514ff7454cfa820</value>	
+			</parameter>
+			<parameter>
+				<key>title</key>
+				<value>myHome</value>	
+			</parameter>
+		</communicationplugin>
+		
+		<communicationplugin namespace="de.wi08e.myhome.communicationplugins.dialog">
+		</communicationplugin>
+	</communicationplugins>	
+		
 </config>
