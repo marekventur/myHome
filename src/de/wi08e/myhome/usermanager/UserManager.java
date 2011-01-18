@@ -4,7 +4,6 @@
 package de.wi08e.myhome.usermanager;
 
 import de.wi08e.myhome.database.Database;
-import de.wi08e.myhome.model.Node;
 
 /**
  * Unterteam: Usermanager
@@ -17,7 +16,7 @@ public class UserManager {
 		this.database = database;
 	}
 	
-	public Node getPreferedCommunicationNode(String username) {
-		return new Node("notifo", "notifo", username);
+	public String getPreferedCommunicationIdentifier(String username) {
+		return "marekventur::notifo";
 	}
 }

@@ -163,52 +163,12 @@
 				<!-- end of data tag -->
 			</data>
 		</nodeplugin>
-		
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
-			<!-- There can be zero to many parameter tags -->
-			<parameter>
-				<key>title</key>
-				<value>Garage</value>	
-			</parameter>
-			
-			<parameter>
-				<key>left</key>
-				<value>100</value>	
-			</parameter>
-			
-			<parameter>
-				<key>top</key>
-				<value>400</value>	
-			</parameter>
-			
-			<!-- There can be zero or one data tags-->
-			<data>
-				<!-- might be different for every plugin -->
-				<node type="TwoRockerSwitch">
-					<manufacturer>simulator</manufacturer>
-					<id>ababab09</id>
-					<title>Lichtschalter</title>
-				</node>
-				
-				<node type="Relais">
-					<manufacturer>simulator</manufacturer>
-					<id>ababab10</id>
-					<title>Garagenlicht</title>
-					
-					<trigger>
-						<manufacturer>simulator</manufacturer>
-						<id>ababab09</id>
-						<channel>a</channel>
-					</trigger>
-				
-				</node>
-				
-				<!-- end of data tag -->
-			</data>
-		</nodeplugin>
-		
-		
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.notifo">
+
+		<!-- There might be some more plugins added here -->
+	</nodeplugins>
+	
+	<communicationplugins>
+		<communicationplugin namespace="de.wi08e.myhome.communicationplugins.notifo">
 			<parameter>
 				<key>username</key>
 				<value>myhomedevelopment</value>	
@@ -217,8 +177,11 @@
 				<key>apisecret</key>
 				<value>8e7f2a3a32b1f21418c2b6036514ff7454cfa820</value>	
 			</parameter>
-		</nodeplugin>
+			<parameter>
+				<key>title</key>
+				<value>myHome</value>	
+			</parameter>
+		</communicationplugin>
+	</communicationplugins>	
 		
-		<!-- There might be some more plugins added here -->
-	</nodeplugins>
 </config>

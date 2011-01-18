@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.wi08e.myhome.nodeplugins.notifo;
+package de.wi08e.myhome.communicationplugins.notifo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
