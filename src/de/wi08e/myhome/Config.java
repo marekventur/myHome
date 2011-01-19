@@ -26,9 +26,11 @@ public class Config {
 	private static String databaseUser;
 	private static String databasePassword;
 	private static String databaseName;
+	private static String securitySalt = "";
 	
 	private static List<ConfigSOAPInterface> soapInterfaces = new ArrayList<ConfigSOAPInterface>();
-	private static List<ConfigPlugin> plugins = new ArrayList<ConfigPlugin>();
+	private static List<ConfigPlugin> nodePlugins = new ArrayList<ConfigPlugin>();
+	private static List<ConfigPlugin> communicationPlugins = new ArrayList<ConfigPlugin>();
 	
 	/**
 	 * Loads config data from a xml file. 
@@ -54,6 +56,12 @@ public class Config {
 			Node loging = logings.item(0);
 			if (loging.getAttributes().getNamedItem("filename") != null) 
 				logFile = loging.getAttributes().getNamedItem("filename").getNodeValue();
+		}
+		
+		/* Logger output file */
+		NodeList securitysalts = doc.getElementsByTagName("securitysalt");
+		if (securitysalts.getLength() > 0) {
+			securitySalt = securitysalts.item(0).getChildNodes().item(0).getNodeValue().toString();
 		}
 		
 		
@@ -99,14 +107,14 @@ public class Config {
 		if (soapInterfaces.size() < 1) throw new Exception("There has to be at least one SOAPInterface binding");
 		
 		
-		/* Plugins */
+		/* NodePlugins */
 		NodeList nodePluginsXML = doc.getElementsByTagName("nodeplugins");
 		if (nodePluginsXML.getLength() > 0) {
 			Node nodePluginTop = nodePluginsXML.item(0);
 			if (nodePluginTop.getNodeType() == Node.ELEMENT_NODE) {
-				NodeList nodePlugins =  ((Element)nodePluginTop).getElementsByTagName("nodeplugin");
-				for (int i=0; i<nodePlugins.getLength(); i++ ) {
-					Node nodePlugin = nodePlugins.item(i);
+				NodeList nodePluginList =  ((Element)nodePluginTop).getElementsByTagName("nodeplugin");
+				for (int i=0; i<nodePluginList.getLength(); i++ ) {
+					Node nodePlugin = nodePluginList.item(i);
 					String namespace;
 					
 					Node data = null;
@@ -138,7 +146,42 @@ public class Config {
 					if (datas.getLength() == 1)
 						data = datas.item(0);
 										
-					plugins.add(new ConfigPlugin(namespace, properties, data));
+					nodePlugins.add(new ConfigPlugin(namespace, properties, data));
+				}
+			}
+		}	
+		
+		/* CommunicationPlugins */
+		NodeList communicationPluginsXML = doc.getElementsByTagName("communicationplugins");
+		if (communicationPluginsXML.getLength() > 0) {
+			Node communicationPluginTop = communicationPluginsXML.item(0);
+			if (communicationPluginTop.getNodeType() == Node.ELEMENT_NODE) {
+				NodeList communicationPluginList =  ((Element)communicationPluginTop).getElementsByTagName("communicationplugin");
+				for (int i=0; i<communicationPluginList.getLength(); i++ ) {
+					Node communicationPlugin = communicationPluginList.item(i);
+					String namespace;
+					
+					Map<String, String> properties = new HashMap<String, String>();
+					
+					/* namespace & classname */
+					if (communicationPlugin.getAttributes().getNamedItem("namespace") == null)
+						throw new Exception("No namespace found for a plugin");
+					namespace = communicationPlugin.getAttributes().getNamedItem("namespace").getNodeValue();
+					
+					/* parameters */
+					NodeList parameters = ((Element)communicationPlugin).getElementsByTagName("parameter");
+					for (int j=0; j<parameters.getLength(); j++ ) {
+						Node parameter = parameters.item(j);
+						
+						if (parameter.getNodeType() == Node.ELEMENT_NODE) {
+							NodeList keyNode = ((Element) parameter).getElementsByTagName("key");
+							NodeList valueNode = ((Element) parameter).getElementsByTagName("value");
+							if ((keyNode.getLength() == 1) && (valueNode.getLength() == 1)) 
+								properties.put(keyNode.item(0).getChildNodes().item(0).getNodeValue().toString(), valueNode.item(0).getChildNodes().item(0).getNodeValue().toString());
+						}
+					}	
+						
+					communicationPlugins.add(new ConfigPlugin(namespace, properties, null));
 				}
 			}
 		}	
@@ -178,10 +221,15 @@ public class Config {
 		return soapInterfaces;
 	}
 
-	public static List<ConfigPlugin> getPlugins() {
-		return plugins;
+	public static List<ConfigPlugin> getNodePlugins() {
+		return nodePlugins;
 	}
 
-	
-	
+	public static List<ConfigPlugin> getCommunicationPlugins() {
+		return communicationPlugins;
+	}
+
+	public static String getSecuritySalt() {
+		return securitySalt;
+	}
 }

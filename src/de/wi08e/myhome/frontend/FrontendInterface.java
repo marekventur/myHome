@@ -23,6 +23,7 @@ import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.statusmanager.InvalidStatusValueException;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.SessionUserToken;
+import de.wi08e.myhome.usermanager.UserManager;
 
 /**
  * This is the main frontend interface. It is modeled to be a SOAP-Interface via javax.jws.WebService
@@ -45,11 +46,13 @@ public class FrontendInterface {
 	private StatusManager statusManager;
 	private NodeManager nodeManager;
 	private BlueprintManager blueprintManager;
+	private UserManager userManager;
 	
-	public FrontendInterface(NodeManager nodeManager, StatusManager statusManager, BlueprintManager blueprintManager) {
+	public FrontendInterface(NodeManager nodeManager, StatusManager statusManager, BlueprintManager blueprintManager, UserManager userManager) {
 		this.nodeManager = nodeManager;
 		this.statusManager = statusManager;
 		this.blueprintManager = blueprintManager;
+		this.userManager = userManager;
 	}
 
 	/* Helper */
@@ -60,6 +63,10 @@ public class FrontendInterface {
 	
 	private void requestAdminRights(String userToken) throws NotLoggedIn, NoAdminRights {
 		
+	}
+	
+	private int[] getAllowedBlueprintIds(String userToken) {
+		return new int[] {1,2,3,4,5};
 	}
 	
 	private NodeResponse[] convertListToResponseArrayNode(List<Node> nodes) {
@@ -96,11 +103,8 @@ public class FrontendInterface {
 	 * @return LoginReponse The returning class contains an "isAdmin"-boolean and the newly generated userToken
 	 */
 	public LoginResponse login(@WebParam(name="username") String username, @WebParam(name="password")  String password) throws LoginUsernameOrPasswordWrong {
-		LOGGER.info("Login attempt: "+username);
 	
-		System.out.println(wsContext.getUserPrincipal());
-		
-		if (username.length() == 0)
+		if (!username.contentEquals("admin") || !username.contentEquals("admin"))
 			throw new LoginUsernameOrPasswordWrong();
 		
 		return new LoginResponse(true, SessionUserToken.INSTANCE.generate());
@@ -315,9 +319,19 @@ public class FrontendInterface {
 	
 	
 	
-	public int addUserdefinedNodes(@WebParam(name="userToken")String userToken,@WebParam(name="name") String name,@WebParam(name="category") String category,@WebParam(name="type") String type) throws NotLoggedIn, NoAdminRights {
+	public int addUserdefinedNode(@WebParam(name="userToken")String userToken,@WebParam(name="name") String name,@WebParam(name="category") String category,@WebParam(name="type") String type) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);		
 		return nodeManager.addUserDefinedNode(name, category, type); 
+	}
+	
+	public String[] getCategories(@WebParam(name="userToken")String userToken) throws NotLoggedIn {
+		requestUserRights(userToken);	
+		return new String[] {"enocean", "camera"};
+	}
+	
+	public String[] getType(@WebParam(name="userToken")String userToken) throws NotLoggedIn {
+		requestUserRights(userToken);	
+		return new String[] {"light", "relais", "camera"};
 	}
 	
 	/* Manage tags */
@@ -351,7 +365,7 @@ public class FrontendInterface {
 	 * @throws NodeNotFound
 	 */
 	
-	public void addOrUpdateSenderToReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="senderId") int senderId,@WebParam(name="receiverId") int receiverId,@WebParam(name="channel") String channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
+	public void addSenderToReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="senderId") int senderId,@WebParam(name="receiverId") int receiverId,@WebParam(name="channel") String channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {
 		requestAdminRights(userToken);
 		
 		try {

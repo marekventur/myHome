@@ -10,6 +10,7 @@ import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram.Action;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram.Channel;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram.State;
+import de.wi08e.myhome.scriptmanager.ScriptManager;
 
 public class RockerSwitchStatusManager implements SpecializedStatusManager {
 
@@ -38,7 +39,7 @@ public class RockerSwitchStatusManager implements SpecializedStatusManager {
 						// Only if correct channel is choosen
 						if (rockerSwitchDatagram.getChannel().getChar() == receiver.getChannel()) {
 							float light = rockerSwitchDatagram.getState() == RockerSwitchDatagram.State.ON?1:0;
-							statusManager.writeStatusChangeToDatabase(receiver.getReceiver().getDatabaseId(), "light", String.valueOf(light));
+							statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "light", String.valueOf(light));
 						}
 					}
 				}

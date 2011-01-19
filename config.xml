@@ -4,6 +4,9 @@
 	<!-- This defines the loging-file -->
 	<loging filename="log.txt" />
 	
+	<!-- Security salt -->
+	<securitysalt>d32b568cd1b96d459e7291ebf4b25d007f275c9f13149beeb782fac0716613f8</securitysalt>
+	
 	<!-- This defines the database -->
 	<database driver="mysql" host="vmax2.marekventur.de" port="110" user="myhome" password="myhome" database="myhome" />
 	
@@ -17,6 +20,8 @@
 	<!-- This describes all used plugins -->
 	<nodeplugins>
 		<!-- every nodeplugin is described here -->
+		
+		
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
@@ -149,7 +154,70 @@
 				<!-- end of data tag -->
 			</data>
 		</nodeplugin>
-		
+
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
+			<!-- There can be zero to many parameter tags -->
+			<parameter>
+				<key>title</key>
+				<value>Garage</value>	
+			</parameter>
+			
+			<parameter>
+				<key>left</key>
+				<value>700</value>	
+			</parameter>
+			
+			<parameter>
+				<key>top</key>
+				<value>100</value>	
+			</parameter>
+			
+			<!-- There can be zero or one data tags-->
+			<data>
+				<!-- might be different for every plugin -->
+				<node type="TwoRockerSwitch">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab09</id>
+					<title>Lichtschalter</title>
+				</node>
+				
+				<node type="Relais">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab10</id>
+					<title>Garagenlicht</title>
+					
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ababab09</id>
+						<channel>a</channel>
+					</trigger>
+					
+				</node>
+	
+			</data>
+		</nodeplugin>
+
 		<!-- There might be some more plugins added here -->
 	</nodeplugins>
+	
+	<communicationplugins>
+		<communicationplugin namespace="de.wi08e.myhome.communicationplugins.notifo">
+			<parameter>
+				<key>username</key>
+				<value>myhomedevelopment</value>	
+			</parameter>
+			<parameter>
+				<key>apisecret</key>
+				<value>8e7f2a3a32b1f21418c2b6036514ff7454cfa820</value>	
+			</parameter>
+			<parameter>
+				<key>title</key>
+				<value>myHome</value>	
+			</parameter>
+		</communicationplugin>
+		
+		<communicationplugin namespace="de.wi08e.myhome.communicationplugins.dialog">
+		</communicationplugin>
+	</communicationplugins>	
+		
 </config>
