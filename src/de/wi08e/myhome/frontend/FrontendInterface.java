@@ -386,5 +386,55 @@ public class FrontendInterface {
 			throw new StatusValueInvalid();
 		}
 	}
+
+	/* Camera Interface */
+
+	/**
+	 * Get Settings for alarm notification to users (Setting only for admin)
+	 * @param userToken Session user token
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
+	 * @return boolean Is true if alarm notification is set, false if not
+	 */
+
+	public boolean getAlarmSetting (@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights{
+		requestAdminRights(userToken);
+		if("".equals(1)){		//SQL Abfrage des Status muss noch eingefügt werden
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
+	/**
+	 * Enables or disables alarm notification to users (Setting only for admin)
+	 * @param userToken Session user token
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
+	 * @return boolean Is true if alarm notification is turned on, false if turned off
+	 */
+
+	public boolean setAlarm (@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights{
+		requestAdminRights(userToken);
+		boolean isSet = getAlarmSetting(userToken);
+		//SQL Befehl zum Ändern des Status in der DB
+		if(isSet == true){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * Gives user information on the adresse where to recieve the camera stream from
+	 * @param userToken Session user token
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @return String Returns the URL of the camera stream as a String
+	 */
+	
+	public String getStream(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights{
+		requestUserRights(userToken);
+		String streamURL = null;
+		return streamURL;
+	}
 }

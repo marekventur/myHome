@@ -1,5 +1,10 @@
 package de.wi08e.myhome.nodeplugins.camera;
 
+/**
+ * @author Nico
+ *
+ */
+
 import java.util.Map;
 
 import org.w3c.dom.Node;
@@ -40,14 +45,12 @@ public class Main implements NodePlugin{
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "IP Kamera Tuer";
 	}
 
 	@Override
 	public String getCategory() {
-		// TODO Auto-generated method stub
-		return null;
+		return "ip-camera";
 	}
 
 }
