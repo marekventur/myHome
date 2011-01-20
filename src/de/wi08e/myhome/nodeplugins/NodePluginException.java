@@ -4,8 +4,7 @@
 package de.wi08e.myhome.nodeplugins;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
 public class NodePluginException extends Exception {
 

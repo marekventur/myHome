@@ -11,10 +11,9 @@ import de.wi08e.myhome.model.datagram.Datagram;
 
 /**
  * This interface contains the core methods every node plugin must implement
- * 
- * @author Marek
- *
+ * @author Marek_Ventur
  */
+
 public interface NodePlugin {
 	public void initiate(NodePluginEvent event, Map<String, String> properties, org.w3c.dom.Node data) throws NodePluginException;
 	public void chainReceiveDatagram(Datagram datagram);

@@ -14,6 +14,10 @@ import de.wi08e.myhome.scriptmanager.ScriptManager;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.UserManager;
 
+/**
+ * @author Thilo_Gerheim
+ */
+
 public class Main {
 	
 	private static ScriptManager scriptManager;

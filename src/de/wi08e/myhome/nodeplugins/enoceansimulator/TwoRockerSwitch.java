@@ -15,10 +15,9 @@ import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
+ * Rocker Switch creates Event Gui
  */
-
 
 public class TwoRockerSwitch extends NodePanel {
 
@@ -64,7 +63,6 @@ public class TwoRockerSwitch extends NodePanel {
 	
 	/**
 	 * @param nodePanelEventHandler 
-	 * 
 	 */
 	public TwoRockerSwitch(String title, Node node, NodePanelEventHandler nodePanelEventHandler) {
 		super(new GridLayout(2, 2), title, node, nodePanelEventHandler);
@@ -83,6 +81,4 @@ public class TwoRockerSwitch extends NodePanel {
 		add(a0);
 		add(b0);
 	}
-
-
 }
