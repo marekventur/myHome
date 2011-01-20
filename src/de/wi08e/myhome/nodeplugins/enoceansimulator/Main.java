@@ -22,8 +22,7 @@ import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
 public class Main implements NodePlugin {
 	
@@ -140,7 +139,7 @@ public class Main implements NodePlugin {
 			}
 			
 		}
-		
+	
 		gui = new GUI(properties.get("title"), nodePanels);
 		
 
@@ -188,9 +187,5 @@ public class Main implements NodePlugin {
 	public String getCategory() {
 		return "enocean";
 	}
-
-
-
-	
 
 }

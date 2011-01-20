@@ -31,8 +31,8 @@ import de.wi08e.myhome.usermanager.SessionUserToken;
  * time (default: 30min) after the last successful request with this token.
  * 
  * @author Marek
- *
  */
+
 
 @SOAPBinding(style = Style.RPC)
 @WebService(name="myHome") 
@@ -57,10 +57,18 @@ public class FrontendInterface {
 	private void requestUserRights(String userToken) throws NotLoggedIn {
 		
 	}
-	
+	/**
+	 * @param userToken Session user token
+	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
+	 */
 	private void requestAdminRights(String userToken) throws NotLoggedIn, NoAdminRights {
 		
 	}
+	/**
+	 * @param nodes convert List to response Array Node
+	 * @return new result when nodes response (result i++)
+	 */
 	
 	private NodeResponse[] convertListToResponseArrayNode(List<Node> nodes) {
 		NodeResponse[] result = new NodeResponse[nodes.size()];
@@ -69,6 +77,10 @@ public class FrontendInterface {
 			result[i++] = new NodeResponse(node);
 		return result;
 	}
+	/**
+	 * @param triggers convert List to response Array Trigger
+	 * @return new result when Trigger response (result i++)
+	 */
 	
 	private TriggerResponse[] convertListToResponseArrayTrigger(List<Trigger> triggers) {
 		TriggerResponse[] result = new TriggerResponse[triggers.size()];
@@ -77,6 +89,10 @@ public class FrontendInterface {
 			result[i++] = new TriggerResponse(trigger);
 		return result;
 	}	
+	/**
+	 * @param blueprints convert List to response Array Blueprint
+	 * @return new result when Blueprint response (result i++)
+	 */
 	
 	private BlueprintResponse[] convertListToResponseArrayBlueprint(List<Blueprint> blueprints) {
 		BlueprintResponse[] result = new BlueprintResponse[blueprints.size()];
@@ -95,6 +111,7 @@ public class FrontendInterface {
 	 * @throws LoginUsernameOrPasswordWrong Thrown when password or username is wrong
 	 * @return LoginReponse The returning class contains an "isAdmin"-boolean and the newly generated userToken
 	 */
+	
 	public LoginResponse login(@WebParam(name="username") String username, @WebParam(name="password")  String password) throws LoginUsernameOrPasswordWrong {
 		LOGGER.info("Login attempt: "+username);
 	
@@ -109,19 +126,21 @@ public class FrontendInterface {
 	
 	/**
 	 * Checks if userToken is still valid
-	 * @param userToken
+	 * @param userToken Session user token
 	 * @return true if valid
 	 */
+	
 	public boolean checkUserToken(@WebParam(name="userToken") String userToken) {
 		return userToken.length() > 0;	
 	}
 	
 	/**
 	 * Logging the user out
-	 * @param userToken
+	 * @param userToken this is the userToken you get when you call the loggin function
 	 * @return true if valid
 	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
 	 */
+	
 	public void logout(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);
 	}
@@ -133,6 +152,7 @@ public class FrontendInterface {
 	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't see this list.
 	 * @return Array of UserResponse containing username, fullname and isAdmin flag
 	 */
+	
 	public UserResponse[] listUsers(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 
 		requestAdminRights(userToken);
@@ -160,6 +180,7 @@ public class FrontendInterface {
 	 * @throws UserNotFound Thrown when username is not found in database
 	 * @return UserResponse UserResponse object containing username, fullname and isAdmin flag
 	 */
+	
 	public UserResponse getUser(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
 
 		requestAdminRights(userToken);
@@ -173,11 +194,12 @@ public class FrontendInterface {
 	/**
 	 * Deletes an user (requires admin rights)
 	 * @param userToken Session user token
-	 * @param username Username of the user which should be deleted
+	 * @param username username of the user which should be deleted
 	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
 	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
 	 * @throws UserNotFound Thrown when username is not found in database
 	 */
+	
 	public void deleteUser(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username) throws NotLoggedIn, NoAdminRights, UserNotFound {
 
 		requestAdminRights(userToken);
@@ -189,13 +211,14 @@ public class FrontendInterface {
 	/**
 	 * Change the password for an user (requires admin rights when not changing you own password)
 	 * @param userToken Session user token
-	 * @param username Username of the user which should be deleted
+	 * @param username username of the user which should be deleted
 	 * @param password New password
 	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
 	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
 	 * @throws UserNotFound Thrown when username is not found in database
 	 * @throws PasswordTooShort Thrown when the password is too short
 	 */
+	
 	public void changePassword(@WebParam(name="userToken") String userToken,@WebParam(name="username")  String username,@WebParam(name="password")  String password) throws NotLoggedIn, NoAdminRights, UserNotFound, PasswordTooShort {
 
 		if ("hans".equals(username))
@@ -213,8 +236,8 @@ public class FrontendInterface {
 	/**
 	 * Creates a new user account (requires admin rights)
 	 * @param userToken Session user token
-	 * @param username Username of the user which should be added
-	 * @param fullname Fullname of the user which should be added
+	 * @param username username of the user which should be added
+	 * @param fullname fullname of the user which should be added
 	 * @param password Password
 	 * @throws NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
 	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function.
@@ -222,6 +245,7 @@ public class FrontendInterface {
 	 * @throws UsernameTooShortOrInvalid Thrown when username is too short or invalid
 	 * @throws UsernameAlreadyInUse Thrown when username is already used by someone else
 	 */
+	
 	public void addUser(@WebParam(name="userToken") String userToken,@WebParam(name="username") String username,@WebParam(name="password") String password) throws NotLoggedIn, NoAdminRights, PasswordTooShort, UsernameTooShortOrInvalid, UsernameAlreadyInUse {
 
 		requestAdminRights(userToken);
@@ -272,7 +296,7 @@ public class FrontendInterface {
 	/* Nodes */
 	
 	/**
-	 * Returns nodes
+	 * Returns nodes, nodes have certain parameters defined in NodesResponse.java
 	 * @param filterByBlueprint 0(=left blank) when no filtering should be applied, else any valid Blueprint ID
 	 */
 	
@@ -286,6 +310,14 @@ public class FrontendInterface {
 		 
 	}
 	
+	/**
+	 * @param userToken Session user token
+	 * @param nodeId must be set
+	 * @return if nodeId is not found return new NodeResponse
+	 * @throws NotLoggedIn NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout 
+	 * @throws NodeNotFound Exception thrown when node not found
+	 */
+	
 	public NodeResponse getNode(@WebParam(name="userToken") String userToken,@WebParam(name="nodeId") int nodeId) throws NotLoggedIn, NodeNotFound {
 		requestUserRights(userToken);
 		
@@ -296,11 +328,24 @@ public class FrontendInterface {
 		
 		return new NodeResponse(node); 
 	}
-
+	
+	/**
+	 * @param userToken Session user token
+	 * @return ???
+	 * @throws NotLoggedIn NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout
+	 */
+	
 	public NodeResponse[] getUnnamedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);
 		return convertListToResponseArrayNode(nodeManager.getUnnamedNodes());
 	}
+	
+	/**
+	 * @param userToken Session user token
+	 * @param tag ??
+	 * @return ??
+	 * @throws NotLoggedIn NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout
+	 */
 	
 	public NodeResponse[] getTaggedNodes(@WebParam(name="userToken") String userToken, @WebParam(name="tag") String tag) throws NotLoggedIn {
 		requestUserRights(userToken);
@@ -313,7 +358,15 @@ public class FrontendInterface {
 		return convertListToResponseArrayNode(nodeManager.getUserdefinedNodes());
 	}
 	
-	
+	/**
+	 * @param userToken Session user token
+	 * @param name name of node
+	 * @param category enocean
+	 * @param type type like light, heating
+	 * @return return name, category, type
+	 * @throws NotLoggedIn NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function
+	 */
 	
 	public int addUserdefinedNodes(@WebParam(name="userToken")String userToken,@WebParam(name="name") String name,@WebParam(name="category") String category,@WebParam(name="type") String type) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);		
@@ -341,14 +394,13 @@ public class FrontendInterface {
 	}
 	
 	/**
-	 * 
-	 * @param userToken
-	 * @param senderId
-	 * @param receiverId
+	 * @param userToken Session user token
+	 * @param senderId senderId from sendernode
+	 * @param receiverId receiverId from receivernode
 	 * @param channel empty for no channel, or A, B, C or D
-	 * @throws NotLoggedIn
-	 * @throws NoAdminRights
-	 * @throws NodeNotFound
+	 * @throws NotLoggedIn NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout
+	 * @throws NoAdminRights Is thrown when the user has no admin rights and therefore can't use this function
+	 * @throws NodeNotFound node not found for the senderId or receiverId
 	 */
 	
 	public void addOrUpdateSenderToReceiverTrigger(@WebParam(name="userToken") String userToken,@WebParam(name="senderId") int senderId,@WebParam(name="receiverId") int receiverId,@WebParam(name="channel") String channel) throws NotLoggedIn, NoAdminRights, NodeNotFound {

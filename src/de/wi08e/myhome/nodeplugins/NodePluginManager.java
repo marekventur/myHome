@@ -20,9 +20,9 @@ import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodemanager.NodeManager;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
+
 public class NodePluginManager implements Runnable {
 	
 	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
@@ -95,7 +95,11 @@ public class NodePluginManager implements Runnable {
 			} 
 		}
 	}
-
+	
+	/**
+	 * @param datagram sends the given datagram
+	 */
+	
 	public void sendDatagram(Datagram datagram) {
 		for (NodePluginRunnable pluginRunnable: plugins) 
 			pluginRunnable.chainSendDatagramm(datagram);	
@@ -119,6 +123,5 @@ public class NodePluginManager implements Runnable {
 		} catch (InterruptedException e) {
 		}		
 	}
-
 	
 }

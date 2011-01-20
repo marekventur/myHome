@@ -4,6 +4,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import de.wi08e.myhome.model.Blueprint;
 
+/**
+ * @author Thilo_Gerheim
+ */
+
 @XmlRootElement(name="blueprintResponse")
 public class BlueprintResponse {
 
@@ -16,7 +20,9 @@ public class BlueprintResponse {
 	public BlueprintResponse() {
 		
 	}
-	
+	/**
+	 * @param blueprint is a Xml root element
+	 */
 	public BlueprintResponse(Blueprint blueprint) {
 		id = blueprint.getDatabseId();
 

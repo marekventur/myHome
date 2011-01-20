@@ -9,7 +9,9 @@ import org.w3c.dom.Node;
 
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodeplugins.enoceansimulator.NodePanel;
-
+/**
+ * @author Marek_Ventur
+ */
 public class NodePluginRunnable implements Runnable {
 	
 	private BlockingQueue<Datagram> outgoingDatagrams = null;
@@ -62,7 +64,4 @@ public class NodePluginRunnable implements Runnable {
 	public void chainReceiveDatagram(Datagram datagram) {
 		incomingDatagrams.add(new DatagramQueueHolder(datagram, DatagramQueueHolder.Type.RECEIVED));
 	}
-
-
-
 }

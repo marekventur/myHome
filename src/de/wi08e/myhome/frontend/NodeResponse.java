@@ -5,6 +5,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 
+/**
+ * @author Thilo_Gerheim
+ */
+
 @XmlRootElement(name="nodeResponse")
 public class NodeResponse {
 	public int id;
@@ -24,8 +28,8 @@ public class NodeResponse {
 	}
 	
 	/**
-	 * Initiate from node-object and abrsctact everything
-	 * @param node
+	 * Initiate from node-object and abstract everything
+	 * @param node gets the parameter defined in the Database
 	 */
 	public NodeResponse(Node node) {
 		id = node.getDatabaseId();

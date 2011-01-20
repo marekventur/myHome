@@ -14,6 +14,10 @@ import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
 
+/**
+ * @author Marek_Ventur
+ */
+
 public class NodeManager {
 	private Database database;
 	private NodePluginManager nodePlugin;
@@ -26,9 +30,17 @@ public class NodeManager {
 		nodePlugin.setNodeManager(this);
 	}
 	
+	/**
+	 * @param receiver receiver from receiver node
+	 */
+	
 	public void addReceiver(DatagramReceiver receiver) {
 		receivers.add(receiver);
 	}
+	
+	/**
+	 * @param datagram is an instance of the superclass Datagram
+	 */
 	
 	public void receiveDatagram(Datagram datagram) {
 		
@@ -98,6 +110,13 @@ public class NodeManager {
 		
 	}
 	
+	/**
+	 * @param resultSet creates a node from resultset
+	 * @param withStatus allocates a status to the node
+	 * @return return result
+	 * @throws SQLException an exception that provides information on a database access or other errors
+	 */
+	
 	public Node createNodeFromResultSet(ResultSet resultSet, boolean withStatus) throws SQLException {
 		Node result;
 		
@@ -111,6 +130,13 @@ public class NodeManager {
 		
 		return result;
 	}
+	
+	/**
+	 * @param sqlWhere searchs the database for nodes and excepts restrictions
+	 * @param withStatus status of the nodes may or may be not set
+	 * @return result of the query
+	 * @throws SQLException an exception that provides information on a database access or other errors
+	 */
 	
 	private List<Node> generateNodeListFromSQLWhere(String sqlWhere, boolean withStatus) throws SQLException {
 		List<Node> result = new ArrayList<Node>();
@@ -135,6 +161,11 @@ public class NodeManager {
 			return null;
 		}
 	}
+	
+	/**
+	 * @param blueprintId defines a specific blueprint
+	 * @return null
+	 */
 	
 	public synchronized List<Node> getAllNodesFilteredByBlueprint(int blueprintId) {
 		try {
@@ -199,6 +230,15 @@ public class NodeManager {
 		return null;
 	}
 	
+	/**
+	 * A Node contains the parameters hardwareId, manufacturer and category.
+	 * @param hardwareId
+	 * @param manufacturer
+	 * @param category
+	 * @param withStatus
+	 * @return
+	 */
+	
 	public synchronized Node getNode(String hardwareId, String manufacturer, String category, boolean withStatus) {
 		try {
 			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE hardware_id=? AND manufacture=? AND category=?;"); 
@@ -220,6 +260,14 @@ public class NodeManager {
 	public synchronized Node getNode(Node node, boolean withStatus) {
 		return getNode(node.getHardwareId(), node.getManufacturer(), node.getCategory(), withStatus);
 	}
+	
+	/**
+	 * A User defined Node contains the parameters name, category and type
+	 * @param name
+	 * @param category
+	 * @param type
+	 * @return
+	 */
 	
 	public synchronized int addUserDefinedNode(String name, String category, String type) {
 		
@@ -261,9 +309,17 @@ public class NodeManager {
 		return nodeId;
 	}
 
+	
 	public void sendDatagram(Datagram datagram) {
 		nodePlugin.sendDatagram(datagram);
 	}
+	
+	/**
+	 * The function addTag needs a nodeId and a tag for allocation a tag to a node
+	 * @param nodeId
+	 * @param tag a node gets a tag, for searching the node is necessary
+	 * @return
+	 */
 	
 	public boolean addTag(int nodeId, String tag) {
 		try {
@@ -279,6 +335,13 @@ public class NodeManager {
 		return false;
 	}
 	
+	/**
+	 * The function addTag needs a nodeId and a tag for allocation a tag to a node
+	 * @param nodeId
+	 * @param tag a node gets a tag, for searching the node is necessary
+	 * @return
+	 */
+	
 	public boolean deleteTag(int nodeId, String tag) {
 		try {
 			PreparedStatement deleteTagStatement = database.getConnection().prepareStatement("DELETE FROM node_tag WHERE node_id = ? AND tag = ?;");
@@ -290,7 +353,5 @@ public class NodeManager {
 		}
 		return false;
 	}
-	
-	
 	
 }

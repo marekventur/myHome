@@ -16,20 +16,15 @@ import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
 public class Relais extends NodePanel {
 	
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private final JCheckBox checkBox = new JCheckBox("Activated");
 	private final List<RelaisTrigger> triggers;
-	/**
-	 * 
-	 */
+	
 	public Relais(String title, Node node, NodePanelEventHandler eventHandler, List<RelaisTrigger> triggers) {
 		super(new GridLayout(1, 1), title, node, eventHandler);
 		
@@ -69,10 +64,7 @@ public class Relais extends NodePanel {
 									switchOn();
 							}
 					}
-		}				
-	}
-	
-
-		
+			}				
+	}	
 	
 }

@@ -11,7 +11,9 @@ import de.wi08e.myhome.myhomescript.ScriptingEngine;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
 import de.wi08e.myhome.statusmanager.StatusManager;
-
+/**
+ * @author Thilo_Gerheim
+ */
 public class Main {
 	
 	private static ScriptingEngine scriptingEngine;
