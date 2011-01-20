@@ -46,7 +46,7 @@ public class NodeManager {
 			
 			// Is this Node already in DB?
 			try {
-				PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
+				PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
 				getNodeStatus.setString(1, sender.getHardwareId());
 				getNodeStatus.setString(2, sender.getManufacturer());
 				getNodeStatus.setString(3, sender.getCategory());
@@ -110,7 +110,7 @@ public class NodeManager {
 			
 			// Is this Node already in DB?
 			try {
-				PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
+				PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
 				getNodeStatus.setString(1, node.getHardwareId());
 				getNodeStatus.setString(2, node.getManufacturer());
 				getNodeStatus.setString(3, node.getCategory());
@@ -172,7 +172,7 @@ public class NodeManager {
 			
 			// Is this Node already in DB?
 			try {
-				PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
+				PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
 				getNodeStatus.setString(1, node.getHardwareId());
 				getNodeStatus.setString(2, node.getManufacturer());
 				getNodeStatus.setString(3, node.getCategory());
@@ -236,7 +236,7 @@ public class NodeManager {
 		
 		Statement getNodes = database.getConnection().createStatement();
 		
-		if (getNodes.execute("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE "+sqlWhere+" GROUP BY node.id;")) {
+		if (getNodes.execute("SELECT node.id, category, manufacturer, hardware_id, type, name, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE "+sqlWhere+" GROUP BY node.id;")) {
 			ResultSet rs = getNodes.getResultSet();
 			while (rs.next()) 
 				result.add(createNodeFromResultSet(rs, withStatus));	
@@ -275,7 +275,7 @@ public class NodeManager {
 	
 	public synchronized List<Node> getNodesByType(String type, boolean withStatus) {
 		try {
-			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE type=?;"); 
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE type=?;"); 
 			getNodeStatus.setString(1, type);
 			getNodeStatus.execute();
 			
@@ -307,7 +307,7 @@ public class NodeManager {
 		try {
 			List<Node> result = new ArrayList<Node>();
 			
-			PreparedStatement getNodes = database.getConnection().prepareStatement("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id IN (SELECT node_id FROM node_tag WHERE tag=? GROUP BY node_id) GROUP BY node.id;"); 
+			PreparedStatement getNodes = database.getConnection().prepareStatement("SELECT node.id, category, manufacturer, hardware_id, type, name, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id IN (SELECT node_id FROM node_tag WHERE tag=? GROUP BY node_id) GROUP BY node.id;"); 
 			getNodes.setString(1, tag);
 			getNodes.execute();
 			
@@ -328,7 +328,7 @@ public class NodeManager {
 	public synchronized Node getNode(int nodeId, boolean withStatus) {
 		try {
 			Statement getNodes = database.getConnection().createStatement();
-			if (getNodes.execute("SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id="+String.valueOf(nodeId)+";")) {
+			if (getNodes.execute("SELECT node.id, category, manufacturer, hardware_id, type, name, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id="+String.valueOf(nodeId)+";")) {
 				ResultSet rs = getNodes.getResultSet();
 				if (rs.next()) 
 					return createNodeFromResultSet(rs, withStatus);	
@@ -341,7 +341,7 @@ public class NodeManager {
 	
 	public synchronized Node getNode(String hardwareId, String manufacturer, String category, boolean withStatus) {
 		try {
-			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE hardware_id=? AND manufacture=? AND category=?;"); 
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE hardware_id=? AND manufacture=? AND category=?;"); 
 			getNodeStatus.setString(1, hardwareId);
 			getNodeStatus.setString(2, manufacturer);
 			getNodeStatus.setString(3, category);
@@ -363,7 +363,7 @@ public class NodeManager {
 	
 	public List<Node> getNodesByTag(String tag, boolean withStatus) {
 		try {
-			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE id IN (SELECT node_id FROM node_tag WHERE tag=?);"); 
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE id IN (SELECT node_id FROM node_tag WHERE tag=?);"); 
 			getNodeStatus.setString(1, tag);
 			getNodeStatus.execute();
 			
@@ -384,7 +384,7 @@ public class NodeManager {
 	
 	public synchronized Node getNode(String name, boolean withStatus) {
 		try {
-			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, blueprint_id FROM node WHERE name=?;"); 
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE name=?;"); 
 			getNodeStatus.setString(1, name);
 			getNodeStatus.execute();
 			
