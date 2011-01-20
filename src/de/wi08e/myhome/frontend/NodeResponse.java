@@ -13,9 +13,6 @@ public class NodeResponse {
 	public String hardwareId;
 	public String name;
 	public String type;
-	public float positionX = 0;
-	public float positionY = 0;
-	public int blueprintId = -1;
 	public NodeStatusResponse[] status = null;
 	public String[] tags;
 	
@@ -35,9 +32,6 @@ public class NodeResponse {
 		type = node.getType();
 		
 		if (node instanceof NamedNode) {
-			blueprintId = ((NamedNode)node).getBlueprintId();
-			positionX = ((NamedNode)node).getPositionX();
-			positionY = ((NamedNode)node).getPositionY();
 			name = ((NamedNode)node).getName();
 		}
 		
