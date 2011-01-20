@@ -9,20 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.wi08e.myhome.database.Database;
-import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
-import de.wi08e.myhome.myhomescript.ScriptingEngine;
+import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
-import de.wi08e.myhome.nodeplugins.NodePluginManager;
+import de.wi08e.myhome.scriptmanager.ScriptManager;
 
 public class StatusManager implements DatagramReceiver{
 	
 	private Database database;
-	private ScriptingEngine scriptingEngine;
+	private ScriptManager scriptManager;
 	
 	private TriggerManager triggerManager;
 	private NodeManager nodeManager;
@@ -30,11 +29,11 @@ public class StatusManager implements DatagramReceiver{
 	private List<SpecializedStatusManager> specializedStatusManagers = new ArrayList<SpecializedStatusManager>();
 	
 	public StatusManager(Database database, NodeManager nodeManager,
-			ScriptingEngine scriptingEngine) {
+			ScriptManager scriptingEngine) {
 		super();
 		this.database = database;
 		this.nodeManager = nodeManager;
-		this.scriptingEngine = scriptingEngine;
+		this.scriptManager = scriptingEngine;
 		
 		// Add StatusManager
 		specializedStatusManagers.add(new RockerSwitchStatusManager(this));
@@ -44,7 +43,7 @@ public class StatusManager implements DatagramReceiver{
 	}
 
 	public void receiveBroadcastDatagram(BroadcastDatagram broadcastDatagram) {
-		
+
 		
 		String type = null;
 		
@@ -82,11 +81,13 @@ public class StatusManager implements DatagramReceiver{
 	
 	
 	
-	protected void writeStatusChangeToDatabase(int id, String key, String value) {
+	protected void writeStatusChangeToDatabase(Node node, String key, String value) {
+		scriptManager.receiveStatusChange(node, key, value);
+		
 		try {
 			// is there already a status?
 			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT value FROM node_status WHERE node_id=? and `key`=?;"); 
-			getNodeStatus.setInt(1, id);
+			getNodeStatus.setInt(1, node.getDatabaseId());
 			getNodeStatus.setString(2, key);
 			getNodeStatus.execute();
 			
@@ -100,7 +101,7 @@ public class StatusManager implements DatagramReceiver{
 					PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node_status SET value = ? WHERE node_id = ? AND `key` = ?;");
 					
 					updateNode.setString(1, value);
-					updateNode.setInt(2, id);
+					updateNode.setInt(2, node.getDatabaseId());
 					updateNode.setString(3, key);
 					
 					updateNode.executeUpdate();
@@ -113,7 +114,7 @@ public class StatusManager implements DatagramReceiver{
 				PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node_status (value, node_id, `key`) VALUES (?, ?, ?);");
 				
 				insertNode.setString(1, value);
-				insertNode.setInt(2, id);
+				insertNode.setInt(2, node.getDatabaseId());
 				insertNode.setString(3, key);
 				
 				insertNode.executeUpdate();
@@ -123,7 +124,7 @@ public class StatusManager implements DatagramReceiver{
 			PreparedStatement insertHistoryNode = database.getConnection().prepareStatement("INSERT INTO node_status_history (value, node_id, `key`) VALUES (?, ?, ?);");
 			
 			insertHistoryNode.setString(1, value);
-			insertHistoryNode.setInt(2, id);
+			insertHistoryNode.setInt(2, node.getDatabaseId());
 			insertHistoryNode.setString(3, key);
 			
 			insertHistoryNode.executeUpdate();
@@ -208,8 +209,10 @@ public class StatusManager implements DatagramReceiver{
 							// Change status and return changed Nodes
 							List<Node> result = new ArrayList<Node>();
 							for (int i=0; i<receiverIds.length; i++) {
-								writeStatusChangeToDatabase(receiverIds[i], key, value);
-								result.add(nodeManager.getNode(receiverIds[i], true));
+								Node node = nodeManager.getNode(receiverIds[i], true);
+								node.getStatus().put(key, value);
+								writeStatusChangeToDatabase(node, key, value);
+								result.add(node);
 							}
 							
 							// Leave this methode
@@ -217,11 +220,25 @@ public class StatusManager implements DatagramReceiver{
 						}
 					}
 				}
-			}	
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<Node>();
+		
+		// No trigger found		
+		writeStatusChangeToDatabase(receiver, key, value);
+		receiver.getStatus().put(key, value);
+		nodeManager.sendDatagram(new StatusDatagram(receiver, key, value));
+		
+		ArrayList<Node> list = new ArrayList<Node>();
+		list.add(receiver);
+		return list;
+	}
+
+	@Override
+	public void receiveStatusDatagram(StatusDatagram datagram) {
+		writeStatusChangeToDatabase(datagram.getNode(), datagram.getKey(), datagram.getValue());
 	}
 	
 	

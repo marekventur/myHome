@@ -1,8 +1,9 @@
 package de.wi08e.myhome.nodeplugins.mielesimulator;
 
 import java.util.Map;
-
+import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.Datagram;
+import de.wi08e.myhome.model.datagram.NodeInformDatagram;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;
@@ -38,6 +39,8 @@ public class Main implements NodePlugin
 			org.w3c.dom.Node data) throws NodePluginException 
 	{
 		new GUI();
+		NodeInformDatagram datagram = new NodeInformDatagram(new Node("Kuechengerate","simulator",properties.get("node")));
+		event.datagrammReceived(datagram);
 	}
 	
 }
