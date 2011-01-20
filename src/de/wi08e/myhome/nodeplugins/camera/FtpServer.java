@@ -1,4 +1,4 @@
-package de.wi08e.myhome.nodeplugins.camera.imageFtpServer;
+package de.wi08e.myhome.nodeplugins.camera;
 
 
 import java.net.ServerSocket;

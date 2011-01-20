@@ -1,5 +1,5 @@
 
-package de.wi08e.myhome.nodeplugins.camera.imageFtpServer;
+package de.wi08e.myhome.nodeplugins.camera;
 
 import java.awt.BorderLayout;
 import java.awt.Image;

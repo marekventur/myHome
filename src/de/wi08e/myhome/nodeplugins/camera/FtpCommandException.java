@@ -1,5 +1,5 @@
 
-package de.wi08e.myhome.nodeplugins.camera.imageFtpServer;
+package de.wi08e.myhome.nodeplugins.camera;
 
 /**
  * Exception thrown by error in command handling.

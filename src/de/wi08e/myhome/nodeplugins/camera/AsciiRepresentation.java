@@ -1,5 +1,5 @@
 
-package de.wi08e.myhome.nodeplugins.camera.imageFtpServer;
+package de.wi08e.myhome.nodeplugins.camera;
 
 import java.io.File;
 import java.io.FileInputStream;
