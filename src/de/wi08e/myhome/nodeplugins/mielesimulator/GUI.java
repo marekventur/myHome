@@ -15,10 +15,12 @@ public class GUI extends JFrame implements ActionListener
 	private JButton an = null;
 	private JButton aus = null;
 	private JCheckBox powerBox = null;
+	private Main main=null;
 	
-	public GUI()
+	public GUI(Main main)
 	{
 		super();
+		this.main=main;
 		this.setLayout(null);
 		this.setTitle("Miele Dampfgarer");
 		this.setSize(300, 300);
@@ -58,9 +60,13 @@ public class GUI extends JFrame implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent arg) 
 	{
-		if(arg.getSource()==aus) powerBox.setSelected(false);
-		if(arg.getSource()==an) powerBox.setSelected(true);
+		if(arg.getSource()==aus) this.setPower("0");
+		if(arg.getSource()==an) this.setPower("1");
 	}
 
-
+	public void setPower(String status)
+	{
+		powerBox.setSelected(status.contentEquals("1"));
+		main.setStatus("power", status);
+	}
 }
