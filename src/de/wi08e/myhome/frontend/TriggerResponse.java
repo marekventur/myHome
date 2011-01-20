@@ -26,6 +26,6 @@ public class TriggerResponse {
 	public TriggerResponse(Trigger trigger) {
 		super();
 		this.sender = new NodeResponse(trigger.getSender());
-		this.channel = trigger.getSender()+"";
+		this.channel = trigger.getChannel()+"";
 	}
 }
