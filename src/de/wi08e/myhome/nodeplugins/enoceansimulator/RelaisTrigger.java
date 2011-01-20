@@ -7,8 +7,7 @@ import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
 public class RelaisTrigger {
 	private Node node;

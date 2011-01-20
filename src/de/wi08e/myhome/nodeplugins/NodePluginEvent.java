@@ -8,8 +8,7 @@ import java.awt.Image;
 import de.wi08e.myhome.model.datagram.Datagram;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
 public interface NodePluginEvent {
 	//public void logInfo(String text);

@@ -35,9 +35,9 @@ public class Config {
 	/**
 	 * Loads config data from a xml file. 
 	 * This should be the first method called in the whole program.
-	 * @param filename
-	 * @return 
+	 * @param filename the filename of the config file
 	 * @return true when successful, false otherwise
+	 * @throws Exception when file not found
 	 */
 	public static void initiate(String filename) throws Exception {
 		
