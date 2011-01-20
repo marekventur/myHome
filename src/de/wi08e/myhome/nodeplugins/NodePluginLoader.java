@@ -13,7 +13,7 @@ import java.net.URLClassLoader;
 /**
  * http://stackoverflow.com/questions/60764/how-should-i-load-jars-dynamically-at-runtime/2593771#2593771
  * 
- * @author Marek
+ * @author Marek_Ventur
  *
  */
 public class NodePluginLoader {
