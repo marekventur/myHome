@@ -1,5 +1,7 @@
 package de.wi08e.myhome.scriptmanager;
 
+import java.util.Map;
+
 import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.statusmanager.InvalidStatusValueException;
@@ -48,6 +50,10 @@ public class ScriptingNode {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public String getStatus(String key) {
+		return node.getStatus().get(key);
 	}
 	
 }

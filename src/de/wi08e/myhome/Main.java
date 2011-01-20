@@ -64,14 +64,15 @@ public class Main {
 		/* Create Node Manager */
 		nodeManager = new NodeManager(database, nodePluginManager);
 		
+		/* Create statusmanager */
+		statusManager = new StatusManager(database, nodeManager);
+		nodeManager.addReceiver(statusManager);
+		
 		/* Create scripting engine */
 		scriptManager = new ScriptManager(database, nodeManager, userManager, communicationManager, statusManager);
 		nodeManager.addReceiver(scriptManager);
+		statusManager.addStatusChangeReceiver(scriptManager);
 		new Thread(scriptManager).start();
-		
-		/* Create statusmanager */
-		statusManager = new StatusManager(database, nodeManager, scriptManager);
-		nodeManager.addReceiver(statusManager);
 		
 		/* Create Blueprint Manager */
 		blueprintManager = new BlueprintManager(database);		
