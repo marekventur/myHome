@@ -159,7 +159,7 @@
 		
 			<parameter>
 				<key>node</key>
-				<value>123:miele:mieleathome</value>	
+				<value>123</value>	
 			</parameter>
 			
 		</nodeplugin>

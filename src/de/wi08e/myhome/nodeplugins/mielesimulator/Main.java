@@ -15,22 +15,28 @@ public class Main implements NodePlugin
 
 	private NodePluginEvent event;
 	private Node node;
+	private GUI gui;
 
 	@Override
 	public void chainReceiveDatagram(Datagram datagram) {
-		// TODO Auto-generated method stub
+
 		
 	}
 
 	@Override
 	public void chainSendDatagramm(Datagram datagram) {
-		// TODO Auto-generated method stub
-		
+		if (datagram instanceof StatusDatagram) {
+			StatusDatagram statusDatagram = (StatusDatagram)datagram;
+			Node node = statusDatagram.getNode();
+			if (statusDatagram.getKey().equalsIgnoreCase("power")) {
+				gui.setPower(statusDatagram.getValue());
+			}
+		}
 	}
 
 	@Override
 	public String getCategory() {
-		return "Küchengeräte";
+		return "mieleathome";
 	}
 
 	@Override
@@ -42,15 +48,11 @@ public class Main implements NodePlugin
 	public void initiate(NodePluginEvent event, Map<String, String> properties,
 			org.w3c.dom.Node data) throws NodePluginException 
 	{
-		try {
 		this.event=event;
-		node=new Node(properties.get("node"));
-		new GUI(this);
+		node=new Node("mieleathome", "simulator", properties.get("node"));
+		gui=new GUI(this);
 		NodeInformDatagram datagram = new NodeInformDatagram(node);
 		event.datagrammReceived(datagram);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public void setStatus(String key, String value)
