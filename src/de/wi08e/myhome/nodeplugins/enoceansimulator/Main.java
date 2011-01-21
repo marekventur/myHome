@@ -99,6 +99,11 @@ public class Main implements NodePlugin {
 					nodePanels.add(new TwoRockerSwitch(title, node, nodePanelEventHandler));
 				}
 				
+				/* TwoRockerSwitch */
+				if (type.equalsIgnoreCase("WindowHandle")) {
+					nodePanels.add(new WindowHandle(title, node, nodePanelEventHandler));
+				}
+				
 				/* Relais */
 				if (type.equalsIgnoreCase("Relais")) 
 				{

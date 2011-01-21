@@ -113,6 +113,12 @@
 					<title>Lichtschalter</title>
 				</node>
 				
+				<node type="WindowHandle">
+					<manufacturer>simulator</manufacturer>
+					<id>ababab11</id>
+					<title>Küchenfenster</title>
+				</node>
+				
 				<node type="Relais">
 					<manufacturer>simulator</manufacturer>
 					<id>ababab06</id>
