@@ -140,6 +140,7 @@ public class BlueprintManager {
 	
 
 	public Blueprint getBlueprint(int blueprintId, int height, int width) {
+		
 		try {
 			Statement getBlueprints = database.getConnection()
 					.createStatement();
@@ -154,8 +155,8 @@ public class BlueprintManager {
 					int newHeight = height;
 					int newWidth = width;
 
-					double xscale = blueprint.getWidth() / width;
-					double yscale = blueprint.getHeight() / height;
+					double xscale = (double)blueprint.getWidth() / (double)width;
+					double yscale = (double)blueprint.getHeight() / (double)height;
 					if (yscale > xscale) {
 						newWidth = (int) Math.round(blueprint.getWidth()
 								* (1 / yscale));
@@ -167,7 +168,7 @@ public class BlueprintManager {
 						newHeight = (int) Math.round(blueprint.getHeight()
 								* (1 / xscale));
 					}
-	
+					
 					Image resizedImage = ImageHelper.getScaledInstance(ImageHelper.toBufferedImage(blueprint.getImage()), newWidth, newHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
 					
 					blueprint.setImage(resizedImage);

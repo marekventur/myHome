@@ -116,6 +116,9 @@ public class Blueprint {
 		return blueprintLinks;
 	}
 
+	/**
+	 * This method can be removed after development!
+	 */
 	public void preview() {
 		JFrame frame = new JFrame();
 		frame.getContentPane().setLayout(null);
@@ -125,14 +128,12 @@ public class Blueprint {
 		
 		for (BlueprintLink link: blueprintLinks) {
 			JButton button = new JButton(link.getName());
-			System.out.println(link.getName());
-			System.out.println((int)Math.round(getWidth()*link.getX()));
 			
 			frame.getContentPane().add(button);
 			
-			button.setBounds((int)Math.round(getWidth()*link.getX())-20, 
+			button.setBounds((int)Math.round(getWidth()*link.getX())-10, 
 					(int)Math.round(getHeight()*link.getY())-10,
-					40, 
+					20, 
 					20);
 			
 			button.addActionListener(new ActionListener() {
