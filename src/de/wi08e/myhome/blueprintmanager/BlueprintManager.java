@@ -19,7 +19,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import de.wi08e.myhome.database.Database;
+import de.wi08e.myhome.frontend.exceptions.NodeNotFound;
 import de.wi08e.myhome.model.Blueprint;
+import de.wi08e.myhome.model.BlueprintLink;
 
 /**
  * @author Marek
@@ -65,13 +67,6 @@ public class BlueprintManager {
 		}
 	}
 
-	public static void preview(Image image) {
-		JFrame frame = new JFrame();
-		JLabel label = new JLabel(new ImageIcon(image));
-		frame.getContentPane().add(label, BorderLayout.CENTER);
-		frame.pack();
-		frame.setVisible(true);
-	}
 
 	public List<Blueprint> getAllBlueprints() {
 		List<Blueprint> result = new ArrayList<Blueprint>();
@@ -154,6 +149,7 @@ public class BlueprintManager {
 				ResultSet rs = getBlueprints.getResultSet();
 				if (rs.next()) {
 					Blueprint blueprint = new Blueprint(rs);
+					rs.close();
 
 					int newHeight = height;
 					int newWidth = width;
@@ -173,10 +169,40 @@ public class BlueprintManager {
 					}
 	
 					Image resizedImage = ImageHelper.getScaledInstance(ImageHelper.toBufferedImage(blueprint.getImage()), newWidth, newHeight, RenderingHints.VALUE_INTERPOLATION_BICUBIC, true);
-
-					//preview(resizedImage);
+					
 					blueprint.setImage(resizedImage);
-
+					blueprint.setHeight(newHeight);
+					blueprint.setWidth(newWidth);
+					
+					/* Get links */
+					String getLinksSQL = "SELECT " +
+								"l.id, l.pos_x, l.pos_y, " +
+								"b2.id as 'referring_blueprint_id', b2.name " +
+							"FROM " +
+								"blueprint b " +
+									"LEFT JOIN " +
+								"blueprint_links_blueprint l " +
+									"ON " +
+								"b.id = l.drawn_on_blueprint_id " +
+									"LEFT JOIN " +
+								"blueprint b2 " +
+									"ON " +
+								"l.referring_blueprint_id = b2.id " +
+							"WHERE b.id="+String.valueOf(blueprintId) + ";";
+					
+					Statement getLinks = database.getConnection().createStatement();
+					if (getLinks.execute(getLinksSQL)) {
+						ResultSet rs2 = getLinks.getResultSet();
+						while (rs2.next()) {
+							blueprint.getBlueprintLinks().add(new BlueprintLink(rs2));
+						}
+						rs.close();
+					}
+					
+					
+					blueprint.preview();
+					
+					
 					return blueprint;
 				}
 			}
@@ -185,5 +211,40 @@ public class BlueprintManager {
 		}
 		return null;
 	}
+	
+	public int addLink(int blueprintId, int linkingBlueprintId, float x, float y) throws BlueprintNotFound {
+		try {
+
+			PreparedStatement insertBlueprintLink = database.getConnection().prepareStatement(
+							"INSERT INTO blueprint_links_blueprint (drawn_on_blueprint_id, referring_blueprint_id, pos_x, pos_y) VALUES (?, ?, ?, ?);");
+
+			insertBlueprintLink.setInt(1, blueprintId);
+			insertBlueprintLink.setInt(2, linkingBlueprintId);
+			insertBlueprintLink.setFloat(3, x);
+			insertBlueprintLink.setFloat(4, y);
+
+			insertBlueprintLink.executeUpdate();
+			
+			// Get this id
+			Statement getId = database.getConnection().createStatement();
+			if (getId.execute("SELECT LAST_INSERT_ID()")) {
+				ResultSet rs2 = getId.getResultSet();
+				rs2.first();
+				return rs2.getInt(1);
+			}	
+
+		} catch (SQLException e) {
+			if (e.getMessage().contains("a foreign key constraint fails")) {
+				throw new BlueprintNotFound();
+			}
+			else
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		return 0;
+	}
+	
 
 }

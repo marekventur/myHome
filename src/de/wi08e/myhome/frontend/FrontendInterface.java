@@ -279,7 +279,7 @@ public class FrontendInterface {
 		return new BlueprintResponse(blueprintManager.getBlueprint(blueprintId, maxHeight, maxWidth));  
 	}
 	
-	public void addBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="name") String name,@WebParam(name="image") java.awt.Image image,@WebParam(name="imageType") String imageType) throws NotLoggedIn, NoAdminRights {
+	public void addBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="name") String name,@WebParam(name="image") java.awt.Image image) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken); 
 		blueprintManager.addBlueprint(name, image);  
 	}
@@ -295,6 +295,15 @@ public class FrontendInterface {
 		requestAdminRights(userToken); 
 		if (!blueprintManager.renameBlueprint(blueprintId, name)) 
 			throw new BlueprintNotFound();
+	}
+	
+	public int addBlueprintLink(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId, @WebParam(name="linkingBlueprintId")  int linkingBlueprintId,@WebParam(name="x") float x,@WebParam(name="y") float y) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
+		requestAdminRights(userToken); 
+		try {
+			return blueprintManager.addLink(blueprintId, linkingBlueprintId, x, y);
+		} catch (de.wi08e.myhome.blueprintmanager.BlueprintNotFound e) {
+			throw new BlueprintNotFound();
+		} 
 	}
 	
 	/* Nodes */

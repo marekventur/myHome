@@ -3,6 +3,7 @@ package de.wi08e.myhome.frontend;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import de.wi08e.myhome.model.Blueprint;
+import de.wi08e.myhome.model.BlueprintLink;
 
 /**
  * @author Thilo_Gerheim
@@ -16,6 +17,7 @@ public class BlueprintResponse {
 	private int width;
 	private int height;
 	private java.awt.Image image = null;
+	private BlueprintLinkResponse[] blueprintLinks;
 	
 	public BlueprintResponse() {
 		
@@ -30,6 +32,11 @@ public class BlueprintResponse {
 		width = blueprint.getWidth();
 		height = blueprint.getHeight();
 		image = blueprint.getImage();
+		
+		blueprintLinks = new BlueprintLinkResponse[blueprint.getBlueprintLinks().size()];
+		int i=0;
+		for (BlueprintLink blueprintLink: blueprint.getBlueprintLinks())
+			blueprintLinks[i++] = new BlueprintLinkResponse(blueprintLink);
 	}
 
 	public String getName() {
@@ -70,6 +77,14 @@ public class BlueprintResponse {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public BlueprintLinkResponse[] getBlueprintLinks() {
+		return blueprintLinks;
+	}
+	
+	public void setBlueprintLinks(BlueprintLinkResponse[] blueprintLinks) {
+		this.blueprintLinks = blueprintLinks;
 	}
 
 	
