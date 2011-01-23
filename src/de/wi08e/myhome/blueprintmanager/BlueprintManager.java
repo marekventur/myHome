@@ -19,7 +19,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import de.wi08e.myhome.database.Database;
-import de.wi08e.myhome.frontend.exceptions.NodeNotFound;
+import de.wi08e.myhome.exceptions.BlueprintNotFound;
+import de.wi08e.myhome.exceptions.NodeNotFound;
 import de.wi08e.myhome.model.Blueprint;
 import de.wi08e.myhome.model.BlueprintLink;
 
@@ -106,8 +107,9 @@ public class BlueprintManager {
 	/**
 	 * 
 	 * @return true if successfull, false if not (id not found)
+	 * @throws BlueprintNotFound 
 	 */
-	public boolean renameBlueprint(int blueprintId, String name) {
+	public void renameBlueprint(int blueprintId, String name) throws BlueprintNotFound {
 		try {
 			PreparedStatement updateBlueprint = database
 				.getConnection()
@@ -115,26 +117,27 @@ public class BlueprintManager {
 
 			updateBlueprint.setString(1, name);
 			updateBlueprint.setInt(2, blueprintId);
-			return (updateBlueprint.executeUpdate() == 1);
+			if (updateBlueprint.executeUpdate() == 0)
+				throw new BlueprintNotFound();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			throw new BlueprintNotFound();
 		}
 	}
 	
-	public boolean deleteBlueprint(int blueprintId) {
+	public void deleteBlueprint(int blueprintId) throws BlueprintNotFound {
 		try {
 			PreparedStatement deleteBlueprint = database
 				.getConnection()
 				.prepareStatement("DELETE FROM blueprint WHERE id = ?;");
 
 			deleteBlueprint.setInt(1, blueprintId);
-			return (deleteBlueprint.executeUpdate() == 1);
+			if (deleteBlueprint.executeUpdate() == 0)
+				throw new BlueprintNotFound();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 	

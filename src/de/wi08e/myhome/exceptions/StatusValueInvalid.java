@@ -1,4 +1,4 @@
-package de.wi08e.myhome.frontend.exceptions;
+package de.wi08e.myhome.exceptions;
 
 public class StatusValueInvalid extends FrontendException {
 
