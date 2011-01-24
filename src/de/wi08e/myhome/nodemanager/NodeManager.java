@@ -14,6 +14,7 @@ import de.wi08e.myhome.exceptions.NodeNotFound;
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.NodeWithPosition;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.NodeInformDatagram;
@@ -301,9 +302,24 @@ public class NodeManager {
 	 * @return null
 	 */
 	
-	public synchronized List<Node> getAllNodesFilteredByBlueprint(int blueprintId) {
+	public synchronized List<NodeWithPosition> getAllNodesFilteredByBlueprint(int blueprintId) {
 		try {
-			return generateNodeListFromSQLWhere("blueprint_id="+String.valueOf(blueprintId), true);
+			String sql = "SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, GROUP_CONCAT(tag) as tags " +
+					"FROM node_on_blueprint LEFT JOIN node ON node_on_blueprint.node_id=node.id LEFT JOIN node_tag ON node.id = node_tag.node_id " +
+					"WHERE node_on_blueprint.blueprint_id=? GROUP BY node.id;";
+			
+			PreparedStatement getNodes = database.getConnection().prepareStatement(sql);
+			getNodes.setInt(1, blueprintId);
+			
+			List<NodeWithPosition> result = new ArrayList<NodeWithPosition>();
+			
+			if (getNodes.execute()) {
+				ResultSet rs = getNodes.getResultSet();
+				while (rs.next()) 
+					result.add(new NodeWithPosition(createNodeFromResultSet(rs, true), rs.getFloat("pos_x"), rs.getFloat("pos_y")));	
+			}
+			
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -355,7 +371,6 @@ public class NodeManager {
 			
 			PreparedStatement getNodes = database.getConnection().prepareStatement("SELECT node.id, category, manufacturer, hardware_id, type, name, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id IN (SELECT node_id FROM node_tag WHERE tag=? GROUP BY node_id) GROUP BY node.id;"); 
 			getNodes.setString(1, tag);
-			getNodes.execute();
 			
 			if (getNodes.execute()) {
 				ResultSet rs = getNodes.getResultSet();
@@ -457,6 +472,19 @@ public class NodeManager {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public synchronized void nameNode(int nodeId, String name) throws NodeNotFound {
+		try {
+			PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node SET name=? WHERE id=?;");
+			updateNode.setString(1, name);
+			updateNode.setInt(2, nodeId);
+			if (updateNode.executeUpdate() == 0)
+				throw new NodeNotFound();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**
@@ -574,7 +602,7 @@ public class NodeManager {
 			{
 
 				PreparedStatement insertNodeOnBlueprint = database.getConnection().prepareStatement(
-								"INSERT INTO node_on_blueprint (pox_x, pos_y, node_id, blueprint_id) VALUES (?, ?, ?, ?);");
+								"INSERT INTO node_on_blueprint (pos_x, pos_y, node_id, blueprint_id) VALUES (?, ?, ?, ?);");
 				insertNodeOnBlueprint.setFloat(1, x);
 				insertNodeOnBlueprint.setFloat(2, y);
 				insertNodeOnBlueprint.setInt(3, nodeId);
@@ -585,13 +613,16 @@ public class NodeManager {
 			rs.close();
 
 		} catch (SQLException e) {
-			//if (e.getMessage().contains("a foreign key constraint fails")) {
-			//	throw new BlueprintNotFound();
-			//}
-			//else
-			//{
+			if (e.getMessage().contains("a foreign key constraint fails")) {
+				if (e.getMessage().contains("REFERENCES `node` (`id`)"))
+					throw new NodeNotFound();
+				if (e.getMessage().contains("REFERENCES `blueprint` (`id`)"))
+					throw new BlueprintNotFound();
+			}
+			else
+			{
 				e.printStackTrace();
-			//}
+			}
 		}
 		
 		

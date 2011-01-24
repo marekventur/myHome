@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -35,7 +36,13 @@ public class HTTPServer {
 	
 	public HTTPServer(FrontendInterface frontendInterface)  {
 		
+		/* Stop the Logger from logging to much */
+		Logger
+			.getLogger("javax.enterprise.resource.webservices.jaxws.server")
+			.setLevel(Level.WARNING);
 		
+		/* Hide StackTrace in SOAP response */
+		System.setProperty("com.sun.xml.internal.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "false");
 		
 		/* Only the first one will be used at the moment */
 		ConfigSOAPInterface config = Config.getSoapInterfaces().get(0); 
@@ -47,7 +54,8 @@ public class HTTPServer {
 			endpoint.publish(uri);
 			
 			LOGGER.info("HTTP for SOAP-communicationis insecure and should only be used during development and testing. Make sure that the network is safe!");	
-			LOGGER.info("SOAP server has started. WSDL can be found at "+uri+"?wsdl");			
+			LOGGER.info("SOAP server has started. WSDL can be found at "+uri+"?wsdl");
+			System.out.println(uri+"?wsdl");
 		}	
 		
 		/* HTTPS */
@@ -84,6 +92,7 @@ public class HTTPServer {
 				endpoint.publish(httpContext);
 				
 				LOGGER.info("SOAP server has started. WSDL can be found at "+uri+"?wsdl");
+				System.out.println(uri+"?wsdl");
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			} catch (KeyStoreException e) {

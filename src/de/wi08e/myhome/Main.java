@@ -88,7 +88,7 @@ public class Main {
 		new HTTPServer(frontendInterface);
 
 		/* Bye-bye from here */
-		LOGGER.info("Terminating the original user thread");
+		// LOGGER.info("Terminating the original user thread");
 	}
 
 }

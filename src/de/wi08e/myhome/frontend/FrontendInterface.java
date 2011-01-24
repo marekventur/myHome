@@ -18,6 +18,7 @@ import de.wi08e.myhome.exceptions.*;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
 import de.wi08e.myhome.model.Blueprint;
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.NodeWithPosition;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.statusmanager.StatusManager;
@@ -83,6 +84,15 @@ public class FrontendInterface {
 			result[i++] = new NodeResponse(node);
 		return result;
 	}
+	
+	private NodeResponse[] convertListToResponseArrayNodeWithPosition(List<NodeWithPosition> nodes) {
+		NodeResponse[] result = new NodeResponse[nodes.size()];
+		int i=0;
+		for (NodeWithPosition node: nodes) 
+			result[i++] = new NodeResponse(node);
+		return result;
+	}
+	
 	/**
 	 * @param triggers convert List to response Array Trigger
 	 * @return new result when Trigger response (result i++)
@@ -265,7 +275,7 @@ public class FrontendInterface {
 	
 	/* Blueprints */
 	
-	public BlueprintResponse[] getAllBlueprints(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
+	public BlueprintResponse[] getBlueprints(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);
 		return convertListToResponseArrayBlueprint(blueprintManager.getAllBlueprints());  
 	}
@@ -308,9 +318,9 @@ public class FrontendInterface {
 		return convertListToResponseArrayNode(nodeManager.getAllNodes());
 	}
 	
-	public NodeResponse[] getAllNodesForBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, BlueprintNotFound {
+	public NodeResponse[] getNodesByBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, BlueprintNotFound {
 		requestUserRights(userToken);
-		return convertListToResponseArrayNode(nodeManager.getAllNodesFilteredByBlueprint(blueprintId)); 
+		return convertListToResponseArrayNodeWithPosition(nodeManager.getAllNodesFilteredByBlueprint(blueprintId)); 
 	}
 	
 	/**
@@ -344,8 +354,10 @@ public class FrontendInterface {
 	}
 	
 	/**
+	 * This method searches the database for tagged Nodes. 
+	 * Tags help to identify nodes by grouping them. For example one can add "kitchen" to all nodes in the kitchen 
 	 * @param userToken Session user token
-	 * @param tag ??
+	 * @param tag 
 	 * @return ??
 	 * @throws NotLoggedIn NotLoggedIn Is thrown when the given userToken can't be found. This mostly happens after a session timeout
 	 */
@@ -353,6 +365,11 @@ public class FrontendInterface {
 	public NodeResponse[] getTaggedNodes(@WebParam(name="userToken") String userToken, @WebParam(name="tag") String tag) throws NotLoggedIn {
 		requestUserRights(userToken);
 		return convertListToResponseArrayNode(nodeManager.getTaggedNodes(tag));
+	}
+	
+	public void nameNode(@WebParam(name="userToken") String userToken, @WebParam(name="nodeId") int nodeId, @WebParam(name="name") String name) throws NotLoggedIn, NoAdminRights, NodeNotFound {
+		requestAdminRights(userToken);
+		nodeManager.nameNode(nodeId, name);
 	}
 	
 	/* User defined nodes */
