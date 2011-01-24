@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -28,6 +29,7 @@ public class Blueprint {
 	private int width;
 	private int height;
 	private Image image = null;
+	private List<Blueprint> children = null;
 	
 	public Blueprint() {
 		
@@ -100,7 +102,12 @@ public class Blueprint {
 		this.image = image;
 	}
 	
-	
+	public List<Blueprint> getChildren() {
+		if (children == null) {
+			
+		}
+		return children;
+	}
 	
 	
 

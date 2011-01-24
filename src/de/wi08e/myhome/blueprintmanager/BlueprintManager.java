@@ -33,7 +33,7 @@ public class BlueprintManager {
 		this.database = database;
 	}
 
-	public void addBlueprint(String name, Image image) {
+	public int addBlueprint(String name, Image image) {
 
 		try {
 
@@ -57,12 +57,22 @@ public class BlueprintManager {
 			insertBlueprint.setBlob(4, imageBlob);
 
 			insertBlueprint.executeUpdate();
+			
+			// Get this id
+			Statement getId = database.getConnection().createStatement();
+			getId.execute("SELECT LAST_INSERT_ID()");
+			ResultSet rs2 = getId.getResultSet();
+			rs2.first();
+			int blueprintId = rs2.getInt(1);
+			getId.close();
+			return blueprintId;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return 0;
 	}
 
 	public static void preview(Image image) {

@@ -231,7 +231,7 @@ public class StatusManager implements DatagramReceiver{
 		}
 		
 		// No trigger found		
-		writeStatusChangeToDatabase(receiver, key, value);
+		// writeStatusChangeToDatabase(receiver, key, value);
 		receiver.getStatus().put(key, value);
 		nodeManager.sendDatagram(new StatusDatagram(receiver, key, value));
 		
