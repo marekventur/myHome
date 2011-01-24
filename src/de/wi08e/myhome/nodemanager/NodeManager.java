@@ -5,11 +5,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import de.wi08e.myhome.exceptions.BlueprintNotFound;
+import de.wi08e.myhome.exceptions.NodeNotFound;
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.NodeWithPosition;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.NodeInformDatagram;
@@ -24,6 +29,8 @@ public class NodeManager {
 	private Database database;
 	private NodePluginManager nodePlugin;
 	private List<DatagramReceiver> receivers = new ArrayList<DatagramReceiver>();
+	
+	private Set<String> types = new HashSet<String>();
 
 	public NodeManager(Database database, NodePluginManager nodePlugin) {
 		super();
@@ -179,8 +186,15 @@ public class NodeManager {
 			Node node = nodeInformDatagram.getNode();
 			
 			int id;
-	    	String type = null;
-	    	String name = null;
+	    	String type = "";
+	    	if (node.getType() != null) {
+	    		type = node.getType();
+	    		types.add(type);
+	    	}
+	    		   	
+	    	String name = "";
+	    	if (node instanceof NamedNode)
+	    		name = ((NamedNode)node).getName();
 			
 			// Is this Node already in DB?
 			try {
@@ -198,10 +212,12 @@ public class NodeManager {
 				else
 				{
 					// Not found, insert node
-					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id) VALUES (?, ?, ?);");
+					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id, type) VALUES (?, ?, ?, ?);");
 					insertNode.setString(1, node.getCategory());
 					insertNode.setString(2, node.getManufacturer());
 					insertNode.setString(3, node.getHardwareId());
+					insertNode.setString(4, type);
+					insertNode.setString(5, name);
 					insertNode.executeUpdate();
 					
 					// Get this id
@@ -286,9 +302,24 @@ public class NodeManager {
 	 * @return null
 	 */
 	
-	public synchronized List<Node> getAllNodesFilteredByBlueprint(int blueprintId) {
+	public synchronized List<NodeWithPosition> getAllNodesFilteredByBlueprint(int blueprintId) {
 		try {
-			return generateNodeListFromSQLWhere("blueprint_id="+String.valueOf(blueprintId), true);
+			String sql = "SELECT node.id, category, manufacturer, hardware_id, type, name, pos_x, pos_y, GROUP_CONCAT(tag) as tags " +
+					"FROM node_on_blueprint LEFT JOIN node ON node_on_blueprint.node_id=node.id LEFT JOIN node_tag ON node.id = node_tag.node_id " +
+					"WHERE node_on_blueprint.blueprint_id=? GROUP BY node.id;";
+			
+			PreparedStatement getNodes = database.getConnection().prepareStatement(sql);
+			getNodes.setInt(1, blueprintId);
+			
+			List<NodeWithPosition> result = new ArrayList<NodeWithPosition>();
+			
+			if (getNodes.execute()) {
+				ResultSet rs = getNodes.getResultSet();
+				while (rs.next()) 
+					result.add(new NodeWithPosition(createNodeFromResultSet(rs, true), rs.getFloat("pos_x"), rs.getFloat("pos_y")));	
+			}
+			
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -340,7 +371,6 @@ public class NodeManager {
 			
 			PreparedStatement getNodes = database.getConnection().prepareStatement("SELECT node.id, category, manufacturer, hardware_id, type, name, GROUP_CONCAT(tag) as tags FROM node LEFT JOIN node_tag ON node.id = node_tag.node_id WHERE node.id IN (SELECT node_id FROM node_tag WHERE tag=? GROUP BY node_id) GROUP BY node.id;"); 
 			getNodes.setString(1, tag);
-			getNodes.execute();
 			
 			if (getNodes.execute()) {
 				ResultSet rs = getNodes.getResultSet();
@@ -443,6 +473,19 @@ public class NodeManager {
 		}
 		return null;
 	}
+	
+	public synchronized void nameNode(int nodeId, String name) throws NodeNotFound {
+		try {
+			PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node SET name=? WHERE id=?;");
+			updateNode.setString(1, name);
+			updateNode.setInt(2, nodeId);
+			if (updateNode.executeUpdate() == 0)
+				throw new NodeNotFound();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 	/**
 	 * A User defined Node contains the parameters name, category and type
@@ -537,6 +580,56 @@ public class NodeManager {
 		return false;
 	}
 
-	
+	public void positionNodeOnBlueprint(int nodeId, int blueprintId, float x, float y) throws BlueprintNotFound, NodeNotFound {
+		try {
+			
+			PreparedStatement getNodePosition = database.getConnection().prepareStatement("SELECT node_id FROM node_on_blueprint WHERE node_id=? AND blueprint_id=?;"); 
+			getNodePosition.setInt(1, nodeId);
+			getNodePosition.setInt(2, blueprintId);
+			getNodePosition.execute();
+			
+			ResultSet rs = getNodePosition.getResultSet();
+			if (rs.next()) { 
+				PreparedStatement updateNodePosition = database.getConnection().prepareStatement(
+				"UPDATE node_on_blueprint SET pos_x=? , pos_y=? WHERE node_id=? AND blueprint_id=?;");
+				updateNodePosition.setFloat(1, x);
+				updateNodePosition.setFloat(2, y);
+				updateNodePosition.setInt(3, nodeId);
+				updateNodePosition.setInt(4, blueprintId);
+				updateNodePosition.executeUpdate();
+			}
+			else
+			{
+
+				PreparedStatement insertNodeOnBlueprint = database.getConnection().prepareStatement(
+								"INSERT INTO node_on_blueprint (pos_x, pos_y, node_id, blueprint_id) VALUES (?, ?, ?, ?);");
+				insertNodeOnBlueprint.setFloat(1, x);
+				insertNodeOnBlueprint.setFloat(2, y);
+				insertNodeOnBlueprint.setInt(3, nodeId);
+				insertNodeOnBlueprint.setInt(4, blueprintId);
+				insertNodeOnBlueprint.executeUpdate();
+				
+			}	
+			rs.close();
+
+		} catch (SQLException e) {
+			if (e.getMessage().contains("a foreign key constraint fails")) {
+				if (e.getMessage().contains("REFERENCES `node` (`id`)"))
+					throw new NodeNotFound();
+				if (e.getMessage().contains("REFERENCES `blueprint` (`id`)"))
+					throw new BlueprintNotFound();
+			}
+			else
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		
+	}
+
+	public Set<String> getTypes() {
+		return types;
+	}
 	
 }

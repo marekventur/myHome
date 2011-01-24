@@ -1,5 +1,8 @@
 package de.wi08e.myhome.statusmanager;
 
+import java.util.Set;
+
+import de.wi08e.myhome.exceptions.InvalidStatusValue;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
@@ -21,6 +24,10 @@ public interface SpecializedStatusManager {
 	 * @param receiver
 	 * @return datagram when successfull, otherwise null
 	 */
-	public Datagram findDatagramForStatusChange(String key, String value, Trigger trigger, int[] receiverIds) throws InvalidStatusValueException;
+	public Datagram findDatagramForStatusChange(String key, String value, Trigger trigger, int[] receiverIds) throws InvalidStatusValue;
 
+	/** 
+	 * @return a list of types this status manager can handle
+	 */
+	public Set<String> getAllTypes();
 }
