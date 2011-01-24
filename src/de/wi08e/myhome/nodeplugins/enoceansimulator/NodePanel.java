@@ -11,8 +11,7 @@ import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.Datagram;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
 public abstract class NodePanel extends JPanel {
 	

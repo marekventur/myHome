@@ -2,6 +2,10 @@ package de.wi08e.myhome.nodeplugins;
 
 import de.wi08e.myhome.model.datagram.Datagram;
 
+/**
+ * @author Marek_Ventur
+ */
+
 public class DatagramQueueHolder {
 	
 	public enum Type {SEND, RECEIVED};
@@ -22,7 +26,4 @@ public class DatagramQueueHolder {
 	public Type getType() {
 		return type;
 	}
-	
-	
-	
 }

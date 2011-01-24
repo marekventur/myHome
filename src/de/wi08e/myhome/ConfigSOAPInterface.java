@@ -5,7 +5,6 @@ package de.wi08e.myhome;
 
 /**
  * @author Marek
- *
  */
 public class ConfigSOAPInterface {
 
@@ -15,7 +14,7 @@ public class ConfigSOAPInterface {
 	private String host;
 	private int port;
 	private String path;
-	
+
 	public ConfigSOAPInterface(Protocol protocol, String host, int port, String path) {
 		super();
 		this.protocol = protocol;
