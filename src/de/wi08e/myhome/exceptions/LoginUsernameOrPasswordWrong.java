@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.wi08e.myhome.frontend.exceptions;
+package de.wi08e.myhome.exceptions;
 
 /**
  * This exception is raised when the username is wrong, non-existend or does not match the given password

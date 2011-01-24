@@ -14,13 +14,12 @@ import javax.xml.ws.WebServiceContext;
 
 
 import de.wi08e.myhome.blueprintmanager.BlueprintManager;
-import de.wi08e.myhome.frontend.exceptions.*;
+import de.wi08e.myhome.exceptions.*;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
 import de.wi08e.myhome.model.Blueprint;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.nodemanager.NodeManager;
-import de.wi08e.myhome.statusmanager.InvalidStatusValueException;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.SessionUserToken;
 import de.wi08e.myhome.usermanager.UserManager;
@@ -157,7 +156,7 @@ public class FrontendInterface {
 	 * @return Array of UserResponse containing username, fullname and isAdmin flag
 	 */
 	
-	public UserResponse[] listUsers(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
+	public UserResponse[] getUsers(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 
 		requestAdminRights(userToken);
 
@@ -267,19 +266,16 @@ public class FrontendInterface {
 	/* Blueprints */
 	
 	public BlueprintResponse[] getAllBlueprints(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
-
 		requestUserRights(userToken);
 		return convertListToResponseArrayBlueprint(blueprintManager.getAllBlueprints());  
 	}
 	
 	public BlueprintResponse getBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId,@WebParam(name="maxHeight") int maxHeight,@WebParam(name="maxWidth") int maxWidth) throws NotLoggedIn, BlueprintNotFound {
 		requestUserRights(userToken);
-
-
 		return new BlueprintResponse(blueprintManager.getBlueprint(blueprintId, maxHeight, maxWidth));  
 	}
 	
-	public void addBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="name") String name,@WebParam(name="image") java.awt.Image image,@WebParam(name="imageType") String imageType) throws NotLoggedIn, NoAdminRights {
+	public void addBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="name") String name,@WebParam(name="image") java.awt.Image image) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken); 
 		blueprintManager.addBlueprint(name, image);  
 	}
@@ -287,31 +283,34 @@ public class FrontendInterface {
 
 	public void deleteBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
 		requestAdminRights(userToken); 
-		if (!blueprintManager.deleteBlueprint(blueprintId)) 
-			throw new BlueprintNotFound();
+		blueprintManager.deleteBlueprint(blueprintId); 
+		
 	}
 	
 	public void renameBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId, @WebParam(name="name") String name) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
 		requestAdminRights(userToken); 
-		if (!blueprintManager.renameBlueprint(blueprintId, name)) 
-			throw new BlueprintNotFound();
+		blueprintManager.renameBlueprint(blueprintId, name);
+	}
+	
+	public int addBlueprintLink(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId, @WebParam(name="linkingBlueprintId")  int linkingBlueprintId,@WebParam(name="x") float x,@WebParam(name="y") float y) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
+		requestAdminRights(userToken); 
+		return blueprintManager.addLink(blueprintId, linkingBlueprintId, x, y);
 	}
 	
 	/* Nodes */
 	
 	/**
 	 * Returns nodes, nodes have certain parameters defined in NodesResponse.java
-	 * @param filterByBlueprint 0(=left blank) when no filtering should be applied, else any valid Blueprint ID
 	 */
 	
-	public NodeResponse[] getNodes(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, BlueprintNotFound {
+	public NodeResponse[] getNodes(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn {
 		requestUserRights(userToken);
-		
-		if (blueprintId > 0)
-			return convertListToResponseArrayNode(nodeManager.getAllNodesFilteredByBlueprint(blueprintId));
-		else
-			return convertListToResponseArrayNode(nodeManager.getAllNodes());
-		 
+		return convertListToResponseArrayNode(nodeManager.getAllNodes());
+	}
+	
+	public NodeResponse[] getAllNodesForBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, BlueprintNotFound {
+		requestUserRights(userToken);
+		return convertListToResponseArrayNode(nodeManager.getAllNodesFilteredByBlueprint(blueprintId)); 
 	}
 	
 	/**
@@ -382,9 +381,15 @@ public class FrontendInterface {
 		return new String[] {"enocean", "camera"};
 	}
 	
-	public String[] getType(@WebParam(name="userToken")String userToken) throws NotLoggedIn {
+	public String[] getTypes(@WebParam(name="userToken")String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);	
-		return new String[] {"light", "relais", "camera"};
+		
+		String[] types = new String[statusManager.getTypes().size()];
+		int i = 0;
+		for (String type: statusManager.getTypes())
+			types[i++] = type;
+		
+		return types;
 	}
 	
 	/* Manage tags */
@@ -448,7 +453,7 @@ public class FrontendInterface {
 		requestUserRights(userToken);
 		try {
 			return convertListToResponseArrayNode(statusManager.setStatus(nodeManager.getNode(nodeId, true), key, value));
-		} catch (InvalidStatusValueException e) {
+		} catch (InvalidStatusValue e) {
 			throw new StatusValueInvalid();
 		}
 	}

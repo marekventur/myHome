@@ -5,8 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import de.wi08e.myhome.exceptions.BlueprintNotFound;
+import de.wi08e.myhome.exceptions.NodeNotFound;
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
@@ -24,6 +28,8 @@ public class NodeManager {
 	private Database database;
 	private NodePluginManager nodePlugin;
 	private List<DatagramReceiver> receivers = new ArrayList<DatagramReceiver>();
+	
+	private Set<String> types = new HashSet<String>();
 
 	public NodeManager(Database database, NodePluginManager nodePlugin) {
 		super();
@@ -179,8 +185,15 @@ public class NodeManager {
 			Node node = nodeInformDatagram.getNode();
 			
 			int id;
-	    	String type = null;
-	    	String name = null;
+	    	String type = "";
+	    	if (node.getType() != null) {
+	    		type = node.getType();
+	    		types.add(type);
+	    	}
+	    		   	
+	    	String name = "";
+	    	if (node instanceof NamedNode)
+	    		name = ((NamedNode)node).getName();
 			
 			// Is this Node already in DB?
 			try {
@@ -198,10 +211,12 @@ public class NodeManager {
 				else
 				{
 					// Not found, insert node
-					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id) VALUES (?, ?, ?);");
+					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id, type) VALUES (?, ?, ?, ?);");
 					insertNode.setString(1, node.getCategory());
 					insertNode.setString(2, node.getManufacturer());
 					insertNode.setString(3, node.getHardwareId());
+					insertNode.setString(4, type);
+					insertNode.setString(5, name);
 					insertNode.executeUpdate();
 					
 					// Get this id
@@ -537,6 +552,53 @@ public class NodeManager {
 		return false;
 	}
 
-	
+	public void positionNodeOnBlueprint(int nodeId, int blueprintId, float x, float y) throws BlueprintNotFound, NodeNotFound {
+		try {
+			
+			PreparedStatement getNodePosition = database.getConnection().prepareStatement("SELECT node_id FROM node_on_blueprint WHERE node_id=? AND blueprint_id=?;"); 
+			getNodePosition.setInt(1, nodeId);
+			getNodePosition.setInt(2, blueprintId);
+			getNodePosition.execute();
+			
+			ResultSet rs = getNodePosition.getResultSet();
+			if (rs.next()) { 
+				PreparedStatement updateNodePosition = database.getConnection().prepareStatement(
+				"UPDATE node_on_blueprint SET pos_x=? , pos_y=? WHERE node_id=? AND blueprint_id=?;");
+				updateNodePosition.setFloat(1, x);
+				updateNodePosition.setFloat(2, y);
+				updateNodePosition.setInt(3, nodeId);
+				updateNodePosition.setInt(4, blueprintId);
+				updateNodePosition.executeUpdate();
+			}
+			else
+			{
+
+				PreparedStatement insertNodeOnBlueprint = database.getConnection().prepareStatement(
+								"INSERT INTO node_on_blueprint (pox_x, pos_y, node_id, blueprint_id) VALUES (?, ?, ?, ?);");
+				insertNodeOnBlueprint.setFloat(1, x);
+				insertNodeOnBlueprint.setFloat(2, y);
+				insertNodeOnBlueprint.setInt(3, nodeId);
+				insertNodeOnBlueprint.setInt(4, blueprintId);
+				insertNodeOnBlueprint.executeUpdate();
+				
+			}	
+			rs.close();
+
+		} catch (SQLException e) {
+			//if (e.getMessage().contains("a foreign key constraint fails")) {
+			//	throw new BlueprintNotFound();
+			//}
+			//else
+			//{
+				e.printStackTrace();
+			//}
+		}
+		
+		
+	}
+
+	public Set<String> getTypes() {
+		return types;
+	}
 	
 }

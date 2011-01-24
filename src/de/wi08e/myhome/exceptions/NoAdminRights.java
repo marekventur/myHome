@@ -1,4 +1,4 @@
-package de.wi08e.myhome.frontend.exceptions;
+package de.wi08e.myhome.exceptions;
 
 /**
  * Raised when an operation requires admin-rights, which the given user does not possess

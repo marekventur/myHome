@@ -2,9 +2,9 @@ package de.wi08e.myhome.scriptmanager;
 
 import java.util.Map;
 
+import de.wi08e.myhome.exceptions.InvalidStatusValue;
 import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
-import de.wi08e.myhome.statusmanager.InvalidStatusValueException;
 import de.wi08e.myhome.statusmanager.StatusManager;
 
 /**
@@ -46,7 +46,7 @@ public class ScriptingNode {
 		try {
 			statusManager.setStatus(node, key, value);
 			return true;
-		} catch (InvalidStatusValueException e) {
+		} catch (InvalidStatusValue e) {
 			e.printStackTrace();
 		}
 		return false;

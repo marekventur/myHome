@@ -6,9 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.wi08e.myhome.database.Database;
+import de.wi08e.myhome.exceptions.InvalidStatusValue;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
@@ -28,6 +31,8 @@ public class StatusManager implements DatagramReceiver{
 	private List<StatusChangeReceiver> statusChangeReceivers = new ArrayList<StatusChangeReceiver>();
 	private List<SpecializedStatusManager> specializedStatusManagers = new ArrayList<SpecializedStatusManager>();
 	
+	private Set<String> types = new HashSet<String>();
+	
 	public StatusManager(Database database, NodeManager nodeManager) {
 		super();
 		this.database = database;
@@ -36,8 +41,11 @@ public class StatusManager implements DatagramReceiver{
 		// Add StatusManager
 		specializedStatusManagers.add(new RockerSwitchStatusManager(this));
 		
-		triggerManager = new TriggerManager(database, nodeManager);
+		for (SpecializedStatusManager specializedStatusManager: specializedStatusManagers) 
+			types.addAll(specializedStatusManager.getAllTypes());
 		
+		triggerManager = new TriggerManager(database, nodeManager);
+
 	}
 
 	public void receiveBroadcastDatagram(BroadcastDatagram broadcastDatagram) {
@@ -154,9 +162,9 @@ public class StatusManager implements DatagramReceiver{
 	 * @param value
 	 * @param key
 	 * @return all changed nodes, null when not successfull
-	 * @throws InvalidStatusValueException 
+	 * @throws InvalidStatusValue 
 	 */
-	public List<Node> setStatus(Node receiver, String key, String value) throws InvalidStatusValueException {
+	public List<Node> setStatus(Node receiver, String key, String value) throws InvalidStatusValue {
 		
 		// Is the node already in the right status
 		if (receiver.getStatus().containsKey(key) && receiver.getStatus().get(key).contentEquals(value))
@@ -248,6 +256,12 @@ public class StatusManager implements DatagramReceiver{
 	public void addStatusChangeReceiver(StatusChangeReceiver statusChangeReceiver) {
 		statusChangeReceivers.add(statusChangeReceiver);
 	}
+
+	public Set<String> getTypes() {
+		types.addAll(nodeManager.getTypes());
+		return types;
+	}
+	
 	
 	
 }
