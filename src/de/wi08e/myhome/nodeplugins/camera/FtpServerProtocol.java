@@ -474,4 +474,14 @@ public class FtpServerProtocol implements Runnable{
 			throw new FtpCommandException(530, "Please login with USER and PASS.");
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	public String getBaseDir(){
+		return this.baseDir;
+	}
+	public String getCurrentDir(){
+		return this.currentDir;
+	}
 }

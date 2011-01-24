@@ -29,8 +29,9 @@ public class FtpServer{
 	 */
 	public static void main(String[] args) throws Exception{
 		int port = SERVER_PORT;
-		if (args.length == 1)
+		if (args.length == 1){
 			port = Integer.parseInt(args[0]);
+		}
 		FtpServer server = new FtpServer(port);
 		server.start();
 		}
@@ -52,7 +53,7 @@ public class FtpServer{
 	/**
 	 * Start FTP server and open new Thread for connection handling.
 	 */
-	private void start()throws Exception
+	protected void start()throws Exception
 		{
 		ServerSocket serverSocket = new ServerSocket(port);
 		while (true)
