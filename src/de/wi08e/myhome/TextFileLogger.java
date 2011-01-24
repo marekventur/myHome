@@ -60,22 +60,7 @@ public class TextFileLogger {
 
 
 	static public void setup() {
-		
-		/* Filter ExceptionBeanClass logs */
-		Logger loggerInfo = Logger.getLogger("com.sun.xml.internal.ws.model.RuntimeModeler");
-		loggerInfo.setLevel(Level.WARNING);
-		loggerInfo.setFilter(new Filter() {
-
-			@Override
-			public boolean isLoggable(LogRecord l) {
-				System.out.println(l.getMessage());
-				if (l.getMessage().startsWith("Dynamically creating exception bean Class"))
-					return false;
-				return true;
-			}
-			
-		});
-		
+				
 		// Create Logger
 		Logger logger = Logger.getLogger("");
 		logger.setLevel(Level.INFO);
