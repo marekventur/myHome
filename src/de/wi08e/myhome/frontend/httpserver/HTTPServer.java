@@ -35,6 +35,8 @@ public class HTTPServer {
 	
 	public HTTPServer(FrontendInterface frontendInterface)  {
 		
+		
+		
 		/* Only the first one will be used at the moment */
 		ConfigSOAPInterface config = Config.getSoapInterfaces().get(0); 
 		
@@ -77,7 +79,7 @@ public class HTTPServer {
 				httpsServer.start();
 		
 				/* Publish Endpoint */
-				HttpContext httpContext = httpsServer.createContext(config.getPath()); //1 l up
+				HttpContext httpContext = httpsServer.createContext(config.getPath());
 				Endpoint endpoint = Endpoint.create(frontendInterface);
 				endpoint.publish(httpContext);
 				

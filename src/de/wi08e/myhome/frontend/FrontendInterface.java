@@ -303,7 +303,7 @@ public class FrontendInterface {
 	 * Returns nodes, nodes have certain parameters defined in NodesResponse.java
 	 */
 	
-	public NodeResponse[] getNodes(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn {
+	public NodeResponse[] getNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
 		requestUserRights(userToken);
 		return convertListToResponseArrayNode(nodeManager.getAllNodes());
 	}
@@ -359,6 +359,11 @@ public class FrontendInterface {
 	public NodeResponse[] getUserdefinedNodes(@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights {
 		requestAdminRights(userToken);
 		return convertListToResponseArrayNode(nodeManager.getUserdefinedNodes());
+	}
+	
+	public void positionNodeOnBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="nodeId") int nodeId,@WebParam(name="blueprintId") int blueprintId,@WebParam(name="x") float x,@WebParam(name="y") float y) throws NotLoggedIn, NoAdminRights, BlueprintNotFound, NodeNotFound {
+		requestAdminRights(userToken);
+		nodeManager.positionNodeOnBlueprint(nodeId, blueprintId, x, y);			
 	}
 	
 	/**
