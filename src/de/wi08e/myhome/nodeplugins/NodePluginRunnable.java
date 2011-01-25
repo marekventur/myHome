@@ -1,10 +1,12 @@
 package de.wi08e.myhome.nodeplugins;
 
+import java.awt.Image;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.Datagram;
-import de.wi08e.myhome.nodeplugins.enoceansimulator.NodePanel;
 /**
  * @author Marek_Ventur
  */
@@ -18,6 +20,11 @@ public class NodePluginRunnable implements Runnable {
 		@Override
 		public void datagrammReceived(Datagram datagram) {		
 			outgoingDatagrams.add(datagram);			
+		}
+
+		@Override
+		public void storeImage(Node node, Image image) {
+			
 		}			
 	};
 	

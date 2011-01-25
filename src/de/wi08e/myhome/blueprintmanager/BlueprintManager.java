@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import de.wi08e.myhome.ImageHelper;
 import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.exceptions.BlueprintNotFound;
 import de.wi08e.myhome.exceptions.NodeNotFound;

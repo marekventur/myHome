@@ -1,7 +1,10 @@
 package de.wi08e.myhome.nodeplugins.mielesimulator;
 
+import java.awt.Image;
 import java.util.Map;
 
+import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
@@ -25,7 +28,7 @@ public class Main implements NodePlugin
 
 	@Override
 	public String getCategory() {
-		return "Küchengeräte";
+		return "mieleathome";
 	}
 
 	@Override
@@ -38,6 +41,11 @@ public class Main implements NodePlugin
 			org.w3c.dom.Node data) throws NodePluginException 
 	{
 		new GUI();
+	}
+
+	@Override
+	public Snapshot getLastSnapshot(Node node) {
+		return null;
 	}
 	
 }

@@ -4,6 +4,9 @@
 package de.wi08e.myhome.nodeplugins;
 
 import java.util.Map;
+
+import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 
 /**
@@ -15,6 +18,7 @@ public interface NodePlugin {
 	public void initiate(NodePluginEvent event, Map<String, String> properties, org.w3c.dom.Node data) throws NodePluginException;
 	public void chainReceiveDatagram(Datagram datagram);
 	public void chainSendDatagramm(Datagram datagram);
+	public Snapshot getLastSnapshot(Node node);
 	public String getName();
 	public String getCategory();
 }
