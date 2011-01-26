@@ -367,9 +367,14 @@ public class FrontendInterface {
 		return convertListToResponseArrayNode(nodeManager.getTaggedNodes(tag));
 	}
 	
-	public void nameNode(@WebParam(name="userToken") String userToken, @WebParam(name="nodeId") int nodeId, @WebParam(name="name") String name) throws NotLoggedIn, NoAdminRights, NodeNotFound {
+	public void renameNode(@WebParam(name="userToken") String userToken, @WebParam(name="nodeId") int nodeId, @WebParam(name="name") String name) throws NotLoggedIn, NoAdminRights, NodeNotFound {
 		requestAdminRights(userToken);
 		nodeManager.nameNode(nodeId, name);
+	}
+	/* Snapshot */
+	
+	public SnapshotResponse getSnapshot(@WebParam(name="userToken") String userToken, @WebParam(name="nodeId") int nodeId) {
+		return new SnapshotResponse(nodeManager.getLastSnapshot(nodeId));
 	}
 	
 	/* User defined nodes */

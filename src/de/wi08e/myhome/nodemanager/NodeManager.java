@@ -1,5 +1,6 @@
 package de.wi08e.myhome.nodemanager;
 
+import java.awt.Image;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,11 +16,13 @@ import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.NodeWithPosition;
+import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.NodeInformDatagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
+import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
 
 /**
  * @author Marek_Ventur
@@ -212,7 +215,7 @@ public class NodeManager {
 				else
 				{
 					// Not found, insert node
-					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id, type) VALUES (?, ?, ?, ?);");
+					PreparedStatement insertNode = database.getConnection().prepareStatement("INSERT INTO node (category, manufacturer, hardware_id, type, name) VALUES (?, ?, ?, ?, ?);");
 					insertNode.setString(1, node.getCategory());
 					insertNode.setString(2, node.getManufacturer());
 					insertNode.setString(3, node.getHardwareId());
@@ -630,6 +633,15 @@ public class NodeManager {
 
 	public Set<String> getTypes() {
 		return types;
+	}
+	
+	public Snapshot getLastSnapshot(Node node) {
+		return new Snapshot(nodePlugin.getLastSnapshot(getNode(node, false)), node, "");
+	}
+	
+	public Snapshot getLastSnapshot(int nodeId) {
+		Node node = getNode(nodeId, false);
+		return new Snapshot(nodePlugin.getLastSnapshot(node), node, "");
 	}
 	
 }

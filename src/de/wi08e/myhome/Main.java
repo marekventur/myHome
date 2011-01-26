@@ -52,7 +52,7 @@ public class Main {
 		
 		/* Loading all NodePlugins */
 		nodePluginManager = new NodePluginManager();
-		new Thread(nodePluginManager).start();
+		
 		
 		/* Create Database-Connection */
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
@@ -67,6 +67,9 @@ public class Main {
 		
 		/* Create Node Manager */
 		nodeManager = new NodeManager(database, nodePluginManager);
+		
+		/* Start NodePluginManager */
+		new Thread(nodePluginManager).start();
 		
 		/* Create statusmanager */
 		statusManager = new StatusManager(database, nodeManager);

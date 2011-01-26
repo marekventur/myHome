@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
@@ -13,7 +13,7 @@ import de.wi08e.myhome.database.Database;
 
 public class Snapshot {
 	private Image image;
-	private Time time;
+	private Date date;
 	private Node node;
 	private String title;
 	private int id = 0;
@@ -21,7 +21,7 @@ public class Snapshot {
 	public Snapshot(Image image, Node node, String title) {
 		super();
 		this.image = image;
-		time = null;
+		date = null;
 		this.node = node;
 		this.title = title;
 	}
@@ -29,7 +29,7 @@ public class Snapshot {
 	public Snapshot(ResultSet resultSet) throws SQLException {
 		id = resultSet.getInt("snapshot_id");
 		node = new NamedNode(resultSet);
-		time = resultSet.getTime("time");
+		date = resultSet.getDate("time");
 		title = resultSet.getString("title");
 		if (Database.columnExist(resultSet, "image")) {
 			InputStream imageStream = resultSet.getBinaryStream("image");
@@ -51,8 +51,8 @@ public class Snapshot {
 	}
 	*/
 
-	public Time getTime() {
-		return time;
+	public Date getDate() {
+		return date;
 	}
 
 	public Node getNode() {

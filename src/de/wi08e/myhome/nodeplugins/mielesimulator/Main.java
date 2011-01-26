@@ -44,7 +44,7 @@ public class Main implements NodePlugin
 	}
 
 	@Override
-	public Snapshot getLastSnapshot(Node node) {
+	public Image getLastSnapshot(Node node) {
 		return null;
 	}
 	

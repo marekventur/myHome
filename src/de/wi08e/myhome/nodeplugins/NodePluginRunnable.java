@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 /**
  * @author Marek_Ventur
@@ -67,5 +68,9 @@ public class NodePluginRunnable implements Runnable {
 
 	public void chainReceiveDatagram(Datagram datagram) {
 		incomingDatagrams.add(new DatagramQueueHolder(datagram, DatagramQueueHolder.Type.RECEIVED));
+	}
+	
+	public Image getLastSnapshot(Node node) {
+		return nodePlugin.getLastSnapshot(node);
 	}
 }
