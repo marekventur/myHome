@@ -3,6 +3,7 @@
  */
 package de.wi08e.myhome.nodeplugins.enoceansimulator;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
@@ -192,6 +194,11 @@ public class Main implements NodePlugin {
 	@Override
 	public String getCategory() {
 		return "enocean";
+	}
+
+	@Override
+	public Image getLastSnapshot(Node node) {
+		return null;
 	}
 
 }
