@@ -554,7 +554,7 @@ public class FrontendInterface {
 
 	public void deleteImage(@WebParam(name="userToken") String userToken,@WebParam(name="ImageId") int imageId) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
 		requestAdminRights(userToken); 
-		if (!blueprintManager.deleteBlueprint(imageId)) 
+		if (!blueprintManager.deleteImage(imageId)) 
 			throw new BlueprintNotFound();
 	}
 }
