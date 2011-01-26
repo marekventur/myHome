@@ -1,4 +1,4 @@
-package de.wi08e.myhome.frontend.exceptions;
+package de.wi08e.myhome.exceptions;
 
 /**
  * This exception is thrown when an username is too short

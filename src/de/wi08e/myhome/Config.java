@@ -90,7 +90,14 @@ public class Config {
 		if (soapInterface.getNodeType() == Node.ELEMENT_NODE) {
 			NodeList bindings =  ((Element)soapInterface).getElementsByTagName("binding");
 			for (int i=0; i<bindings.getLength(); i++ ) {
+				
 				Node binding = bindings.item(i);
+				
+				if (binding.getAttributes().getNamedItem("protocol") == null) 
+					throw new Exception("No protocol found for binding");
+				String protocol = binding.getAttributes().getNamedItem("protocol").getNodeValue();
+	
+				
 				String host = "localhost";
 				String path = "/";
 				int port = 8888;
@@ -101,7 +108,23 @@ public class Config {
 				if (binding.getAttributes().getNamedItem("path") != null) 
 					path = binding.getAttributes().getNamedItem("path").getNodeValue();
 				
-				soapInterfaces.add(new ConfigSOAPInterface(ConfigSOAPInterface.Protocol.HTTP, host, port, path));
+				if (protocol.equalsIgnoreCase("http")) {
+					soapInterfaces.add(new ConfigSOAPInterface(ConfigSOAPInterface.Protocol.HTTP, host, port, path));
+				}
+				
+				if (protocol.equalsIgnoreCase("https")) {
+					if (binding.getAttributes().getNamedItem("keystore") == null)
+						throw new Exception("No keystore found for a https binding");
+					String keystore = binding.getAttributes().getNamedItem("keystore").getNodeValue();
+					if (binding.getAttributes().getNamedItem("keystorepassword") == null)
+						throw new Exception("No keystorepassword found for a https binding");
+					String keystorepassword = binding.getAttributes().getNamedItem("keystorepassword").getNodeValue();
+					if (binding.getAttributes().getNamedItem("keypassword") == null)
+						throw new Exception("No keypassword found for a https binding");
+					String keypassword = binding.getAttributes().getNamedItem("keypassword").getNodeValue();
+					
+					soapInterfaces.add(new ConfigSOAPInterface(ConfigSOAPInterface.Protocol.HTTPS, host, port, path, keystore, keystorepassword, keypassword));
+				}
 			}
 		}
 		if (soapInterfaces.size() < 1) throw new Exception("There has to be at least one SOAPInterface binding");

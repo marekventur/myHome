@@ -12,9 +12,11 @@
 	
 	<!-- This configures the soap interface -->
 	<soapinterface>
-		<!-- At the moment nothing besides "http" is supported -->
+		<!-- HTTP is faster at startup and does not need a keystore-file. Should only be used during development/testing and on a secure network -->
 		<binding protocol="http" port="8888" host="localhost" path="/service" />
-		<!-- At the moment you can only use one interface -->
+		<!-- HTTPS is recommended for productive use -->
+		<!-- <binding protocol="https" port="8888" host="localhost" path="/service" keystore="myhome.jks" keystorepassword="myhome" keypassword="myhome" /> -->
+		<!-- At the moment you can only use one (the first!) interface -->
 	</soapinterface>
 	
 	<!-- This describes all used plugins -->
@@ -204,6 +206,18 @@
 				</node>
 	
 			</data>
+		</nodeplugin>
+		
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.camerasimulator">
+			<!-- There can be zero to many parameter tags -->
+			<parameter>
+				<key>id</key>
+				<value>127.0.0.1</value>	
+			</parameter>
+			<parameter>
+				<key>name</key>
+				<value>Kamera Haustür</value>	
+			</parameter>
 		</nodeplugin>
 
 		<!-- There might be some more plugins added here -->

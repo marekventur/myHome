@@ -1,7 +1,9 @@
 package de.wi08e.myhome.nodeplugins.mielesimulator;
 
+import java.awt.Image;
 import java.util.Map;
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.NodeInformDatagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
@@ -61,6 +63,11 @@ public class Main implements NodePlugin
 	public void setStatus(String key, String value)
 	{
 		event.datagrammReceived(new StatusDatagram(node, key, value));
+	}
+
+	@Override
+	public Image getLastSnapshot(Node node) {
+		return null;
 	}
 	
 }

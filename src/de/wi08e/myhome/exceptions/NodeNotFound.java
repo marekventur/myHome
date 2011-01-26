@@ -1,4 +1,4 @@
-package de.wi08e.myhome.frontend.exceptions;
+package de.wi08e.myhome.exceptions;
 
 public class NodeNotFound extends FrontendException {
 	private static final long serialVersionUID = 1L;

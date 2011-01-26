@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.wi08e.myhome.blueprintmanager;
+package de.wi08e.myhome;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,7 +26,7 @@ public class ImageHelper {
 	/**
 	 * Code from *** (can't remember. Can anyone please find out?)
 	 */
-	protected static BufferedImage toBufferedImage(Image image) {
+	public static BufferedImage toBufferedImage(Image image) {
 		if (image instanceof BufferedImage) {
 			return (BufferedImage) image;
 		}
@@ -104,13 +104,13 @@ public class ImageHelper {
 	 * @param higherQuality
 	 * @return
 	 */
-	protected static BufferedImage getScaledInstance(BufferedImage img, int targetWidth,
+	public static BufferedImage getScaledInstance(BufferedImage img, int targetWidth,
 			int targetHeight, Object hint, boolean higherQuality) {
 		int type = (img.getTransparency() == Transparency.OPAQUE) ? BufferedImage.TYPE_INT_RGB
 				: BufferedImage.TYPE_INT_ARGB;
 		BufferedImage ret = (BufferedImage) img;
 		int w, h;
-		if (higherQuality) {
+		if (higherQuality && (img.getWidth() > targetWidth && img.getHeight() > targetHeight)) {
 			// Use multi-step technique: start with original size, then
 			// scale down in multiple passes with drawImage()
 			// until the target size is reached
