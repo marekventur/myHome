@@ -2,7 +2,6 @@ package de.wi08e.myhome.nodeplugins.mielesimulator;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.SwingConstants;
 
 /**
@@ -16,12 +15,56 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Main main = null;
+	private boolean running = false;
+	
+    // Variables declaration - do not modify
+    private javax.swing.JButton an;
+    private javax.swing.JButton aus;
+    private javax.swing.JButton plus;
+    private javax.swing.JButton minus;
+    private javax.swing.JButton start;
+    private javax.swing.JButton abbrechen;
+    private javax.swing.JCheckBox gericht;
+    private javax.swing.JCheckBox timer;
+    private javax.swing.JCheckBox autostart;
+    private javax.swing.JCheckBox heissluft;
+    private javax.swing.JCheckBox grill;
+    private javax.swing.JCheckBox oberhitze;
+    private javax.swing.JCheckBox unterhitze;
+    private javax.swing.JCheckBox auftauen;
+    private javax.swing.JCheckBox einkochen;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JList programm;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JProgressBar fuellstand;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private java.awt.TextField ist;
+    private java.awt.TextField soll;
+    private javax.swing.JTextField dauer;
+    private javax.swing.JTextField uhrzeit;
+    private javax.swing.JCheckBox powerBox;
+    // End of variables declaration
     
     /** Creates new form GUI */
     public GUI(Main main) {
     	this.main=main;
         initComponents();
         this.setVisible(true);
+    	this.getTemperatur();
     }
 
     /** This method is called from within the constructor to
@@ -37,38 +80,38 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         aus = new javax.swing.JButton();
         powerBox = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox8 = new javax.swing.JCheckBox();
-        jCheckBox9 = new javax.swing.JCheckBox();
-        jCheckBox10 = new javax.swing.JCheckBox();
-        jCheckBox5 = new javax.swing.JCheckBox();
-        jCheckBox6 = new javax.swing.JCheckBox();
-        jCheckBox7 = new javax.swing.JCheckBox();
+        timer = new javax.swing.JCheckBox();
+        autostart = new javax.swing.JCheckBox();
+        heissluft = new javax.swing.JCheckBox();
+        auftauen = new javax.swing.JCheckBox();
+        einkochen = new javax.swing.JCheckBox();
+        gericht = new javax.swing.JCheckBox();
+        grill = new javax.swing.JCheckBox();
+        oberhitze = new javax.swing.JCheckBox();
+        unterhitze = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        ist = new java.awt.TextField();
+        soll = new java.awt.TextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        plus = new javax.swing.JButton();
+        minus = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        jTextField3 = new javax.swing.JTextField();
+        dauer = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        start = new javax.swing.JButton();
+        abbrechen = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        programm = new javax.swing.JList();
         jPanel6 = new javax.swing.JPanel();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        fuellstand = new javax.swing.JProgressBar();
         jPanel7 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        uhrzeit = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
 
         jRadioButton1.setText("jRadioButton1");
@@ -118,23 +161,23 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmwahl"));
 
-        jCheckBox2.setText("Timer");
+        timer.setText("Timer");
 
-        jCheckBox3.setText("Autostart");
+        autostart.setText("Autostart");
 
-        jCheckBox4.setText("Heißluft");
+        heissluft.setText("Heißluft");
 
-        jCheckBox8.setText("Auftauen");
+        auftauen.setText("Auftauen");
 
-        jCheckBox9.setText("Einkochen");
+        einkochen.setText("Einkochen");
 
-        jCheckBox10.setText("Gericht/Pr");
+        gericht.setText("Gericht/Pr");
 
-        jCheckBox5.setText("Grill");
+        grill.setText("Grill");
 
-        jCheckBox6.setText("Oberhitze");
+        oberhitze.setText("Oberhitze");
 
-        jCheckBox7.setText("Unterhitze");
+        unterhitze.setText("Unterhitze");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -143,47 +186,47 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox4)
-                    .addComponent(jCheckBox2)
-                    .addComponent(jCheckBox3))
+                    .addComponent(heissluft)
+                    .addComponent(timer)
+                    .addComponent(autostart))
                 .addGap(24, 24, 24)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox9)
-                    .addComponent(jCheckBox8)
-                    .addComponent(jCheckBox10))
+                    .addComponent(einkochen)
+                    .addComponent(auftauen)
+                    .addComponent(gericht))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox6)
-                    .addComponent(jCheckBox5)
-                    .addComponent(jCheckBox7))
+                    .addComponent(oberhitze)
+                    .addComponent(grill)
+                    .addComponent(unterhitze))
                 .addContainerGap(8, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox2)
-                    .addComponent(jCheckBox8)
-                    .addComponent(jCheckBox5))
+                    .addComponent(timer)
+                    .addComponent(auftauen)
+                    .addComponent(grill))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox3)
-                    .addComponent(jCheckBox9)
-                    .addComponent(jCheckBox6))
+                    .addComponent(autostart)
+                    .addComponent(einkochen)
+                    .addComponent(oberhitze))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox4)
-                    .addComponent(jCheckBox10)
-                    .addComponent(jCheckBox7)))
+                    .addComponent(heissluft)
+                    .addComponent(gericht)
+                    .addComponent(unterhitze)))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Temperatur"));
 
-        jTextField1.setEditable(false);
-        jTextField1.setText("0");
+        ist.setEditable(false);
+        ist.setText("0");
 
-        jTextField2.setEditable(false);
-        jTextField2.setText("40");
+        soll.setEditable(false);
+        soll.setText("40");
 
         jLabel1.setText("IST");
 
@@ -193,9 +236,11 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 
         jLabel4.setText("°C");
 
-        jButton3.setText("+");
+        plus.setText("+");
+        plus.addActionListener(this);
 
-        jButton4.setText("-");
+        minus.setText("-");
+        minus.addActionListener(this);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -209,15 +254,15 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
                         .addGap(56, 56, 56)
                         .addComponent(jLabel2))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(minus, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3))
+                        .addComponent(plus))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ist, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(soll, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)))
                 .addContainerGap())
@@ -230,29 +275,29 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ist, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(soll, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton3))
+                    .addComponent(minus)
+                    .addComponent(plus))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Timer"));
 
-        jTextField3.setForeground(new java.awt.Color(204, 204, 204));
-        jTextField3.setText("hh:mm");
+        dauer.setForeground(new java.awt.Color(204, 204, 204));
+        dauer.setText("hh:mm");
 
         jLabel5.setText("Dauer:");
 
         jLabel6.setText("Garzeit einstellen:");
 
-        jButton5.setText("Start");
+        start.setText("Start");
 
-        jButton6.setText("Abbr.");
+        abbrechen.setText("Abbr.");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -265,11 +310,11 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(dauer, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(abbrechen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)
+                        .addComponent(start)
                         .addGap(12, 12, 12)))
                 .addContainerGap())
         );
@@ -280,17 +325,17 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dauer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                    .addComponent(abbrechen)
+                    .addComponent(start, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Gericht"));
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        programm.setModel(new javax.swing.AbstractListModel() {
             /**
 			 * 
 			 */
@@ -299,7 +344,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(programm);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -319,9 +364,9 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Füllstand"));
 
-        jProgressBar1.setForeground(new java.awt.Color(51, 255, 0));
-        jProgressBar1.setOrientation(SwingConstants.VERTICAL);
-        jProgressBar1.setValue(80);
+        fuellstand.setForeground(new java.awt.Color(51, 255, 0));
+        fuellstand.setOrientation(SwingConstants.VERTICAL);
+        fuellstand.setValue(80);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -329,14 +374,14 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(fuellstand, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(fuellstand, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -344,8 +389,8 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 
         jLabel7.setText("Uhrzeit:");
 
-        jTextField4.setForeground(new java.awt.Color(204, 204, 204));
-        jTextField4.setText("hh:mm");
+        uhrzeit.setForeground(new java.awt.Color(204, 204, 204));
+        uhrzeit.setText("hh:mm");
 
         jLabel8.setText("Startzeit eingeben:");
 
@@ -360,7 +405,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(uhrzeit, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
@@ -371,7 +416,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
                 .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(uhrzeit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
         );
 
@@ -423,52 +468,13 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
     * @param args the command line arguments
     */
 
-    // Variables declaration - do not modify
-    private javax.swing.JButton an;
-    private javax.swing.JButton aus;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JCheckBox jCheckBox10;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
-    private javax.swing.JCheckBox jCheckBox6;
-    private javax.swing.JCheckBox jCheckBox7;
-    private javax.swing.JCheckBox jCheckBox8;
-    private javax.swing.JCheckBox jCheckBox9;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JList jList1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JCheckBox powerBox;
-    // End of variables declaration
 
     public void actionPerformed(ActionEvent arg) 
 	{
 		if(arg.getSource()==aus) this.setPower("0");
 		if(arg.getSource()==an) this.setPower("1");
+		if(arg.getSource()==plus) this.changeTemperatur(1);
+		if(arg.getSource()==minus) this.changeTemperatur(-1);
 	}
 
 	public void setPower(String status)
@@ -476,4 +482,16 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 		powerBox.setSelected(status.contentEquals("1"));
 		main.setStatus("power", status);
 	}
+	
+	public void getTemperatur()
+	{
+		main.setStatus("getTemperatur", ist.getText());
+	}
+	
+	public void changeTemperatur(int zahl)
+	{
+		soll.setText((String.valueOf(Integer.parseInt(soll.getText())+zahl)));
+		main.setStatus("changeTemperatur", "0");
+	}
+	
 }

@@ -31,6 +31,9 @@ public class Main implements NodePlugin
 			if (statusDatagram.getKey().equalsIgnoreCase("power")) {
 				gui.setPower(statusDatagram.getValue());
 			}
+			if (statusDatagram.getKey().equalsIgnoreCase("changeTemperatur")) {
+				gui.changeTemperatur(Integer.parseInt(statusDatagram.getValue()));
+			}
 		}
 	}
 
