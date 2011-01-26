@@ -1,5 +1,6 @@
 package de.wi08e.myhome.nodeplugins.camera;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,9 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 /**
+ * @author Nico
+ * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
+ * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
  * This Implements FTP Command Interpretation. For each Connection one is opened
  * as a new Thread.
  */
@@ -67,16 +71,20 @@ public class FtpServerProtocol implements Runnable{
 	 * The current directory for client.
 	 */
 	private String currentDir = "/";
+	
+	
+	
+	private FtpServer server;
 
 	/**
 	 * Creates ServerProtocol for client socket for reading and writing Commands.
 	 */
-	public FtpServerProtocol(Socket clientSocket)throws IOException{
+	public FtpServerProtocol(Socket clientSocket, FtpServer server)throws IOException{
 		this.clientSocket = clientSocket;
 		reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
-
-		data= new FtpServerData(this);
+		this.server = server;
+		data= new FtpServerData(this, server);
 		}
 
 	public void run(){

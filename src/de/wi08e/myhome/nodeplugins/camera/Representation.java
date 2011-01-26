@@ -9,6 +9,9 @@ import java.net.Socket;
 import java.util.Hashtable;
 
 /**
+ * @author Nico
+ * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
+ * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
  * Representation type for the server to use with the TYPE command.
  */
 public abstract class Representation{

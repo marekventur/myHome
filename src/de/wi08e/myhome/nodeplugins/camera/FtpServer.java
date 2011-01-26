@@ -1,10 +1,16 @@
 package de.wi08e.myhome.nodeplugins.camera;
 
 
+import java.awt.image.BufferedImage;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import de.wi08e.myhome.model.Node;
+
 /**
+ * @author Nico
+ * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
+ * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
  * Create Server Socket and listens to incomming
  * connections. Creates new Thread for Connection.
  */
@@ -23,6 +29,10 @@ public class FtpServer{
 	 * Default Listening Port
 	 */
 	private int port;
+	
+	public Main main;
+	
+	
 
 	/**
 	 * Main Method for using FtpServer, args[] may be a specific port
@@ -42,6 +52,11 @@ public class FtpServer{
 	public FtpServer(){
 		this.port = SERVER_PORT;
 		}
+	
+	public FtpServer(Main main){
+		this.port = SERVER_PORT;
+		this.main = main;
+		}
 
 	/**
 	 * FTP server on  specified port.
@@ -59,7 +74,7 @@ public class FtpServer{
 		while (true)
 			{
 			Socket clientSocket = serverSocket.accept();
-			FtpServerProtocol serverprotocol = new FtpServerProtocol(clientSocket);
+			FtpServerProtocol serverprotocol = new FtpServerProtocol(clientSocket, this);
 			new Thread(serverprotocol).start();
 			}
 		}
@@ -70,7 +85,7 @@ public class FtpServer{
 	 * @param socket the client socket.
 	 */
 	public void service(Socket socket)throws Exception{
-		FtpServerProtocol protocol = new FtpServerProtocol(socket);
+		FtpServerProtocol protocol = new FtpServerProtocol(socket, this);
 		protocol.run();
 	}
 }

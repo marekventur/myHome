@@ -1,6 +1,7 @@
 
 package de.wi08e.myhome.nodeplugins.camera;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,12 +13,21 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.wi08e.myhome.model.Snapshot;
+
 /**
+ * @author Nico
+ * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
+ * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
  * Server data transfer. Separate data socket created.
  */
 public class FtpServerData{
 	
 	private FtpServerProtocol protocol;
+	
+	private FtpServer server;
+	
+	private int imageCount = 0;
 
 	/**
 	 * host of the data socket.
@@ -42,8 +52,9 @@ public class FtpServerData{
 	/**
 	 * Data transfer for server protocol.
 	 */
-	public FtpServerData(FtpServerProtocol protocol){
+	public FtpServerData(FtpServerProtocol protocol, FtpServer server){
 		this.protocol = protocol;
+		this.server = server;
 	}
 
 	/**
@@ -95,7 +106,10 @@ public class FtpServerData{
 			dataSocket = new Socket(dataHost, dataPort);
 			// Read contens
 			protocol.reply(150, "Opening " + representation.getName() + " mode data connection.");
-			transmissionMode.receiveFile(dataSocket, fos, representation);
+			//Image Handling
+			BufferedImage image = transmissionMode.receiveFile(dataSocket, fos, representation);
+			Snapshot snapshot = new Snapshot(image, server.main.getNode(), "Snapshot"+imageCount);
+			server.main.setLastID(snapshot);
 			reply = protocol.reply(226, "Transfer complete.");
 		}
 		catch (ConnectException e){

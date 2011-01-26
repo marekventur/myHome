@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
+ * @author Nico
+ * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
+ * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
  * Converts data streams to and from IMAGE representation.
  */
 public class ImageRepresentation extends Representation{

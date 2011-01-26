@@ -2,6 +2,9 @@
 package de.wi08e.myhome.nodeplugins.camera;
 
 /**
+ * @author Nico
+ * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
+ * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
  * Exception thrown by error in command handling.
  */
 public class FtpCommandException extends Exception{

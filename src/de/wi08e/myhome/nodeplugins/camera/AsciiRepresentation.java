@@ -10,7 +10,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+
+
 /**
+ * @author Nico
+ * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
+ * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
  * Convert data streams to and from ASCII representation.
  */
 public class AsciiRepresentation extends Representation{

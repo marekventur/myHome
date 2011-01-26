@@ -535,31 +535,4 @@ public class FrontendInterface {
 		String streamURL = null;
 		return streamURL;
 	}
-	
-	/**
-	 * Gibt das aktuelleste Bild der Kamera wieder
-	 * @param userToken
-	 * @param cameraId
-	 * @param maxHeight
-	 * @param maxWidth
-	 * @return
-	 * @throws NotLoggedIn
-	 * @throws BlueprintNotFound
-	 */
-	public BlueprintResponse getCameraImage(@WebParam(name="userToken") String userToken,@WebParam(name="CameraId") int cameraId,@WebParam(name="maxHeight") int maxHeight,@WebParam(name="maxWidth") int maxWidth) throws NotLoggedIn, BlueprintNotFound {
-		requestUserRights(userToken);
-		return new BlueprintResponse(blueprintManager.getImage(cameraId, maxHeight, maxWidth));  
-	}
-	
-	public BlueprintResponse[] getAllImages(@WebParam(name="userToken") String userToken) throws NotLoggedIn {
-
-		requestUserRights(userToken);
-		return convertListToResponseArrayBlueprint(blueprintManager.getAllImages());  
-	}
-
-	public void deleteImage(@WebParam(name="userToken") String userToken,@WebParam(name="ImageId") int imageId) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
-		requestAdminRights(userToken); 
-		if (!blueprintManager.deleteImage(imageId)) 
-			throw new BlueprintNotFound();
-	}
 }

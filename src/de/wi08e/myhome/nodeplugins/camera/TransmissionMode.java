@@ -17,6 +17,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 /**
+ * @author Nico
+ * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
+ * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
  * Handle sending or receiving of files.
  */
 public class TransmissionMode{
@@ -74,24 +77,21 @@ public class TransmissionMode{
 	}
 
 	/**
-	 * Reads data from socket, write result to file.
-	 * Shows Image in a JFrame for Testing
+	 * Reads data from socket into BufferedImage
 	 */
-	public void receiveFile(Socket s, OutputStream out, Representation representation) throws IOException{
+	public BufferedImage receiveFile(Socket s, OutputStream out, Representation representation) throws IOException{
 		InputStream in = representation.getInputStream(s);
-		Image image = null;
+		BufferedImage image = null;
         image = ImageIO.read(in);
-        preview(image);
-        BufferedImage bi = new BufferedImage(100, 100, BufferedImage.TYPE_BYTE_BINARY); 
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        ImageIO.write(bi, "png", bs);
-        preview(bi);
+        // for testing --> preview(image);
+        /* Disabled -->Saves File to HDD
 		byte buf[] = new byte[BUFSIZ];
 		int nread;
 		while ((nread = in.read(buf, 0, BUFSIZ)) > 0){
 			out.write(buf, 0, nread);
-		}
+		}*/
 		in.close();
+		return image;
 	}
 	public static void preview(Image image) {
 		JFrame frame = new JFrame();

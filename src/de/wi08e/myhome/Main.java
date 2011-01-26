@@ -11,6 +11,7 @@ import de.wi08e.myhome.frontend.httpserver.HTTPServer;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
 import de.wi08e.myhome.scriptmanager.ScriptManager;
+import de.wi08e.myhome.snapshotmanager.SnapshotManager;
 import de.wi08e.myhome.statusmanager.StatusManager;
 import de.wi08e.myhome.usermanager.UserManager;
 
@@ -28,6 +29,7 @@ public class Main {
 	private static BlueprintManager blueprintManager;
 	private static UserManager userManager;
 	private static CommunicationManager communicationManager;
+	private static SnapshotManager snapshotManager;
 		
 	/**
 	 * This mtehod starts everything!
@@ -82,7 +84,10 @@ public class Main {
 		new Thread(scriptManager).start();
 		
 		/* Create Blueprint Manager */
-		blueprintManager = new BlueprintManager(database);		
+		blueprintManager = new BlueprintManager(database);
+		
+		/* Create Snapshot Manager */
+		snapshotManager = new SnapshotManager(database);	
 		
 		/* New FrontendInterface */
 		FrontendInterface frontendInterface = new FrontendInterface(nodeManager, statusManager, blueprintManager, userManager);
