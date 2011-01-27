@@ -3,10 +3,8 @@
  */
 package de.wi08e.myhome.nodeplugins;
 
-
 /**
  * @author Marek
- *
  */
 public class NodePluginTester {
 	public static void main(String[] args)  {

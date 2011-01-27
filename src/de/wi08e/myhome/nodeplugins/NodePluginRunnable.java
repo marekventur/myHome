@@ -5,10 +5,12 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.w3c.dom.Node;
-
+import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
-import de.wi08e.myhome.nodeplugins.enoceansimulator.NodePanel;
+/**
+ * @author Marek_Ventur
+ */
 
 public class NodePluginRunnable implements Runnable {
 	
@@ -19,6 +21,11 @@ public class NodePluginRunnable implements Runnable {
 		@Override
 		public void datagrammReceived(Datagram datagram) {		
 			outgoingDatagrams.add(datagram);			
+		}
+
+		@Override
+		public void storeImage(Node node, Image image) {
+			
 		}			
 	};
 	
@@ -51,7 +58,7 @@ public class NodePluginRunnable implements Runnable {
 					
 					// Chain 
 					if (holder.getType() == DatagramQueueHolder.Type.SEND) 
-						nodePlugin.chainReceiveDatagram(datagram);
+						nodePlugin.chainSendDatagramm(datagram);
 					
 
 			}
@@ -62,7 +69,8 @@ public class NodePluginRunnable implements Runnable {
 	public void chainReceiveDatagram(Datagram datagram) {
 		incomingDatagrams.add(new DatagramQueueHolder(datagram, DatagramQueueHolder.Type.RECEIVED));
 	}
-
-
-
+	
+	public Image getLastSnapshot(Node node) {
+		return nodePlugin.getLastSnapshot(node);
+	}
 }

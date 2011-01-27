@@ -5,8 +5,10 @@ package de.wi08e.myhome;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
+import java.util.logging.Filter;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -58,9 +60,11 @@ public class TextFileLogger {
 
 
 	static public void setup() {
+				
 		// Create Logger
 		Logger logger = Logger.getLogger("");
 		logger.setLevel(Level.INFO);
+				
 		
 		try {
 			fileTxt = new FileHandler(Config.getLogFile());

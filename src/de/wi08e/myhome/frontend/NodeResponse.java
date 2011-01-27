@@ -4,6 +4,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import de.wi08e.myhome.model.NamedNode;
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.NodeWithPosition;
+
+/**
+ * @author Thilo_Gerheim
+ */
 
 @XmlRootElement(name="nodeResponse")
 public class NodeResponse {
@@ -13,19 +18,21 @@ public class NodeResponse {
 	public String hardwareId;
 	public String name;
 	public String type;
-	public float positionX = 0;
-	public float positionY = 0;
-	public int blueprintId = -1;
 	public NodeStatusResponse[] status = null;
 	public String[] tags;
+	
+	/* Only be used in combination with blueprint  */
+	private Float x;
+	private Float y;
+	
 	
 	public NodeResponse() {
 		
 	}
 	
 	/**
-	 * Initiate from node-object and abrsctact everything
-	 * @param node
+	 * Initiate from node-object and abstract everything
+	 * @param node gets the parameter defined in the Database
 	 */
 	public NodeResponse(Node node) {
 		id = node.getDatabaseId();
@@ -35,9 +42,6 @@ public class NodeResponse {
 		type = node.getType();
 		
 		if (node instanceof NamedNode) {
-			blueprintId = ((NamedNode)node).getBlueprintId();
-			positionX = ((NamedNode)node).getPositionX();
-			positionY = ((NamedNode)node).getPositionY();
 			name = ((NamedNode)node).getName();
 		}
 		
@@ -57,4 +61,33 @@ public class NodeResponse {
 		
 	
 	}
+
+	/**
+	 * @param node
+	 */
+	public NodeResponse(NodeWithPosition nodeWithPosition) {
+		this(nodeWithPosition.getNode());
+		System.out.println(nodeWithPosition.getX());
+		x = nodeWithPosition.getX();
+		y = nodeWithPosition.getY();
+	}
+
+	public Float getX() {
+		return x;
+	}
+
+	public void setX(Float x) {
+		this.x = x;
+	}
+
+	public Float getY() {
+		return y;
+	}
+
+	public void setY(Float y) {
+		this.y = y;
+	}
+
+	
+	
 }

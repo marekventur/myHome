@@ -19,8 +19,7 @@ import javax.swing.SwingConstants;
 import de.wi08e.myhome.model.Node;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
 public class GUI extends JFrame {
 	
@@ -42,9 +41,6 @@ public class GUI extends JFrame {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 
-	/**
-	 * 
-	 */
 	public void createAndShowGUI() {
 	    
 	    pack();

@@ -11,18 +11,17 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
-
 import de.wi08e.myhome.Config;
 import de.wi08e.myhome.ConfigPlugin;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
-import de.wi08e.myhome.model.datagram.BroadcastDatagram;
+import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodemanager.NodeManager;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
+
 public class NodePluginManager implements Runnable {
 	
 	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
@@ -46,8 +45,9 @@ public class NodePluginManager implements Runnable {
 		/* Create thread-safe plugin list (not sure, if needed) */
 		plugins = Collections.synchronizedList(new ArrayList<NodePluginRunnable>());
 		
+		
 		/* Loop plugin list */
-		List<ConfigPlugin> configPlugins = Config.getPlugins();
+		List<ConfigPlugin> configPlugins = Config.getNodePlugins();
 		for (ConfigPlugin configPlugin: configPlugins) {
 			
 			Class<?> loadedClass;
@@ -63,21 +63,6 @@ public class NodePluginManager implements Runnable {
 				pluginThread.start();
 				
 				plugins.add(pluginRunnable);
-				
-				/*
-				plugin.initiate(new NodePluginEvent() {
-
-					@Override
-					public void datagrammReceived(Datagram datagram) {			
-						for (NodePlugin plugin: plugins) 
-							plugin.chainReceiveDatagram(datagram);	
-						if (nodeManager != null)
-							nodeManager.receiveDatagram(datagram);
-					}
-					
-					}, configPlugin.getProperties(), configPlugin.getData());
-					LOGGER.info("Intiated '"+plugin.getName()+"'");
-				*/
 				
 				
 			} catch (ClassNotFoundException e) {
@@ -95,30 +80,40 @@ public class NodePluginManager implements Runnable {
 			} 
 		}
 	}
-
+	
+	/**
+	 * @param datagram sends the given datagram
+	 */
+	
 	public void sendDatagram(Datagram datagram) {
+
 		for (NodePluginRunnable pluginRunnable: plugins) 
 			pluginRunnable.chainSendDatagramm(datagram);	
+
+	}
+	
+	public Image getLastSnapshot(Node node) {
+		for (NodePluginRunnable pluginRunnable: plugins) {
+			Image image = pluginRunnable.getLastSnapshot(node);
+			if (image != null)
+				return image;
+		}
+		return null;
 	}
 
 	@Override
 	public void run() {
 		try {
 			while (running) {
-
 				Datagram datagram = receivedDatagrams.take();
-				
-				
 				
 				for (NodePluginRunnable pluginRunnable: plugins) 
 					pluginRunnable.chainReceiveDatagram(datagram);	
 				if (nodeManager != null)
 					nodeManager.receiveDatagram(datagram);
-
 			}
 		} catch (InterruptedException e) {
 		}		
 	}
-
 	
 }

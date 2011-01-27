@@ -9,7 +9,6 @@ import org.w3c.dom.Node;
 
 /**
  * @author Marek
- *
  */
 public class ConfigPlugin {
 	private String namespace;

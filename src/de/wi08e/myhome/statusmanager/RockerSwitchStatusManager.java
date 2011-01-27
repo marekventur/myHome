@@ -1,15 +1,14 @@
 package de.wi08e.myhome.statusmanager;
 
+import java.util.HashSet;
 import java.util.List;
-
-import de.wi08e.myhome.model.Node;
+import java.util.Set;
+import de.wi08e.myhome.exceptions.InvalidStatusValue;
 import de.wi08e.myhome.model.Trigger;
 import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
-import de.wi08e.myhome.model.datagram.RockerSwitchDatagram.Action;
-import de.wi08e.myhome.model.datagram.RockerSwitchDatagram.Channel;
-import de.wi08e.myhome.model.datagram.RockerSwitchDatagram.State;
+
 
 public class RockerSwitchStatusManager implements SpecializedStatusManager {
 
@@ -38,7 +37,7 @@ public class RockerSwitchStatusManager implements SpecializedStatusManager {
 						// Only if correct channel is choosen
 						if (rockerSwitchDatagram.getChannel().getChar() == receiver.getChannel()) {
 							float light = rockerSwitchDatagram.getState() == RockerSwitchDatagram.State.ON?1:0;
-							statusManager.writeStatusChangeToDatabase(receiver.getReceiver().getDatabaseId(), "light", String.valueOf(light));
+							statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "light", String.valueOf(light));
 						}
 					}
 				}
@@ -57,12 +56,12 @@ public class RockerSwitchStatusManager implements SpecializedStatusManager {
 	}
 
 	@Override
-	public Datagram findDatagramForStatusChange(String key, String value, Trigger trigger, int[] receiverIds) throws InvalidStatusValueException {
+	public Datagram findDatagramForStatusChange(String key, String value, Trigger trigger, int[] receiverIds) throws InvalidStatusValue {
 		if (trigger.getSender().getType().contentEquals("rockerswitch")) {
 			if (trigger.getReceiver().getType().contentEquals("relais")) {
 				if (key.contentEquals("light")) {
 					if (!value.matches("[01](.0)?")) 
-						throw new InvalidStatusValueException();
+						throw new InvalidStatusValue();
 					RockerSwitchDatagram.State state = (value.charAt(0)=='1')?RockerSwitchDatagram.State.ON:RockerSwitchDatagram.State.OFF;
 					return new RockerSwitchDatagram(trigger.getSender(), RockerSwitchDatagram.Channel.convertFromChar(trigger.getChannel()), state, RockerSwitchDatagram.Action.RELEASED);
 				}
@@ -70,6 +69,14 @@ public class RockerSwitchStatusManager implements SpecializedStatusManager {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public Set<String> getAllTypes() {
+		Set<String> result = new HashSet<String>();
+		result.add("rockerswitch");
+		result.add("relais");
+		return result;
 	}
 
 }

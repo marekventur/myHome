@@ -3,6 +3,7 @@
  */
 package de.wi08e.myhome.nodeplugins.enoceansimulator;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,16 +15,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import de.wi08e.myhome.model.Node;
+import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
+import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodeplugins.DatagramQueueHolder;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;
 
 /**
- * @author Marek
- *
+ * @author Marek_Ventur
  */
 public class Main implements NodePlugin {
 	
@@ -62,7 +64,8 @@ public class Main implements NodePlugin {
 		
 		/* Go through data */
 		NodeList configNodes = ((Element)data).getElementsByTagName("node");
-		for (int i = 0; i < configNodes.getLength(); i++) {
+		for (int i = 0; i < configNodes.getLength(); i++) 
+		{
 			org.w3c.dom.Node configNode = configNodes.item(i);
 			
 			/* Get type */
@@ -98,12 +101,14 @@ public class Main implements NodePlugin {
 				}
 				
 				/* Relais */
-				if (type.equalsIgnoreCase("Relais")) {
+				if (type.equalsIgnoreCase("Relais")) 
+				{
 					List<RelaisTrigger> triggers = new ArrayList<RelaisTrigger>();
 					
 					NodeList triggerNodes = ((Element) configNode).getElementsByTagName("trigger");
 					
-					for (int j=0; j<triggerNodes.getLength(); j++) {
+					for (int j=0; j<triggerNodes.getLength(); j++) 
+					{
 						
 						org.w3c.dom.Node triggerNode = triggerNodes.item(j); 
 						if (triggerNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
@@ -140,7 +145,7 @@ public class Main implements NodePlugin {
 			}
 			
 		}
-		
+	
 		gui = new GUI(properties.get("title"), nodePanels);
 		
 
@@ -173,6 +178,8 @@ public class Main implements NodePlugin {
 	
 	@Override
 	public void chainSendDatagramm(Datagram datagram) {
+
+		
 		for(NodePanel nodePanel: nodePanels)
 			nodePanel.handleDatagram(datagram);		
 	}
@@ -189,8 +196,9 @@ public class Main implements NodePlugin {
 		return "enocean";
 	}
 
-
-
-	
+	@Override
+	public Image getLastSnapshot(Node node) {
+		return null;
+	}
 
 }
