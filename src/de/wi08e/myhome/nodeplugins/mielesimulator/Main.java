@@ -3,7 +3,6 @@ package de.wi08e.myhome.nodeplugins.mielesimulator;
 import java.awt.Image;
 import java.util.Map;
 import de.wi08e.myhome.model.Node;
-import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.NodeInformDatagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
@@ -30,11 +29,16 @@ public class Main implements NodePlugin
 		if (datagram instanceof StatusDatagram) {
 			StatusDatagram statusDatagram = (StatusDatagram)datagram;
 			Node node = statusDatagram.getNode();
-			if (statusDatagram.getKey().equalsIgnoreCase("power")) {
-				gui.setPower(statusDatagram.getValue());
-			}
-			if (statusDatagram.getKey().equalsIgnoreCase("changeTemperatur")) {
-				gui.changeTemperatur(Integer.parseInt(statusDatagram.getValue()));
+			if(node.equals(this.node))
+			{
+				if (statusDatagram.getKey().equalsIgnoreCase("power")) {
+					statusDatagram.setProcessed(true);
+					gui.setPower(statusDatagram.getValue());
+				}
+				if (statusDatagram.getKey().equalsIgnoreCase("changeTemperatur")) {
+					statusDatagram.setProcessed(true);
+					gui.changeTemperatur(Integer.parseInt(statusDatagram.getValue()));
+				}
 			}
 		}
 	}
