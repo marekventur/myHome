@@ -31,7 +31,7 @@ import de.wi08e.myhome.usermanager.UserManager;
  * Most methods require an userToken. This token can be acquired by login() and is valid for a certain 
  * time (default: 30min) after the last successful request with this token.
  * 
- * @author Marek
+ * @author Marek_Ventur
  */
 
 
