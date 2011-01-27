@@ -17,8 +17,7 @@ import de.wi08e.myhome.database.Database;
 
 /**
  * 
- * 
- * @author Marek
+ * @author marek_ventur
  *
  */
 public class Blueprint {
@@ -32,7 +31,11 @@ public class Blueprint {
 	public Blueprint() {
 		
 	}
-	
+	/**
+	 * 
+	 * @param resultSet creates a node of resultset
+	 * @throws SQLException
+	 */
 	public Blueprint(ResultSet resultSet) throws SQLException {
 		databseId = resultSet.getInt("id");
 		name = resultSet.getString("name");
@@ -49,7 +52,14 @@ public class Blueprint {
 			}
 		}
 	}
-	
+	/**
+	 * determining the fowlloing parameters
+	 * @param databseId 
+	 * @param name
+	 * @param width
+	 * @param height
+	 * @param image
+	 */
 	public Blueprint(int databseId, String name, int width, int height,
 			Image image) {
 		super();
