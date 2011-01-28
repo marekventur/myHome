@@ -100,6 +100,11 @@ public class Main implements NodePlugin {
 					nodePanels.add(new TwoRockerSwitch(title, node, nodePanelEventHandler));
 				}
 				
+				/* OccupancySensor */
+				if (type.equalsIgnoreCase("OccupancySensor")) {
+					nodePanels.add(new OccupancySensor(title, node, nodePanelEventHandler));
+				}
+				
 				/* Relais */
 				if (type.equalsIgnoreCase("Relais")) 
 				{

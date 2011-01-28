@@ -40,6 +40,7 @@ public class StatusManager implements DatagramReceiver{
 		
 		// Add StatusManager
 		specializedStatusManagers.add(new RockerSwitchStatusManager(this));
+		specializedStatusManagers.add(new OccupancySensorStatusManager(this));
 		
 		for (SpecializedStatusManager specializedStatusManager: specializedStatusManagers) 
 			types.addAll(specializedStatusManager.getAllTypes());
