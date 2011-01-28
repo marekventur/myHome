@@ -19,7 +19,7 @@ import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
-import de.wi08e.myhome.nodeplugins.DatagramQueueHolder;
+import de.wi08e.myhome.nodeplugins.MessageToPluginQueueHolder;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;

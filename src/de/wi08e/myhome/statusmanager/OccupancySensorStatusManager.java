@@ -13,6 +13,7 @@ import de.wi08e.myhome.model.datagram.BroadcastDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.OccupancySensorDatagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
+import de.wi08e.myhome.model.datagram.StartSnapshottingDatagram;
 
 /**
  * @author Marek
@@ -32,11 +33,13 @@ public class OccupancySensorStatusManager implements SpecializedStatusManager {
 		if (datagram instanceof OccupancySensorDatagram) {			
 			OccupancySensorDatagram occupancySensorDatagram = (OccupancySensorDatagram) datagram;
 	
-
 			// Find all triggered nodes
 			List<Trigger> receivers = statusManager.getTriggerManager().getReceiver(datagram.getSender());
-			for (Trigger receiver: receivers) {
-				// We might trigger cameras here...
+			
+			for (Trigger trigger: receivers) {
+				if (trigger.getReceiver().getCategory().equalsIgnoreCase("camera")) {
+					statusManager.getNodeManager().sendDatagram(new StartSnapshottingDatagram(trigger.getReceiver()));
+				}
 			}
 			
 			statusManager.writeStatusChangeToDatabase(occupancySensorDatagram.getSender(), "occupied", occupancySensorDatagram.isOccupied()?"1":"0");
