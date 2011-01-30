@@ -7,19 +7,17 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-
+import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.SwingUtilities;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import de.wi08e.myhome.XMLHelper;
 import de.wi08e.myhome.model.Node;
-import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
-import de.wi08e.myhome.model.datagram.StatusDatagram;
-import de.wi08e.myhome.nodeplugins.MessageToPluginQueueHolder;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;
@@ -29,13 +27,30 @@ import de.wi08e.myhome.nodeplugins.NodePluginException;
  */
 public class Main implements NodePlugin {
 	
+	private class RoomTemperatureTimer extends TimerTask {
+		@Override
+		public void run() {
+			float temperatureChange = 0;
+			
+			// room falls back to start temperature over time
+			setTemperature((temperature*30f + startTemperature)/31f);
+			
+			for(NodePanel nodePanel: nodePanels) 
+				temperatureChange += nodePanel.temperatureStep(temperature);
+			setTemperature(temperature + temperatureChange);
+		}
+	}
+	
 	private final List<NodePanel> nodePanels = new ArrayList<NodePanel>();
 	private GUI gui;
 	private NodePluginEvent event;
+	
+	private float temperature;
+	private float startTemperature;
+	private Timer timer = new Timer();
+	
 
 	private String identifier = "";
-	
-	private boolean running = true;
 	
 	public Main() {
 
@@ -50,6 +65,12 @@ public class Main implements NodePlugin {
 			throw new NodePluginException("Enocean Simulator", "Property 'title' not found");
 		identifier = "Enocean Simulator: "+properties.get("title");
 		
+		/* Is there a temperature? */
+		temperature = 15;
+		if (properties.containsKey("temperature"))
+			temperature = Float.parseFloat(properties.get("temperature"));
+		startTemperature = temperature;
+		
 		/* Is there data? */
 		if (data == null)
 			throw new NodePluginException(identifier, "no 'data' tag found");
@@ -61,6 +82,11 @@ public class Main implements NodePlugin {
 				event.datagrammReceived(datagram);
 			}
 		};
+		
+		/* Room Temperature Timer */
+		RoomTemperatureTimer roomTemperatureTimer = new RoomTemperatureTimer();
+		
+		timer.schedule(roomTemperatureTimer, 1000, 1000);
 		
 		/* Go through data */
 		NodeList configNodes = ((Element)data).getElementsByTagName("node");
@@ -147,11 +173,85 @@ public class Main implements NodePlugin {
 					
 					nodePanels.add(new Relais(title, node, nodePanelEventHandler, triggers));
 				}
+				
+				/* Radiator */
+				if (type.equalsIgnoreCase("Radiator")) {
+					
+					/* load triggers */
+					List<RelaisTrigger> triggers = new ArrayList<RelaisTrigger>();
+					
+					NodeList triggerNodes = ((Element) configNode).getElementsByTagName("trigger");
+					
+					for (int j=0; j<triggerNodes.getLength(); j++) 
+					{
+						
+						org.w3c.dom.Node triggerNode = triggerNodes.item(j); 
+						if (triggerNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+							/* Read trigger from xml */
+							manufacturerNodes = ((Element) triggerNode).getElementsByTagName("manufacturer");
+							idNodes = ((Element) triggerNode).getElementsByTagName("id");							
+							if (manufacturerNodes.getLength() > 0)
+								manufacturer = manufacturerNodes.item(0).getChildNodes().item(0).getNodeValue().toString();
+							if (idNodes.getLength() == 0)
+								throw new NodePluginException("Enocean Simulator", "Tag 'id' not found for tag 'trigger'");
+							id = idNodes.item(0).getChildNodes().item(0).getNodeValue().toString();
+							triggers.add(new RelaisTrigger(new Node("enocean", manufacturer, id), null));
+						}
+					}
+					
+					/* setPointAdjustment */
+					float setPointAdjustment = 
+						Float.parseFloat(XMLHelper.readSimpleTagException(
+								configNode, 
+								"setpointadjustment", 
+								new NodePluginException("Enocean Simulator", "Tag 'setPointAdjustment' not found for tag 'node' of type 'Radiator'")
+							));
+					
+					/* basicsetpoint */
+					float basicSetPoint = 
+						Float.parseFloat(XMLHelper.readSimpleTagException(
+								configNode, 
+								"basicsetpoint", 
+								new NodePluginException("Enocean Simulator", "Tag 'basicsetpoint' not found for tag 'node' of type 'Radiator'")
+							));
+					
+					/* loweringtemperature */
+					float loweringTemperature = 
+						Float.parseFloat(XMLHelper.readSimpleTagException(
+								configNode, 
+								"loweringtemperature", 
+								new NodePluginException("Enocean Simulator", "Tag 'loweringtemperature' not found for tag 'node' of type 'Radiator'")
+							));
+					
+					/* efficency */
+					float efficency = 
+						Float.parseFloat(XMLHelper.readSimpleTagException(
+								configNode, 
+								"efficency", 
+								new NodePluginException("Enocean Simulator", "Tag 'efficency' not found for tag 'node' of type 'Radiator'")
+							));
+					
+					
+					nodePanels.add(new Radiator(title, node, nodePanelEventHandler, temperature, triggers, setPointAdjustment, basicSetPoint, loweringTemperature, efficency));
+				}
+				
+				/* RoomTemperatureSensor */
+				if (type.equalsIgnoreCase("RoomTemperatureSensor")) {
+									
+					NodeList setPointTemperatureNodes = ((Element) configNode).getElementsByTagName("setpoint");
+					if (setPointTemperatureNodes.getLength() == 0)
+						throw new NodePluginException("Enocean Simulator", "Tag 'setpoint' not found for tag 'node' of type 'RoomTemperatureSensor'");
+					org.w3c.dom.Node setPointTemperatureNode = setPointTemperatureNodes.item(0);
+					
+					float setPointTemperature = Float.parseFloat(setPointTemperatureNode.getChildNodes().item(0).getNodeValue().toString());
+						
+					nodePanels.add(new RoomTemperatureSensor(title, node, nodePanelEventHandler, setPointTemperature));
+				}
 			}
 			
 		}
 	
-		gui = new GUI(properties.get("title"), nodePanels);
+		gui = new GUI(properties.get("title"), nodePanels, temperature);
 		
 
 		/* Screenposition */
@@ -173,6 +273,15 @@ public class Main implements NodePlugin {
 
 	}
 
+	public void setTemperature(float temperature) {
+		if (temperature > 40)
+			temperature = 40;
+		if (temperature < 0)
+			temperature = 0;
+		
+		this.temperature = temperature;
+		gui.setTemperature(temperature);
+	}
 
 	@Override
 	public void chainReceiveDatagram(Datagram datagram) {
@@ -183,8 +292,6 @@ public class Main implements NodePlugin {
 	
 	@Override
 	public void chainSendDatagramm(Datagram datagram) {
-
-		
 		for(NodePanel nodePanel: nodePanels)
 			nodePanel.handleDatagram(datagram);		
 	}
