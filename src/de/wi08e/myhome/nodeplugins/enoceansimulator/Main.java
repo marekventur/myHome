@@ -7,7 +7,6 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
@@ -30,14 +29,16 @@ public class Main implements NodePlugin {
 	private class RoomTemperatureTimer extends TimerTask {
 		@Override
 		public void run() {
-			float temperatureChange = 0;
+			float temperatureChange = 0;	
 			
-			// room falls back to start temperature over time
-			setTemperature((temperature*30f + startTemperature)/31f);
 			
 			for(NodePanel nodePanel: nodePanels) 
 				temperatureChange += nodePanel.temperatureStep(temperature);
-			setTemperature(temperature + temperatureChange);
+			
+			
+			setTemperature(((temperature + temperatureChange)*300f + startTemperature)/301f);
+			
+			
 		}
 	}
 	
@@ -280,7 +281,9 @@ public class Main implements NodePlugin {
 			temperature = 0;
 		
 		this.temperature = temperature;
-		gui.setTemperature(temperature);
+		if (gui != null)
+			gui.setTemperature(temperature);
+		
 	}
 
 	@Override

@@ -101,6 +101,7 @@ public class Radiator extends NodePanel {
 
 	@Override
 	public float temperatureStep(float roomTemperature) {
+		
 		if (isHeating()) {
 			setTemperature(temperature + 0.1f);
 		}
