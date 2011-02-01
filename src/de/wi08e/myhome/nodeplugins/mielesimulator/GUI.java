@@ -514,12 +514,13 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 		}
 		if(arg.getSource()==start) this.startTimer();
 	}
+   
     
     public void startTimer()
     {
     	
     }
-
+    
 	public void setPower(String status)
 	{
 		powerBox.setSelected(status.contentEquals("1"));
