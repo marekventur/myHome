@@ -5,6 +5,7 @@ package de.wi08e.myhome.statusmanager;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import de.wi08e.myhome.exceptions.InvalidStatusValue;
@@ -38,10 +39,32 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 			// Find all triggered nodes
 			List<Trigger> receivers = statusManager.getTriggerManager().getReceiver(datagram.getSender());
 			for (Trigger receiver: receivers) {
-		
+				
 				// Receiver is heatingonoff
-				if (receiver.getReceiver().getType().equalsIgnoreCase("heatingonoff")) {	
-					// statusManager.writeStatusChangeToDatabase(node, key, value);
+				if (receiver.getReceiver().getType().equalsIgnoreCase("heatingonoff")) {
+					
+					float setPointAdjustment = 0.5f;
+					float basicSetPoint = 21f;
+					float loweringTemperature = 4f;
+										
+					if (receiver.getReceiver().getStatus().containsKey("setpointadjustment"))
+						setPointAdjustment = Float.parseFloat(receiver.getReceiver().getStatus().get("setpointadjustment"));
+					else
+						statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "setpointadjustment", "0.5");
+					
+					if (receiver.getReceiver().getStatus().containsKey("basicsetpoint"))
+						basicSetPoint = Float.parseFloat(receiver.getReceiver().getStatus().get("basicsetpoint"));
+					else
+						statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "basicsetpoint", "21");
+					
+					if (receiver.getReceiver().getStatus().containsKey("loweringtemperature"))
+						loweringTemperature = Float.parseFloat(receiver.getReceiver().getStatus().get("loweringtemperature"));
+					else
+						statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "loweringtemperature", "4");
+
+					float setPointTemperature = basicSetPoint + (roomTemperatureDatagram.getSetPoint() - 0.5f) * setPointAdjustment * 2f - (roomTemperatureDatagram.isLoweringMode()?loweringTemperature:0.0f);
+					
+					statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "setpointtemperature", String.valueOf(setPointTemperature));
 				}
 				
 				// Receiver is Dimmer

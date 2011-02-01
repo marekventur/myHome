@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.wi08e.myhome.database.Database;
@@ -19,7 +20,6 @@ import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodemanager.DatagramReceiver;
 import de.wi08e.myhome.nodemanager.NodeManager;
-import de.wi08e.myhome.scriptmanager.ScriptManager;
 
 public class StatusManager implements DatagramReceiver{
 	
@@ -52,7 +52,6 @@ public class StatusManager implements DatagramReceiver{
 
 	public void receiveBroadcastDatagram(BroadcastDatagram broadcastDatagram) {
 
-		
 		String type = null;
 		
 		try {
@@ -75,10 +74,7 @@ public class StatusManager implements DatagramReceiver{
 					break;
 				}
 			}
-			
-			
-
-			
+	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -90,9 +86,7 @@ public class StatusManager implements DatagramReceiver{
 	
 	
 	protected void writeStatusChangeToDatabase(Node node, String key, String value) {
-		
-		
-		
+
 		try {
 			// is there already a status?
 			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT value FROM node_status WHERE node_id=? and `key`=?;"); 
@@ -206,31 +200,32 @@ public class StatusManager implements DatagramReceiver{
 					// There might be a way to change this status
 					Node sender = nodeManager.createNodeFromResultSet(rs, false);
 					
-					String[] receiverString = rs.getString("receiver").split(",");
-					int[] receiverIds = new int[receiverString.length];
-					for (int i=0; i<receiverString.length; i++)
-						receiverIds[i] = Integer.parseInt(receiverString[i]);
-					
-					// Loop through all specialized Status Manager
-					for (SpecializedStatusManager statusManager: specializedStatusManagers) {
-						Datagram datagram = statusManager.findDatagramForStatusChange(key, value, new Trigger(rs, nodeManager), receiverIds);
-						if (datagram != null) {
-
-							// Send datagram to plugin manager
-							nodeManager.sendDatagram(datagram);
-							
-							
-							// Change status and return changed Nodes
-							List<Node> result = new ArrayList<Node>();
-							for (int i=0; i<receiverIds.length; i++) {
-								Node node = nodeManager.getNode(receiverIds[i], true);
-								node.getStatus().put(key, value);
-								writeStatusChangeToDatabase(node, key, value);
-								result.add(node);
+					if (rs.getString("receiver") != null) {
+						String[] receiverString = rs.getString("receiver").split(",");
+						int[] receiverIds = new int[receiverString.length];
+						for (int i=0; i<receiverString.length; i++)
+							receiverIds[i] = Integer.parseInt(receiverString[i]);
+						
+						// Loop through all specialized Status Manager
+						for (SpecializedStatusManager statusManager: specializedStatusManagers) {
+							Datagram datagram = statusManager.findDatagramForStatusChange(key, value, new Trigger(rs, nodeManager), receiverIds);
+							if (datagram != null) {
+	
+								// Send datagram to plugin manager
+								nodeManager.sendDatagram(datagram);
+								
+								// Change status and return changed Nodes
+								List<Node> result = new ArrayList<Node>();
+								for (int i=0; i<receiverIds.length; i++) {
+									Node node = nodeManager.getNode(receiverIds[i], true);
+									node.getStatus().put(key, value);
+									writeStatusChangeToDatabase(node, key, value);
+									result.add(node);
+								}
+								
+								// Leave this methode
+								return result;
 							}
-							
-							// Leave this methode
-							return result;
 						}
 					}
 				}
@@ -245,10 +240,10 @@ public class StatusManager implements DatagramReceiver{
 		
 		StatusDatagram statusDatagram = new StatusDatagram(receiver, key, value);
 		nodeManager.sendDatagram(statusDatagram);
-		if (statusDatagram.isProcessed()) {
-			writeStatusChangeToDatabase(receiver, key, value);
-			receiver.getStatus().put(key, value);
-		}
+		//if (statusDatagram.isProcessed()) {
+		writeStatusChangeToDatabase(receiver, key, value);
+		receiver.getStatus().put(key, value);
+		//}
 		
 		ArrayList<Node> list = new ArrayList<Node>();
 		list.add(receiver);
