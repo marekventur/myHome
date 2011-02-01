@@ -35,10 +35,10 @@ public class Main implements NodePlugin
 					statusDatagram.setProcessed(true);
 					gui.setPower(statusDatagram.getValue());
 				}
-				if (statusDatagram.getKey().equalsIgnoreCase("changeTemperatur")) {
+				if (statusDatagram.getKey().equalsIgnoreCase("decidedTemperatur")) {
 					statusDatagram.setProcessed(true);
-					gui.changeTemperatur(Integer.parseInt(statusDatagram.getValue()));
-				}
+					gui.decidedTemperatur(Integer.parseInt(statusDatagram.getValue()));
+				}			
 			}
 		}
 	}

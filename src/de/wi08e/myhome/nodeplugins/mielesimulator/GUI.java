@@ -16,6 +16,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private Main main = null;
 	private boolean running = false;
+	private GuiController guicontroller = null;
 	
     // Variables declaration - do not modify
     private javax.swing.JButton an;
@@ -52,19 +53,53 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JProgressBar fuellstand;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane1;
-    private java.awt.TextField ist;
-    private java.awt.TextField soll;
+    private javax.swing.JTextField ist;
+    private javax.swing.JTextField soll;
     private javax.swing.JTextField dauer;
     private javax.swing.JTextField uhrzeit;
     private javax.swing.JCheckBox powerBox;
+    
     // End of variables declaration
     
     /** Creates new form GUI */
     public GUI(Main main) {
     	this.main=main;
+    	this.setLocation(400, 400);
         initComponents();
         this.setVisible(true);
-    	this.getTemperatur();
+    	this.currentTemperatur();
+    	guicontroller = new GuiController(this);
+    	guicontroller.start();
+    }
+    
+    public int getIST()
+    {
+    	return Integer.valueOf(ist.getText());
+    }
+    
+    public int getSoll()
+    {
+    	return Integer.valueOf(soll.getText());
+    }
+    
+    public void setIST(String ist)
+    {
+    	this.ist.setText(ist);
+    }
+    
+    public void setSoll(String soll)
+    {
+    	this.soll.setText(soll);
+    }
+    
+    public boolean istRunning()
+    {
+    	return this.running;
+    }
+    
+    public void setFuellstand(int zahl)
+    {
+    	fuellstand.setValue(zahl);
     }
 
     /** This method is called from within the constructor to
@@ -90,8 +125,8 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         oberhitze = new javax.swing.JCheckBox();
         unterhitze = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
-        ist = new java.awt.TextField();
-        soll = new java.awt.TextField();
+        ist = new javax.swing.JTextField();
+        soll = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -162,6 +197,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmwahl"));
 
         timer.setText("Timer");
+        timer.addActionListener(this);
 
         autostart.setText("Autostart");
 
@@ -288,9 +324,6 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Timer"));
 
-        dauer.setForeground(new java.awt.Color(204, 204, 204));
-        dauer.setText("hh:mm");
-
         jLabel5.setText("Dauer:");
 
         jLabel6.setText("Garzeit einstellen:");
@@ -298,6 +331,8 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         start.setText("Start");
 
         abbrechen.setText("Abbr.");
+        
+        dauer.setEditable(false);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -366,7 +401,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 
         fuellstand.setForeground(new java.awt.Color(51, 255, 0));
         fuellstand.setOrientation(SwingConstants.VERTICAL);
-        fuellstand.setValue(80);
+        fuellstand.setValue(100);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -388,9 +423,6 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Autostart"));
 
         jLabel7.setText("Uhrzeit:");
-
-        uhrzeit.setForeground(new java.awt.Color(204, 204, 204));
-        uhrzeit.setText("hh:mm");
 
         jLabel8.setText("Startzeit eingeben:");
 
@@ -473,25 +505,37 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 	{
 		if(arg.getSource()==aus) this.setPower("0");
 		if(arg.getSource()==an) this.setPower("1");
-		if(arg.getSource()==plus) this.changeTemperatur(1);
-		if(arg.getSource()==minus) this.changeTemperatur(-1);
+		if(arg.getSource()==plus) this.decidedTemperatur(1);
+		if(arg.getSource()==minus) this.decidedTemperatur(-1);
+		if(arg.getSource()==timer) 
+		{
+			if(timer.isSelected()) dauer.setEditable(true);
+			else dauer.setEditable(false);
+		}
+		if(arg.getSource()==start) this.startTimer();
 	}
+    
+    public void startTimer()
+    {
+    	
+    }
 
 	public void setPower(String status)
 	{
 		powerBox.setSelected(status.contentEquals("1"));
 		main.setStatus("power", status);
+		if(status.contentEquals("1")) running=true;
+		if(status.contentEquals("0")) running=false;
 	}
-	
-	public void getTemperatur()
+	public void currentTemperatur()
 	{
-		main.setStatus("getTemperatur", ist.getText());
+		main.setStatus("currentTemperatur", ist.getText());
 	}
 	
-	public void changeTemperatur(int zahl)
+	public void decidedTemperatur(int zahl)
 	{
 		soll.setText((String.valueOf(Integer.parseInt(soll.getText())+zahl)));
-		main.setStatus("changeTemperatur", "0");
+		main.setStatus("decidedTemperatur", soll.getText());
 	}
 	
 }
