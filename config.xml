@@ -107,13 +107,13 @@
 					<efficency>0.01</efficency>
 					<trigger>
 						<manufacturer>simulator</manufacturer>
-						<id>ddddda01</id>
+						<id>ddddda03</id>
 					</trigger>
 				</node>
 				
 				<node type="RoomTemperatureSensor">
 					<manufacturer>simulator</manufacturer>
-					<id>ddddda01</id>
+					<id>ddddda03</id>
 					<title>Sollwert</title>
 					<setpoint>0.5</setpoint>
 				</node>
