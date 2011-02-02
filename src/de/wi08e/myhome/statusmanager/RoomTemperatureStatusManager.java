@@ -45,7 +45,7 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 					
 					float setPointAdjustment = 0.5f;
 					float basicSetPoint = 21f;
-					float loweringTemperature = 4f;
+					//float loweringTemperature = 4f;
 										
 					if (receiver.getReceiver().getStatus().containsKey("setpointadjustment"))
 						setPointAdjustment = Float.parseFloat(receiver.getReceiver().getStatus().get("setpointadjustment"));
@@ -57,19 +57,16 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 					else
 						statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "basicsetpoint", "21");
 					
+					/*
 					if (receiver.getReceiver().getStatus().containsKey("loweringtemperature"))
 						loweringTemperature = Float.parseFloat(receiver.getReceiver().getStatus().get("loweringtemperature"));
 					else
 						statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "loweringtemperature", "4");
-
-					float setPointTemperature = basicSetPoint + (roomTemperatureDatagram.getSetPoint() - 0.5f) * setPointAdjustment * 2f - (roomTemperatureDatagram.isLoweringMode()?loweringTemperature:0.0f);
+					*/
+					
+					float setPointTemperature = basicSetPoint + (roomTemperatureDatagram.getSetPoint() - 0.5f) * setPointAdjustment * 2f; // - (roomTemperatureDatagram.isLoweringMode()?loweringTemperature:0.0f);
 					
 					statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "setpointtemperature", String.valueOf(setPointTemperature));
-				}
-				
-				// Receiver is Dimmer
-				if (receiver.getReceiver().getType() == "dimmer") {
-					// Whatever...
 				}
 			
 			}
@@ -82,7 +79,57 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 	@Override
 	public Datagram findDatagramForStatusChange(String key, String value,
 			Trigger trigger, int[] receiverIds) throws InvalidStatusValue {
-		// TODO Auto-generated method stub
+		
+		
+		
+		if (trigger.getSender().getType().contentEquals("temperaturesensor")) {
+			if (trigger.getReceiver().getType().contentEquals("heatingonoff")) {
+				if (key.contentEquals("setpointtemperature")) {
+					//if (!value.matches("[0-9\.]{1,2}")) 
+					//	throw new InvalidStatusValue();
+					
+					System.out.println(trigger.getSender().getType());
+					System.out.println(trigger.getSender().getType());
+					System.out.println(key);
+					
+					float roomTemperature = 0;
+					float setPointTemperature = Float.parseFloat(value);
+					
+					// Send last known room temperature
+					if (trigger.getSender().getStatus().containsKey("roomTemperature"))
+						roomTemperature = Float.parseFloat(trigger.getSender().getStatus().get("roomTemperature"));
+					
+					float setPointAdjustment = 0.5f;
+					float basicSetPoint = 21f;
+					//float loweringTemperature = 4f;
+										
+					if (trigger.getReceiver().getStatus().containsKey("setpointadjustment"))
+						setPointAdjustment = Float.parseFloat(trigger.getReceiver().getStatus().get("setpointadjustment"));
+					else
+						statusManager.writeStatusChangeToDatabase(trigger.getReceiver(), "setpointadjustment", "0.5");
+					
+					if (trigger.getReceiver().getStatus().containsKey("basicsetpoint"))
+						basicSetPoint = Float.parseFloat(trigger.getReceiver().getStatus().get("basicsetpoint"));
+					else
+						statusManager.writeStatusChangeToDatabase(trigger.getReceiver(), "basicsetpoint", "21");
+					
+					/*
+					if (trigger.getReceiver().getStatus().containsKey("loweringtemperature"))
+						loweringTemperature = Float.parseFloat(trigger.getReceiver().getStatus().get("loweringtemperature"));
+					else
+						statusManager.writeStatusChangeToDatabase(trigger.getReceiver(), "loweringtemperature", "4");
+					*/
+
+					float setPoint = (setPointTemperature - basicSetPoint) / (2 * setPointAdjustment) + 0.5f;
+					statusManager.writeStatusChangeToDatabase(trigger.getSender(), "setPoint", String.valueOf(setPoint));
+					
+					System.out.println(setPoint);
+					
+					return new RoomTemperatureAndSetPointDatagram(trigger.getSender(), roomTemperature, setPoint);
+				}
+			}
+		}
+		
 		return null;
 	}
 

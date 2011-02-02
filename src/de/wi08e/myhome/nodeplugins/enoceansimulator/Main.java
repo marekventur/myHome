@@ -84,11 +84,6 @@ public class Main implements NodePlugin {
 			}
 		};
 		
-		/* Room Temperature Timer */
-		RoomTemperatureTimer roomTemperatureTimer = new RoomTemperatureTimer();
-		
-		timer.schedule(roomTemperatureTimer, 1000, 1000);
-		
 		/* Go through data */
 		NodeList configNodes = ((Element)data).getElementsByTagName("node");
 		for (int i = 0; i < configNodes.getLength(); i++) 
@@ -271,6 +266,10 @@ public class Main implements NodePlugin {
 		        gui.createAndShowGUI();
 		    }
 		});
+		
+		/* Room Temperature Timer */
+		RoomTemperatureTimer roomTemperatureTimer = new RoomTemperatureTimer();
+		timer.schedule(roomTemperatureTimer, 1000, 1000);
 
 	}
 

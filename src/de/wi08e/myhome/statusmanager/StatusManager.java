@@ -162,6 +162,8 @@ public class StatusManager implements DatagramReceiver{
 	 */
 	public List<Node> setStatus(Node receiver, String key, String value) throws InvalidStatusValue {
 		
+		
+		
 		// Is the node already in the right status
 		if (receiver.getStatus().containsKey(key) && receiver.getStatus().get(key).contentEquals(value))
 			return new ArrayList<Node>();
@@ -184,7 +186,7 @@ public class StatusManager implements DatagramReceiver{
 					"LEFT JOIN "+
 				"node_triggers_node t2 " +
 				 	"ON " +
-				"(t1.sender_node_id = t2.sender_node_id AND t1.channel = t2.channel) " +
+				"(t1.sender_node_id = t2.sender_node_id AND (t1.channel = t2.channel OR t1.channel IS NULL)) " +
 			"WHERE " +
 				"t1.receiver_node_id = "+String.valueOf(receiver.getDatabaseId())+" "+
 			"GROUP BY " +
@@ -193,10 +195,9 @@ public class StatusManager implements DatagramReceiver{
 				"count ASC " +
 			"LIMIT 1;";
 			
-			
 			if (getBestSender.execute(getBestSenderSQL)) {
 				ResultSet rs = getBestSender.getResultSet(); 
-				if (rs.first()) {
+				while (rs.next()) {
 					// There might be a way to change this status
 					Node sender = nodeManager.createNodeFromResultSet(rs, false);
 					
@@ -208,6 +209,7 @@ public class StatusManager implements DatagramReceiver{
 						
 						// Loop through all specialized Status Manager
 						for (SpecializedStatusManager statusManager: specializedStatusManagers) {
+							
 							Datagram datagram = statusManager.findDatagramForStatusChange(key, value, new Trigger(rs, nodeManager), receiverIds);
 							if (datagram != null) {
 	
