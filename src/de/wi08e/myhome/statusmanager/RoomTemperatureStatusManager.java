@@ -43,14 +43,14 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 				// Receiver is heatingonoff
 				if (receiver.getReceiver().getType().equalsIgnoreCase("heatingonoff")) {
 					
-					float setPointAdjustment = 0.5f;
+					float setPointAdjustment = 5f;
 					float basicSetPoint = 21f;
 					//float loweringTemperature = 4f;
 										
 					if (receiver.getReceiver().getStatus().containsKey("setpointadjustment"))
 						setPointAdjustment = Float.parseFloat(receiver.getReceiver().getStatus().get("setpointadjustment"));
 					else
-						statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "setpointadjustment", "0.5");
+						statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "setpointadjustment", "5");
 					
 					if (receiver.getReceiver().getStatus().containsKey("basicsetpoint"))
 						basicSetPoint = Float.parseFloat(receiver.getReceiver().getStatus().get("basicsetpoint"));
@@ -88,9 +88,7 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 					//if (!value.matches("[0-9\.]{1,2}")) 
 					//	throw new InvalidStatusValue();
 					
-					System.out.println(trigger.getSender().getType());
-					System.out.println(trigger.getSender().getType());
-					System.out.println(key);
+					
 					
 					float roomTemperature = 0;
 					float setPointTemperature = Float.parseFloat(value);
@@ -99,14 +97,14 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 					if (trigger.getSender().getStatus().containsKey("roomTemperature"))
 						roomTemperature = Float.parseFloat(trigger.getSender().getStatus().get("roomTemperature"));
 					
-					float setPointAdjustment = 0.5f;
+					float setPointAdjustment = 5f;
 					float basicSetPoint = 21f;
 					//float loweringTemperature = 4f;
 										
 					if (trigger.getReceiver().getStatus().containsKey("setpointadjustment"))
 						setPointAdjustment = Float.parseFloat(trigger.getReceiver().getStatus().get("setpointadjustment"));
 					else
-						statusManager.writeStatusChangeToDatabase(trigger.getReceiver(), "setpointadjustment", "0.5");
+						statusManager.writeStatusChangeToDatabase(trigger.getReceiver(), "setpointadjustment", "5");
 					
 					if (trigger.getReceiver().getStatus().containsKey("basicsetpoint"))
 						basicSetPoint = Float.parseFloat(trigger.getReceiver().getStatus().get("basicsetpoint"));
@@ -122,8 +120,6 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 
 					float setPoint = (setPointTemperature - basicSetPoint) / (2 * setPointAdjustment) + 0.5f;
 					statusManager.writeStatusChangeToDatabase(trigger.getSender(), "setPoint", String.valueOf(setPoint));
-					
-					System.out.println(setPoint);
 					
 					return new RoomTemperatureAndSetPointDatagram(trigger.getSender(), roomTemperature, setPoint);
 				}
