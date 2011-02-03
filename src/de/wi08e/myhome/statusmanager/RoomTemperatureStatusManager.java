@@ -88,7 +88,7 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 					//if (!value.matches("[0-9\.]{1,2}")) 
 					//	throw new InvalidStatusValue();
 					
-					
+					trigger.getReceiver().loadStatus(statusManager.getDatabase());
 					
 					float roomTemperature = 0;
 					float setPointTemperature = Float.parseFloat(value);
@@ -108,8 +108,10 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 					
 					if (trigger.getReceiver().getStatus().containsKey("basicsetpoint"))
 						basicSetPoint = Float.parseFloat(trigger.getReceiver().getStatus().get("basicsetpoint"));
-					else
+					else {
+						System.out.println("ok");
 						statusManager.writeStatusChangeToDatabase(trigger.getReceiver(), "basicsetpoint", "21");
+					}
 					
 					/*
 					if (trigger.getReceiver().getStatus().containsKey("loweringtemperature"))

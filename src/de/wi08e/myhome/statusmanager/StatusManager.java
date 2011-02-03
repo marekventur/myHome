@@ -102,9 +102,7 @@ public class StatusManager implements DatagramReceiver{
 				// is there a change?
 				if(!oldValue.contentEquals(value)) {
 					
-					// Inform all statusChangeReceiver
-					for (StatusChangeReceiver statusChangeReceiver: statusChangeReceivers) 
-						statusChangeReceiver.statusChanged(node, key, value);
+					
 					
 					PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node_status SET value = ? WHERE node_id = ? AND `key` = ?;");
 					
@@ -113,6 +111,12 @@ public class StatusManager implements DatagramReceiver{
 					updateNode.setString(3, key);
 					
 					updateNode.executeUpdate();
+					
+					node.getStatus().put(key, value);
+					
+					// Inform all statusChangeReceiver
+					for (StatusChangeReceiver statusChangeReceiver: statusChangeReceivers) 
+						statusChangeReceiver.statusChanged(node, key, value);
 				}
 				
 			}
@@ -161,12 +165,13 @@ public class StatusManager implements DatagramReceiver{
 	 * @throws InvalidStatusValue 
 	 */
 	public List<Node> setStatus(Node receiver, String key, String value) throws InvalidStatusValue {
-		
-		
-		
+				
 		// Is the node already in the right status
-		if (receiver.getStatus().containsKey(key) && receiver.getStatus().get(key).contentEquals(value))
+		if (receiver.getStatus().containsKey(key) && receiver.getStatus().get(key).contentEquals(value)) {
+			System.out.println(receiver.getStatus().get(key));
+			System.out.println(value);
 			return new ArrayList<Node>();
+		}
 		
 		try {
 			Statement getBestSender = database.getConnection().createStatement();
@@ -216,12 +221,15 @@ public class StatusManager implements DatagramReceiver{
 								// Send datagram to plugin manager
 								nodeManager.sendDatagram(datagram);
 								
+								// Run this datagram through all StatusManagers
+								if (datagram instanceof BroadcastDatagram)
+									receiveBroadcastDatagram((BroadcastDatagram)datagram);
+								
+								
 								// Change status and return changed Nodes
 								List<Node> result = new ArrayList<Node>();
 								for (int i=0; i<receiverIds.length; i++) {
 									Node node = nodeManager.getNode(receiverIds[i], true);
-									node.getStatus().put(key, value);
-									writeStatusChangeToDatabase(node, key, value);
 									result.add(node);
 								}
 								
@@ -264,6 +272,10 @@ public class StatusManager implements DatagramReceiver{
 	public Set<String> getTypes() {
 		types.addAll(nodeManager.getTypes());
 		return types;
+	}
+	
+	protected Database getDatabase() {
+		return database;
 	}
 	
 	

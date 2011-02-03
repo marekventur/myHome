@@ -8,6 +8,7 @@ import de.wi08e.myhome.database.Database;
 import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.frontend.FrontendInterface;
 import de.wi08e.myhome.frontend.httpserver.HTTPServer;
+import de.wi08e.myhome.immutablestatusmanager.ImmutableStatusManager;
 import de.wi08e.myhome.nodemanager.NodeManager;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
 import de.wi08e.myhome.scriptmanager.ScriptManager;
@@ -30,6 +31,7 @@ public class Main {
 	private static BlueprintManager blueprintManager;
 	private static UserManager userManager;
 	private static CommunicationManager communicationManager;
+	private static ImmutableStatusManager immutableStatusManager;
 		
 	/**
 	 * This mtehod starts everything!
@@ -75,9 +77,13 @@ public class Main {
 		/* Start NodePluginManager */
 		new Thread(nodePluginManager).start();
 		
-		/* Create statusmanager */
+		/* Create StatusManager */
 		statusManager = new StatusManager(database, nodeManager);
 		nodeManager.addReceiver(statusManager);
+		
+		/* Create ImmutableStatusManager */
+		immutableStatusManager = new ImmutableStatusManager(database, statusManager); 
+		statusManager.addStatusChangeReceiver(immutableStatusManager);
 		
 		/* Create scripting engine */
 		scriptManager = new ScriptManager(database, nodeManager, userManager, communicationManager, statusManager);

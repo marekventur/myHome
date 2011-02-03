@@ -111,12 +111,28 @@
 					</trigger>
 				</node>
 				
+				<node type="Radiator">
+					<manufacturer>simulator</manufacturer>
+					<id>bbbbbb04</id>
+					<title>Heizkörper</title>
+					<setpointadjustment>5.0</setpointadjustment>
+					<basicsetpoint>22.0</basicsetpoint>
+					<loweringtemperature>4.0</loweringtemperature>
+					<efficency>0.01</efficency>
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ddddda03</id>
+					</trigger>
+				</node>
+
 				<node type="RoomTemperatureSensor">
 					<manufacturer>simulator</manufacturer>
 					<id>ddddda03</id>
 					<title>Sollwert</title>
 					<setpoint>0.5</setpoint>
 				</node>
+				
+				
 				
 				<!-- end of data tag -->
 			</data>
@@ -191,7 +207,9 @@
 					</trigger>
 					
 				</node>
-				<!-- end of data tag -->
+				
+				
+				
 			</data>
 		</nodeplugin>
 		<!--
