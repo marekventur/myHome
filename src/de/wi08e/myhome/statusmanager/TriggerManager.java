@@ -40,7 +40,7 @@ public class TriggerManager {
 					char channel = 0;
 					if (rs.getString("channel")!=null && rs.getString("channel").length()>0)
 						channel = rs.getString("channel").charAt(0);
-					result.add(new Trigger(null, nodeManager.getNode(rs.getInt("receiver_node_id"), false), channel));
+					result.add(new Trigger(null, nodeManager.getNode(rs.getInt("receiver_node_id"), true), channel));
 				}
 			}
 		} catch (SQLException e) {
