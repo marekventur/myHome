@@ -19,7 +19,7 @@ import de.wi08e.myhome.model.Snapshot;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.RockerSwitchDatagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
-import de.wi08e.myhome.nodeplugins.DatagramQueueHolder;
+import de.wi08e.myhome.nodeplugins.MessageToPluginQueueHolder;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;
@@ -98,6 +98,11 @@ public class Main implements NodePlugin {
 				/* TwoRockerSwitch */
 				if (type.equalsIgnoreCase("TwoRockerSwitch")) {
 					nodePanels.add(new TwoRockerSwitch(title, node, nodePanelEventHandler));
+				}
+				
+				/* OccupancySensor */
+				if (type.equalsIgnoreCase("OccupancySensor")) {
+					nodePanels.add(new OccupancySensor(title, node, nodePanelEventHandler));
 				}
 				
 				/* Relais */

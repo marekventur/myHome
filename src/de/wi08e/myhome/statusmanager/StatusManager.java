@@ -40,6 +40,7 @@ public class StatusManager implements DatagramReceiver{
 		
 		// Add StatusManager
 		specializedStatusManagers.add(new RockerSwitchStatusManager(this));
+		specializedStatusManagers.add(new OccupancySensorStatusManager(this));
 		
 		for (SpecializedStatusManager specializedStatusManager: specializedStatusManagers) 
 			types.addAll(specializedStatusManager.getAllTypes());
@@ -239,9 +240,14 @@ public class StatusManager implements DatagramReceiver{
 		}
 		
 		// No trigger found		
-		// writeStatusChangeToDatabase(receiver, key, value);
-		receiver.getStatus().put(key, value);
-		nodeManager.sendDatagram(new StatusDatagram(receiver, key, value));
+		// 
+		
+		StatusDatagram statusDatagram = new StatusDatagram(receiver, key, value);
+		nodeManager.sendDatagram(statusDatagram);
+		if (statusDatagram.isProcessed()) {
+			writeStatusChangeToDatabase(receiver, key, value);
+			receiver.getStatus().put(key, value);
+		}
 		
 		ArrayList<Node> list = new ArrayList<Node>();
 		list.add(receiver);

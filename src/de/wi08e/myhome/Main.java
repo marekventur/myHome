@@ -23,6 +23,7 @@ public class Main {
 	
 	private static ScriptManager scriptManager;
 	private static StatusManager statusManager;
+	private static SnapshotManager snapshotManager;
 	private static Database database;
 	private static NodePluginManager nodePluginManager;
 	private static NodeManager nodeManager;
@@ -54,10 +55,12 @@ public class Main {
 		
 		/* Loading all NodePlugins */
 		nodePluginManager = new NodePluginManager();
-		
-		
+
 		/* Create Database-Connection */
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
+		
+		/* Create Snapshot manager */
+		snapshotManager = new SnapshotManager(database);
 		
 		/* Create Usermanager */
 		userManager = new UserManager(database);
@@ -68,7 +71,7 @@ public class Main {
 		
 		
 		/* Create Node Manager */
-		nodeManager = new NodeManager(database, nodePluginManager);
+		nodeManager = new NodeManager(database, nodePluginManager, snapshotManager);
 		
 		/* Start NodePluginManager */
 		new Thread(nodePluginManager).start();

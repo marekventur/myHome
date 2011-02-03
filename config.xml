@@ -85,6 +85,12 @@
 					</trigger>
 					
 				</node>
+				
+				<node type="OccupancySensor">
+					<manufacturer>simulator</manufacturer>
+					<id>ddddda01</id>
+					<title>Bewegungsm.</title>
+				</node>
 				<!-- end of data tag -->
 			</data>
 		</nodeplugin>
@@ -156,7 +162,16 @@
 				<!-- end of data tag -->
 			</data>
 		</nodeplugin>
-
+		<!--
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.mielesimulator">
+		
+			<parameter>
+				<key>node</key>
+				<value>123</value>	
+			</parameter>
+			
+		</nodeplugin>
+		-->
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
@@ -228,10 +243,12 @@
 				<key>title</key>
 				<value>myHome</value>	
 			</parameter>
+
 		</communicationplugin>
 		
 		<communicationplugin namespace="de.wi08e.myhome.communicationplugins.dialog">
 		</communicationplugin>
 	</communicationplugins>	
+
 		
 </config>

@@ -6,8 +6,8 @@ package de.wi08e.myhome.model.datagram;
 import de.wi08e.myhome.model.Node;
 
 /**
- * This is 
- * @author Marek
+ * 
+ * @author chebenau
  *
  */
 public class BroadcastDatagram extends Datagram {

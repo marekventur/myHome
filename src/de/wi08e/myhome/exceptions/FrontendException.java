@@ -1,7 +1,13 @@
 package de.wi08e.myhome.exceptions;
 
+
+/**
+ * 
+ * @author christoph ebenau
+ *
+ */
 public abstract class FrontendException extends Exception {
-	
+
 	private static final long serialVersionUID = 1L;
 	private int code;
 	private String name;

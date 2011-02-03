@@ -17,6 +17,7 @@ import de.wi08e.myhome.frontend.httpserver.HTTPServer;
 import de.wi08e.myhome.model.Node;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.nodemanager.NodeManager;
+import de.wi08e.myhome.snapshotmanager.SnapshotManager;
 
 /**
  * @author Marek_Ventur
@@ -27,7 +28,7 @@ public class NodePluginManager implements Runnable {
 	private final static Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
 	private List<NodePluginRunnable> plugins;
 	
-	private BlockingQueue<Datagram> receivedDatagrams = new LinkedBlockingQueue<Datagram>();
+	private BlockingQueue<MessageFromPluginQueueHolder> receivedMessages = new LinkedBlockingQueue<MessageFromPluginQueueHolder>();
 	
 	private NodeManager nodeManager = null;
 	private boolean running = true;
@@ -37,6 +38,7 @@ public class NodePluginManager implements Runnable {
 	}
 	
 	public NodePluginManager() {
+		
 		
 		/* Add all the plugins from a specific directory */
 		// NodePluginLoader.addFile("nodeplugins/xyz.jar");
@@ -57,7 +59,7 @@ public class NodePluginManager implements Runnable {
 				Constructor<?> cs = loadedClass.getConstructor();
 			
 				NodePlugin plugin = (NodePlugin)cs.newInstance();
-				NodePluginRunnable pluginRunnable = new NodePluginRunnable(plugin, configPlugin.getProperties(), configPlugin.getData(), receivedDatagrams);
+				NodePluginRunnable pluginRunnable = new NodePluginRunnable(plugin, configPlugin.getProperties(), configPlugin.getData(), receivedMessages);
 				
 				Thread pluginThread = new Thread(pluginRunnable);
 				pluginThread.start();
@@ -105,12 +107,19 @@ public class NodePluginManager implements Runnable {
 	public void run() {
 		try {
 			while (running) {
-				Datagram datagram = receivedDatagrams.take();
+				MessageFromPluginQueueHolder message = receivedMessages.take();
 				
-				for (NodePluginRunnable pluginRunnable: plugins) 
-					pluginRunnable.chainReceiveDatagram(datagram);	
-				if (nodeManager != null)
-					nodeManager.receiveDatagram(datagram);
+				if (message.getType() == MessageFromPluginQueueHolder.Type.RECEIVED_DATAGRAM) {
+					Datagram datagram = message.getDatagram();
+					
+					for (NodePluginRunnable pluginRunnable: plugins) 
+						pluginRunnable.chainReceiveDatagram(datagram);	
+					if (nodeManager != null)
+						nodeManager.receiveDatagram(datagram);
+				}
+				
+				if (message.getType() == MessageFromPluginQueueHolder.Type.SNAPSHOT) 
+					nodeManager.storeSnapshot(message.getSnapshot());
 			}
 		} catch (InterruptedException e) {
 		}		
