@@ -4,7 +4,6 @@ package de.wi08e.myhome.nodeplugins.camera;
 import java.awt.image.BufferedImage;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import de.wi08e.myhome.model.Node;
 
 /**

@@ -6,6 +6,7 @@ package de.wi08e.myhome.nodeplugins.camera;
  */
 
 
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Map;
@@ -70,6 +71,8 @@ public class Main implements NodePlugin{
 			throw new NodePluginException("cameraplugin", "Parameter 'id' not found!");
 		node = new Node(getCategory(), "camera", properties.get("id"));
 		Database database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
+		
+		//Snapshotmanager muss übergeben werden beim Pluginaufruf !NEW nur zum testen
 		snapManager = new SnapshotManager(database);
 		this.event = event;
 		if (properties.containsKey("name")) 

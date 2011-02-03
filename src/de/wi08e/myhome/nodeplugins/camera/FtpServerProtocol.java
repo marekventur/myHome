@@ -477,6 +477,7 @@ public class FtpServerProtocol implements Runnable{
 		return pathBuf.toString();
 	}
 
+	
 	void checkLogin()throws FtpCommandException{
 		if (password == null){
 			throw new FtpCommandException(530, "Please login with USER and PASS.");
