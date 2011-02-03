@@ -30,7 +30,7 @@ public class Main {
 	private static BlueprintManager blueprintManager;
 	private static UserManager userManager;
 	private static CommunicationManager communicationManager;
-	private static SnapshotManager snapshotManager;
+	
 		
 	/**
 	 * This mtehod starts everything!

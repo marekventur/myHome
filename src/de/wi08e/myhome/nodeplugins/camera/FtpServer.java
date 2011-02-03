@@ -1,10 +1,8 @@
 package de.wi08e.myhome.nodeplugins.camera;
 
 
-import java.awt.image.BufferedImage;
 import java.net.ServerSocket;
 import java.net.Socket;
-import de.wi08e.myhome.model.Node;
 
 /**
  * @author Nico
@@ -28,10 +26,9 @@ public class FtpServer{
 	 * Default Listening Port
 	 */
 	private int port;
+	protected Main main;
 	
-	public Main main;
-	
-	
+	public int imageCounter = 0;
 
 	/**
 	 * Main Method for using FtpServer, args[] may be a specific port
@@ -73,7 +70,7 @@ public class FtpServer{
 		while (true)
 			{
 			Socket clientSocket = serverSocket.accept();
-			FtpServerProtocol serverprotocol = new FtpServerProtocol(clientSocket, this);
+			FtpServerProtocol serverprotocol = new FtpServerProtocol(this, clientSocket);
 			new Thread(serverprotocol).start();
 			}
 		}
@@ -84,7 +81,7 @@ public class FtpServer{
 	 * @param socket the client socket.
 	 */
 	public void service(Socket socket)throws Exception{
-		FtpServerProtocol protocol = new FtpServerProtocol(socket, this);
+		FtpServerProtocol protocol = new FtpServerProtocol(this, socket);
 		protocol.run();
 	}
 }

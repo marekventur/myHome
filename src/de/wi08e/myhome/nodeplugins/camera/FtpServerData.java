@@ -13,8 +13,6 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import de.wi08e.myhome.model.Snapshot;
-
 /**
  * @author Nico
  * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
@@ -24,10 +22,6 @@ import de.wi08e.myhome.model.Snapshot;
 public class FtpServerData{
 	
 	private FtpServerProtocol protocol;
-	
-	private FtpServer server;
-	
-	private int imageCount = 0;
 
 	/**
 	 * host of the data socket.
@@ -52,9 +46,8 @@ public class FtpServerData{
 	/**
 	 * Data transfer for server protocol.
 	 */
-	public FtpServerData(FtpServerProtocol protocol, FtpServer server){
+	public FtpServerData(FtpServerProtocol protocol){
 		this.protocol = protocol;
-		this.server = server;
 	}
 
 	/**
@@ -108,8 +101,16 @@ public class FtpServerData{
 			protocol.reply(150, "Opening " + representation.getName() + " mode data connection.");
 			//Image Handling
 			BufferedImage image = transmissionMode.receiveFile(dataSocket, fos, representation);
-			Snapshot snapshot = new Snapshot(image, server.main.getNode(), "Snapshot"+imageCount);
-			server.main.setLastID(snapshot);
+			protocol.server.main.lastImage = image;
+			//Abspeichern nur wenn Counter mit 1 Initialisiert wurde.
+			//Es werden 18 Bilder gespeichert: Alle 10 Sekunden, 3 Minuten lang
+			if (protocol.server.imageCounter > 0){
+				protocol.server.main.event.storeImage(protocol.server.main.node, image);
+				protocol.server.imageCounter = protocol.server.imageCounter + 1;
+				if (protocol.server.imageCounter == 19){
+					protocol.server.imageCounter = 0;
+				}
+			}
 			reply = protocol.reply(226, "Transfer complete.");
 		}
 		catch (ConnectException e){

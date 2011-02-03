@@ -8,48 +8,28 @@ package de.wi08e.myhome.nodeplugins.camera;
 
 
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.util.Map;
-
-import de.wi08e.myhome.Config;
-import de.wi08e.myhome.database.Database;
-import de.wi08e.myhome.database.MySQLDatabase;
 import de.wi08e.myhome.model.Node;
-import de.wi08e.myhome.model.Snapshot;
-
 import de.wi08e.myhome.model.datagram.AlarmDatagram;
 import de.wi08e.myhome.model.datagram.Datagram;
 import de.wi08e.myhome.model.datagram.NodeInformDatagram;
-import de.wi08e.myhome.model.datagram.StreamDatagram;
+import de.wi08e.myhome.model.datagram.StartSnapshottingDatagram;
 import de.wi08e.myhome.nodeplugins.NodePlugin;
 import de.wi08e.myhome.nodeplugins.NodePluginEvent;
 import de.wi08e.myhome.nodeplugins.NodePluginException;
-import de.wi08e.myhome.snapshotmanager.SnapshotManager;
 
 
 public class Main implements NodePlugin{
-
-	/**
-	 * @param args
-	 */
-	private Node node;
-	private SnapshotManager snapManager;
-	private NodePluginEvent event;
+		
+	protected Image lastImage = null;
+	protected Node node;
+	protected NodePluginEvent event;
 	protected static final int IMAGE_WIDTH = 300;
 	protected static final int IMAGE_HEIGHT = 300;
-	private int lastID;
-	
+	private FtpServer server = null;
+
 	public Node getNode() {
 		return node;
-	}
-
-	public int getLastID() {
-		return lastID;
-	}
-
-	public void setLastID(Snapshot snapshot) {
-		int lastID = snapManager.storeSnapshot(snapshot);
-		this.lastID = lastID;
 	}
 
 	public static void main(String[] args) {
@@ -70,16 +50,14 @@ public class Main implements NodePlugin{
 		if (!properties.containsKey("id"))
 			throw new NodePluginException("cameraplugin", "Parameter 'id' not found!");
 		node = new Node(getCategory(), "camera", properties.get("id"));
-		Database database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
-		
-		//Snapshotmanager muss übergeben werden beim Pluginaufruf !NEW nur zum testen
-		snapManager = new SnapshotManager(database);
+		node.setType("cameraplugin");
 		this.event = event;
 		if (properties.containsKey("name")) 
 			event.datagrammReceived(new NodeInformDatagram(node, properties.get("name")));
 		else
 			event.datagrammReceived(new NodeInformDatagram(node));
 		FtpServer server = new FtpServer(this);
+		this.server = server;
 		try {
 			server.start();
 		} catch (Exception e) {
@@ -99,8 +77,13 @@ public class Main implements NodePlugin{
 	@Override
 	public void chainSendDatagramm(Datagram datagram) {
 		// TODO Auto-generated method stub
-		if (datagram instanceof StreamDatagram){
+		if (datagram instanceof StartSnapshottingDatagram) {
 			
+			StartSnapshottingDatagram startSnapshotingDatagram = (StartSnapshottingDatagram)datagram;
+			
+			if (startSnapshotingDatagram.getReceiver().equals(node)) {
+					server.imageCounter = 1;
+			}
 		}
 	}
 
@@ -118,8 +101,7 @@ public class Main implements NodePlugin{
 	public Image getLastSnapshot(Node node) {
 		// TODO Auto-generated method stub
 		if (this.node.equals(node)) {
-			Snapshot snapshot = snapManager.getSnapshot(this.getLastID());
-			return snapshot.getImage();
+			return this.lastImage;
 		}
 		return null;
 	}

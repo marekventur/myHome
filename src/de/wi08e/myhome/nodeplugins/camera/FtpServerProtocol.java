@@ -1,6 +1,5 @@
 package de.wi08e.myhome.nodeplugins.camera;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -71,20 +70,18 @@ public class FtpServerProtocol implements Runnable{
 	 * The current directory for client.
 	 */
 	private String currentDir = "/";
-	
-	
-	
-	private FtpServer server;
 
+	protected FtpServer server;
+	
 	/**
 	 * Creates ServerProtocol for client socket for reading and writing Commands.
 	 */
-	public FtpServerProtocol(Socket clientSocket, FtpServer server)throws IOException{
+	public FtpServerProtocol(FtpServer server, Socket clientSocket)throws IOException{
 		this.clientSocket = clientSocket;
 		reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
 		this.server = server;
-		data= new FtpServerData(this, server);
+		data = new FtpServerData(this);
 		}
 
 	public void run(){
