@@ -18,6 +18,7 @@ public class BlueprintResponse {
 	private int height;
 	private java.awt.Image image = null;
 	private BlueprintLinkResponse[] blueprintLinks;
+	private boolean primary = false;
 	
 	public BlueprintResponse() {
 		
@@ -32,6 +33,7 @@ public class BlueprintResponse {
 		width = blueprint.getWidth();
 		height = blueprint.getHeight();
 		image = blueprint.getImage();
+		primary = blueprint.isPrimary();
 		
 		blueprintLinks = new BlueprintLinkResponse[blueprint.getBlueprintLinks().size()];
 		int i=0;
@@ -86,7 +88,13 @@ public class BlueprintResponse {
 	public void setBlueprintLinks(BlueprintLinkResponse[] blueprintLinks) {
 		this.blueprintLinks = blueprintLinks;
 	}
-
 	
+	public boolean isPrimary() {
+		return primary;
+	}
+	
+	public void setPrimary(boolean primary) {
+		this.primary = primary;
+	}
 	
 }

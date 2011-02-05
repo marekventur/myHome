@@ -102,8 +102,6 @@ public class StatusManager implements DatagramReceiver{
 				// is there a change?
 				if(!oldValue.contentEquals(value)) {
 					
-					
-					
 					PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node_status SET value = ? WHERE node_id = ? AND `key` = ?;");
 					
 					updateNode.setString(1, value);
