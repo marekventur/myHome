@@ -37,7 +37,7 @@ public class RockerSwitchStatusManager implements SpecializedStatusManager {
 						// Only if correct channel is choosen
 						if (rockerSwitchDatagram.getChannel().getChar() == receiver.getChannel()) {
 							float light = rockerSwitchDatagram.getState() == RockerSwitchDatagram.State.ON?1:0;
-							statusManager.writeStatusChangeToDatabase(receiver.getReceiver(), "light", String.valueOf(light));
+							statusManager.attemptDatabaseStatusChangeFromDatagram(receiver.getReceiver(), "light", String.valueOf(light));
 						}
 					}
 				}

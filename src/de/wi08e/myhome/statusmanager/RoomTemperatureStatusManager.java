@@ -33,8 +33,8 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 		if (datagram instanceof RoomTemperatureAndSetPointDatagram) {			
 			RoomTemperatureAndSetPointDatagram roomTemperatureDatagram = (RoomTemperatureAndSetPointDatagram) datagram;
 	
-			statusManager.writeStatusChangeToDatabase(roomTemperatureDatagram.getSender(), "setpoint", String.valueOf(roomTemperatureDatagram.getSetPoint()));
-			statusManager.writeStatusChangeToDatabase(roomTemperatureDatagram.getSender(), "roomtemperature", String.valueOf(roomTemperatureDatagram.getRoomTemperature()));
+			statusManager.attemptDatabaseStatusChangeFromDatagram(roomTemperatureDatagram.getSender(), "setpoint", String.valueOf(roomTemperatureDatagram.getSetPoint()));
+			statusManager.attemptDatabaseStatusChangeFromDatagram(roomTemperatureDatagram.getSender(), "roomtemperature", String.valueOf(roomTemperatureDatagram.getRoomTemperature()));
 			
 			// Find all triggered nodes
 			List<Trigger> receivers = statusManager.getTriggerManager().getReceiver(datagram.getSender());
@@ -121,6 +121,7 @@ public class RoomTemperatureStatusManager implements SpecializedStatusManager {
 					*/
 
 					float setPoint = (setPointTemperature - basicSetPoint) / (2 * setPointAdjustment) + 0.5f;
+					// using writeStatusChangeToDatabase() in here might lead to really nasty loops
 					statusManager.writeStatusChangeToDatabase(trigger.getSender(), "setPoint", String.valueOf(setPoint));
 					
 					return new RoomTemperatureAndSetPointDatagram(trigger.getSender(), roomTemperature, setPoint);

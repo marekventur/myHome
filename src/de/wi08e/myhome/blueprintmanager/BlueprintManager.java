@@ -235,7 +235,7 @@ public class BlueprintManager {
 					}
 					
 					
-					blueprint.preview();
+					//blueprint.preview();
 					
 					
 					return blueprint;

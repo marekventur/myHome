@@ -42,7 +42,7 @@ public class OccupancySensorStatusManager implements SpecializedStatusManager {
 				}
 			}
 			
-			statusManager.writeStatusChangeToDatabase(occupancySensorDatagram.getSender(), "occupied", occupancySensorDatagram.isOccupied()?"1":"0");
+			statusManager.attemptDatabaseStatusChangeFromDatagram(occupancySensorDatagram.getSender(), "occupied", occupancySensorDatagram.isOccupied()?"1":"0");
 		
 			return "occupancysensor";
 		}
