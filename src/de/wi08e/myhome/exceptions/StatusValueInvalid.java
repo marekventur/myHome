@@ -1,3 +1,8 @@
+/**
+ * 
+ * @author christoph ebenau
+ *
+ */
 package de.wi08e.myhome.exceptions;
 
 public class StatusValueInvalid extends FrontendException {

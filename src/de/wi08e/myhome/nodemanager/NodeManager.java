@@ -23,6 +23,7 @@ import de.wi08e.myhome.model.datagram.NodeInformDatagram;
 import de.wi08e.myhome.model.datagram.StatusDatagram;
 import de.wi08e.myhome.nodeplugins.NodePluginManager;
 import de.wi08e.myhome.nodeplugins.NodePluginRunnable;
+import de.wi08e.myhome.snapshotmanager.SnapshotManager;
 
 /**
  * @author Marek_Ventur
@@ -32,13 +33,16 @@ public class NodeManager {
 	private Database database;
 	private NodePluginManager nodePlugin;
 	private List<DatagramReceiver> receivers = new ArrayList<DatagramReceiver>();
+	private SnapshotManager snapshotManager;
 	
 	private Set<String> types = new HashSet<String>();
 
-	public NodeManager(Database database, NodePluginManager nodePlugin) {
+	public NodeManager(Database database, NodePluginManager nodePlugin, SnapshotManager snapshotManager) {
 		super();
 		this.database = database;
 		this.nodePlugin = nodePlugin;
+		this.snapshotManager = snapshotManager;
+		
 		nodePlugin.setNodeManager(this);
 	}
 	
@@ -414,7 +418,7 @@ public class NodeManager {
 	
 	public synchronized Node getNode(String hardwareId, String manufacturer, String category, boolean withStatus) {
 		try {
-			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE hardware_id=? AND manufacture=? AND category=?;"); 
+			PreparedStatement getNodeStatus = database.getConnection().prepareStatement("SELECT id, category, manufacturer, hardware_id, type, name FROM node WHERE hardware_id=? AND manufacturer=? AND category=?;"); 
 			getNodeStatus.setString(1, hardwareId);
 			getNodeStatus.setString(2, manufacturer);
 			getNodeStatus.setString(3, category);
@@ -642,6 +646,12 @@ public class NodeManager {
 	public Snapshot getLastSnapshot(int nodeId) {
 		Node node = getNode(nodeId, false);
 		return new Snapshot(nodePlugin.getLastSnapshot(node), node, "");
+	}
+	
+	public void storeSnapshot(Snapshot snapshot) {
+		Node node = getNode(snapshot.getNode(), false);
+		Snapshot newSnapshot = new Snapshot(snapshot.getImage(), node, snapshot.getTitle());
+		snapshotManager.storeSnapshot(newSnapshot);
 	}
 	
 }

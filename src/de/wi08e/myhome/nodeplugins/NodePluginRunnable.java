@@ -14,50 +14,52 @@ import de.wi08e.myhome.model.datagram.Datagram;
 
 public class NodePluginRunnable implements Runnable {
 	
-	private BlockingQueue<Datagram> outgoingDatagrams = null;
-	private BlockingQueue<DatagramQueueHolder> incomingDatagrams = new LinkedBlockingQueue<DatagramQueueHolder>();
+	private BlockingQueue<MessageFromPluginQueueHolder> outgoingMessages = null;
+	private BlockingQueue<MessageToPluginQueueHolder> incomingDatagrams = new LinkedBlockingQueue<MessageToPluginQueueHolder>();
 
 	private NodePluginEvent event = new NodePluginEvent() {
 		@Override
 		public void datagrammReceived(Datagram datagram) {		
-			outgoingDatagrams.add(datagram);			
+			outgoingMessages.add(new MessageFromPluginQueueHolder(datagram));			
 		}
 
 		@Override
 		public void storeImage(Node node, Image image) {
-			
+			outgoingMessages.add(new MessageFromPluginQueueHolder(new Snapshot(image, node, "")));	
 		}			
 	};
 	
 	private NodePlugin nodePlugin;
+
 	
 	private boolean running = true;
 
 
-	public NodePluginRunnable(NodePlugin nodePlugin, Map<String, String> properties, org.w3c.dom.Node data, BlockingQueue<Datagram> outgoingDatagrams) throws NodePluginException {
+	public NodePluginRunnable(NodePlugin nodePlugin, Map<String, String> properties, org.w3c.dom.Node data, BlockingQueue<MessageFromPluginQueueHolder> outgoingMessages) throws NodePluginException {
 		this.nodePlugin = nodePlugin;
-		this.outgoingDatagrams = outgoingDatagrams;
+		this.outgoingMessages = outgoingMessages;
 		nodePlugin.initiate(event, properties, data);
 	}
 	
 	public void chainSendDatagramm(Datagram datagram) {
-		incomingDatagrams.add(new DatagramQueueHolder(datagram, DatagramQueueHolder.Type.SEND));
+		
+		incomingDatagrams.add(new MessageToPluginQueueHolder(datagram, MessageToPluginQueueHolder.Type.SEND));
 	}
 	
 	@Override
 	public void run() {
 		try {
 			while (running) {
-					DatagramQueueHolder holder = incomingDatagrams.take();
+					MessageToPluginQueueHolder holder = incomingDatagrams.take();
 					Datagram datagram = holder.getDatagram();
 					
 					//  Chain Receive
-					if (holder.getType() == DatagramQueueHolder.Type.RECEIVED) 
+					if (holder.getType() == MessageToPluginQueueHolder.Type.RECEIVED) 
 						nodePlugin.chainReceiveDatagram(datagram);
 					
 					
 					// Chain 
-					if (holder.getType() == DatagramQueueHolder.Type.SEND) 
+					if (holder.getType() == MessageToPluginQueueHolder.Type.SEND) 
 						nodePlugin.chainSendDatagramm(datagram);
 					
 
@@ -67,7 +69,7 @@ public class NodePluginRunnable implements Runnable {
 	}
 
 	public void chainReceiveDatagram(Datagram datagram) {
-		incomingDatagrams.add(new DatagramQueueHolder(datagram, DatagramQueueHolder.Type.RECEIVED));
+		incomingDatagrams.add(new MessageToPluginQueueHolder(datagram, MessageToPluginQueueHolder.Type.RECEIVED));
 	}
 	
 	public Image getLastSnapshot(Node node) {

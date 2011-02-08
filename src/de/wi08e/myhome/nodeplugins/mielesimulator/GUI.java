@@ -236,7 +236,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener, MouseList
         autostart.setText("Autostart");
         autostart.addActionListener(this);
 
-        heissluft.setText("Heißluft");
+        heissluft.setText("Heiï¿½luft");
 
         auftauen.setText("Auftauen");
 
@@ -304,9 +304,9 @@ public class GUI extends javax.swing.JFrame implements ActionListener, MouseList
 
         jLabel2.setText("SOLL");
 
-        jLabel3.setText("°C");
+        jLabel3.setText("ï¿½C");
 
-        jLabel4.setText("°C");
+        jLabel4.setText("ï¿½C");
 
         plus.setText("+");
         plus.addActionListener(this);
@@ -417,7 +417,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener, MouseList
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-			String[] strings = { "Fisch", "Fleisch", "Gemüse", "Ente", "Hähnchen" };
+			String[] strings = { "Fisch", "Fleisch", "Gemï¿½se", "Ente", "Hï¿½hnchen" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -439,7 +439,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener, MouseList
                 .addContainerGap())
         );
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Füllstand"));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("FÃ¼llstand"));
 
         fuellstand.setForeground(new java.awt.Color(51, 255, 0));
         fuellstand.setOrientation(SwingConstants.VERTICAL);

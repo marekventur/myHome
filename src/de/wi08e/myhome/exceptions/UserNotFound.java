@@ -1,7 +1,9 @@
+
 package de.wi08e.myhome.exceptions;
 
 /**
  * This exception is raised when a requested username is not found.
+ * @author christoph ebenau
  */
 
 public class UserNotFound extends FrontendException {

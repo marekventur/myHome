@@ -37,4 +37,8 @@ public abstract class NodePanel extends JPanel {
 	 * @param datagram
 	 */
 	public void handleDatagram(Datagram datagram) { }
+	
+	public float temperatureStep(float roomTemperature) {
+		return (float)0.0;
+	}
 }
