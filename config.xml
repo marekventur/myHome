@@ -41,6 +41,11 @@
 				<value>100</value>	
 			</parameter>
 			
+			<parameter>
+				<key>temperature</key>
+				<value>14.2</value>	
+			</parameter>
+			
 			<!-- There can be zero or one data tags-->
 			<data>
 				<!-- might be different for every plugin -->
@@ -85,12 +90,50 @@
 					</trigger>
 					
 				</node>
-				
+
 				<node type="OccupancySensor">
 					<manufacturer>simulator</manufacturer>
 					<id>ddddda01</id>
 					<title>Bewegungsm.</title>
 				</node>
+
+				<node type="Radiator">
+					<manufacturer>simulator</manufacturer>
+					<id>bbbbbb01</id>
+					<title>Heizkörper</title>
+					<setpointadjustment>5.0</setpointadjustment>
+					<basicsetpoint>21.0</basicsetpoint>
+					<loweringtemperature>4.0</loweringtemperature>
+					<efficency>0.01</efficency>
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ddddda03</id>
+					</trigger>
+				</node>
+				
+				<node type="Radiator">
+					<manufacturer>simulator</manufacturer>
+					<id>bbbbbb04</id>
+					<title>Heizkörper</title>
+					<setpointadjustment>5.0</setpointadjustment>
+					<basicsetpoint>22.0</basicsetpoint>
+					<loweringtemperature>4.0</loweringtemperature>
+					<efficency>0.01</efficency>
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ddddda03</id>
+					</trigger>
+				</node>
+
+				<node type="RoomTemperatureSensor">
+					<manufacturer>simulator</manufacturer>
+					<id>ddddda03</id>
+					<title>Sollwert</title>
+					<setpoint>0.5</setpoint>
+				</node>
+				
+				
+				
 				<!-- end of data tag -->
 			</data>
 		</nodeplugin>
@@ -110,6 +153,11 @@
 			<parameter>
 				<key>top</key>
 				<value>100</value>	
+			</parameter>
+			
+			<parameter>
+				<key>temperature</key>
+				<value>16.4</value>	
 			</parameter>
 			
 			<!-- There can be zero or one data tags-->
@@ -159,7 +207,9 @@
 					</trigger>
 					
 				</node>
-				<!-- end of data tag -->
+				
+				
+				
 			</data>
 		</nodeplugin>
 		<!--
@@ -187,6 +237,11 @@
 			<parameter>
 				<key>top</key>
 				<value>100</value>	
+			</parameter>
+			
+			<parameter>
+				<key>temperature</key>
+				<value>10.6</value>	
 			</parameter>
 			
 			<!-- There can be zero or one data tags-->
