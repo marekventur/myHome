@@ -24,6 +24,8 @@ public class GuiController extends Thread
 	public void run() 
 	{
 		int zahl=0;
+		int tempTimer=0;
+
 		while(true)
 		{
 			ist=gui.getIST();
@@ -31,12 +33,14 @@ public class GuiController extends Thread
 			if(ist<soll&&gui.istRunning()) this.increasTemperatur();
 			if(ist>0&&!gui.istRunning()) this.decreasTemperatur();
 			if(ist>soll&&gui.istRunning()) this.decreasTemperatur();
-			if(zahl>7&&gui.istRunning()) gui.setFuellstand(fuellstand=fuellstand-3);
+			if(zahl>20&&gui.istRunning()) {gui.setFuellstand(fuellstand=fuellstand-1); zahl=0;}
 			try 
 			{
-				Thread.sleep(1500);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {e.printStackTrace();}
+			if(gui.getTimerActive()&&tempTimer>30) {gui.setTimer((gui.getTimer()-1));tempTimer=0;}
 			zahl++;
+			tempTimer++;
 		}
 	}
 	

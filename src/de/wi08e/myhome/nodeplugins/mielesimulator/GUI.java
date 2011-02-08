@@ -2,13 +2,16 @@ package de.wi08e.myhome.nodeplugins.mielesimulator;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.SwingConstants;
 
 /**
  *
  * @author Aleksandr
  */
-public class GUI extends javax.swing.JFrame implements ActionListener{
+public class GUI extends javax.swing.JFrame implements ActionListener, MouseListener{
 
     /**
 	 * 
@@ -17,6 +20,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 	private Main main = null;
 	private boolean running = false;
 	private GuiController guicontroller = null;
+	private boolean timerActive=false;
 	
     // Variables declaration - do not modify
     private javax.swing.JButton an;
@@ -58,6 +62,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JTextField dauer;
     private javax.swing.JTextField uhrzeit;
     private javax.swing.JCheckBox powerBox;
+
     
     // End of variables declaration
     
@@ -70,6 +75,21 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
     	this.currentTemperatur();
     	guicontroller = new GuiController(this);
     	guicontroller.start();
+    }
+    public boolean getTimerActive()
+    {
+    	return this.timerActive;
+    }
+    
+    public int getTimer()
+    {
+    	return Integer.parseInt(dauer.getText());
+    }
+    
+    public void setTimer(int restzeit)
+    {
+    	this.dauer.setText(String.valueOf(restzeit));
+    	main.setStatus("TimerActive", String.valueOf(restzeit));
     }
     
     public int getIST()
@@ -84,6 +104,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
     
     public void setIST(String ist)
     {
+    	this.currentTemperatur();
     	this.ist.setText(ist);
     }
     
@@ -100,6 +121,17 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
     public void setFuellstand(int zahl)
     {
     	fuellstand.setValue(zahl);
+    	main.setStatus("waterTank", String.valueOf(zahl));
+    }
+    
+    public int getDauer()
+    {
+    	return Integer.parseInt(dauer.getText());
+    }
+    
+    public void setDauer(int minuten)
+    {
+    	dauer.setText(String.valueOf(minuten));
     }
 
     /** This method is called from within the constructor to
@@ -160,6 +192,8 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         an.setText("AN");
         an.addActionListener(this);
         
+        uhrzeit.setEnabled(false);
+        uhrzeit.setEditable(false);
 
         aus.setText("AUS");
         aus.addActionListener(this);
@@ -200,6 +234,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         timer.addActionListener(this);
 
         autostart.setText("Autostart");
+        autostart.addActionListener(this);
 
         heissluft.setText("Heißluft");
 
@@ -208,6 +243,7 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         einkochen.setText("Einkochen");
 
         gericht.setText("Gericht/Pr");
+        gericht.addActionListener(this);
 
         grill.setText("Grill");
 
@@ -329,8 +365,12 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         jLabel6.setText("Garzeit einstellen:");
 
         start.setText("Start");
+        start.setEnabled(false);
+        start.addActionListener(this);
 
         abbrechen.setText("Abbr.");
+        abbrechen.setEnabled(false);
+        abbrechen.addActionListener(this);
         
         dauer.setEditable(false);
 
@@ -369,7 +409,9 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Gericht"));
-
+        
+        programm.setEnabled(false);
+        programm.addMouseListener(this);
         programm.setModel(new javax.swing.AbstractListModel() {
             /**
 			 * 
@@ -507,18 +549,115 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 		if(arg.getSource()==an) this.setPower("1");
 		if(arg.getSource()==plus) this.decidedTemperatur(1);
 		if(arg.getSource()==minus) this.decidedTemperatur(-1);
+		if(arg.getSource()==start) this.startTimer(dauer.getText());
 		if(arg.getSource()==timer) 
 		{
-			if(timer.isSelected()) dauer.setEditable(true);
-			else dauer.setEditable(false);
+			if(timer.isSelected())this.activateTimer("1");
+			else this.activateTimer("0");
 		}
-		if(arg.getSource()==start) this.startTimer();
+		if(arg.getSource()==abbrechen) this.stopTimer();
+		if(arg.getSource()==autostart) 
+		{
+			if(autostart.isSelected()) this.setAutostart(uhrzeit.getText());
+			else  this.stopAutostart();
+		}
+		if(arg.getSource()==gericht) 
+		{
+			if(gericht.isSelected()){programm.setEnabled(true); plus.setEnabled(false); minus.setEnabled(false);}
+			else {programm.setEnabled(false); plus.setEnabled(true); minus.setEnabled(true);}
+		}
 	}
-   
     
-    public void startTimer()
+    
+    public void setAutostart(String zeit)
     {
-    	
+    	uhrzeit.setEditable(true); 
+    	uhrzeit.setEnabled(true); 
+    	an.setEnabled(false); 
+    	aus.setEnabled(false);
+    	start.setEnabled(false);
+    	main.setStatus("AutostartActive", zeit);
+    }
+    
+    public void stopAutostart()
+    {
+    	uhrzeit.setEditable(false);
+    	uhrzeit.setEnabled(false); 
+    	if(!timer.isSelected()) {an.setEnabled(true); aus.setEnabled(true);} 
+    	if(timer.isSelected()) start.setEnabled(true);
+    	main.setStatus("AutostartActive", "0");
+    }
+    
+    public void setGericht()
+    {
+    	if(((String) programm.getSelectedValue()).equalsIgnoreCase("fleisch")) soll.setText("180");
+    	if(((String) programm.getSelectedValue()).equalsIgnoreCase("fisch")) soll.setText("120");
+    	if(((String) programm.getSelectedValue()).equalsIgnoreCase("gemüse")) soll.setText("80");
+    	if(((String) programm.getSelectedValue()).equalsIgnoreCase("Ente")) soll.setText("160");
+    	if(((String) programm.getSelectedValue()).equalsIgnoreCase("hähnchen")) soll.setText("100");
+    }
+   
+    public void stopTimer()
+    {
+    	timer.setEnabled(true);
+    	timerActive = false;
+    	running=false;
+    	timerActive = false;
+    	powerBox.setSelected(false);
+    	dauer.setEditable(true);
+    	dauer.setEnabled(true);
+    	start.setEnabled(true);
+    	dauer.setText("");
+    	this.setPower("0");
+    	main.setStatus("activateTimer", "0");
+    }
+    
+    public void activateTimer(String status)
+    {
+    	if(status.equalsIgnoreCase("1")){
+	    	dauer.setEditable(true); 
+	    	if(!autostart.isSelected()) start.setEnabled(true); 
+	    	abbrechen.setEnabled(true); 
+	    	an.setEnabled(false); 
+	    	aus.setEnabled(false);
+	    	timerActive = true;
+	    	timer.setSelected(true);
+	    	main.setStatus("activateTimer", "1");
+    	}
+    	if(status.equalsIgnoreCase("0"))
+    	{
+    		dauer.setEditable(false); 
+    		timerActive=false; 
+    		timer.setSelected(false);
+    		an.setEnabled(true); 
+    		aus.setEnabled(true);
+    		start.setEnabled(false); 
+    		abbrechen.setEnabled(false);
+    		main.setStatus("activateTimer", "0");
+    	}
+    }
+    
+    public void startTimer(String zahl)
+    {
+    	if(zahl.equalsIgnoreCase("0"))
+    	{
+    		this.stopTimer();
+    		main.setStatus("TimerActive", "");
+    	}
+    	else
+    	{
+        	running=true;
+        	timerActive = true;
+        	this.setTimer(Integer.parseInt(zahl));
+        	powerBox.setSelected(true);
+        	this.setPower("1");
+        	start.setEnabled(false);
+        	dauer.setEditable(false);
+        	dauer.setEditable(false);
+        	timer.setEnabled(false);
+        	main.setStatus("TimerActive", zahl);
+    	}
+
     }
     
 	public void setPower(String status)
@@ -537,6 +676,31 @@ public class GUI extends javax.swing.JFrame implements ActionListener{
 	{
 		soll.setText((String.valueOf(Integer.parseInt(soll.getText())+zahl)));
 		main.setStatus("decidedTemperatur", soll.getText());
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(e.getSource()==programm) this.setGericht();
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

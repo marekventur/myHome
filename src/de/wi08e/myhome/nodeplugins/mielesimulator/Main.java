@@ -39,6 +39,14 @@ public class Main implements NodePlugin
 					statusDatagram.setProcessed(true);
 					gui.decidedTemperatur(Integer.parseInt(statusDatagram.getValue()));
 				}			
+				if (statusDatagram.getKey().equalsIgnoreCase("TimerActive")) {
+					statusDatagram.setProcessed(true);
+					gui.startTimer(statusDatagram.getValue());
+				}
+				if (statusDatagram.getKey().equalsIgnoreCase("activateTimer")) {
+					statusDatagram.setProcessed(true);
+					gui.activateTimer(statusDatagram.getValue());
+				}	
 			}
 		}
 	}
