@@ -16,15 +16,17 @@ public class BlueprintLink {
 	private String name;
 	private int id;
 	private int referringBlueprintId;
+	private boolean primary;
 	
 	public BlueprintLink(float x, float y, String name, int id,
-			int referringBlueprintId) {
+			int referringBlueprintId, boolean primary) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.name = name;
 		this.id = id;
 		this.referringBlueprintId = referringBlueprintId;
+		this.primary = primary;
 	}
 	
 	public BlueprintLink(ResultSet rs) throws SQLException {
@@ -34,6 +36,7 @@ public class BlueprintLink {
 		this.name = rs.getString("name");
 		this.id = rs.getInt("id");
 		this.referringBlueprintId = rs.getInt("referring_blueprint_id");
+		this.primary = (rs.getInt("primary") == 1);
 	}
 
 	public float getX() {
@@ -54,6 +57,10 @@ public class BlueprintLink {
 
 	public int getReferringBlueprintId() {
 		return referringBlueprintId;
+	}
+
+	public boolean isPrimary() {
+		return primary;
 	}
 	
 	

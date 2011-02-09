@@ -61,6 +61,7 @@ public class StatusManager implements DatagramReceiver{
 				if (returnType != null) {
 					
 					if (type == null) {
+
 						type = returnType;
 						
 						// Write type to DB
@@ -83,7 +84,33 @@ public class StatusManager implements DatagramReceiver{
 		
 	}
 	
-	
+	protected void attemptDatabaseStatusChangeFromDatagram(Node node, String key, String value) {
+		
+		try {
+			// should there be a change?
+			PreparedStatement getImmutableStatus = database.getConnection().prepareStatement("SELECT value FROM node_status_immutable WHERE node_id=? AND `key`=? AND (`from` < now() OR `from` IS NULL) AND	(`to` > now()) ORDER BY id LIMIT 1"); 
+			getImmutableStatus.setInt(1, node.getDatabaseId());
+			getImmutableStatus.setString(2, key);
+			getImmutableStatus.execute();
+			
+			ResultSet rs2 = getImmutableStatus.getResultSet();
+			
+			if(rs2.next() && !value.contentEquals(rs2.getString("value"))) {
+				// No, because the status is immutable
+				setStatusWithoutChecking(node, key, rs2.getString("value"), false);
+			}
+			else
+			{
+				// It's ok, write the change to the database
+				writeStatusChangeToDatabase(node, key, value);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (InvalidStatusValue e) {
+			// Mhh. Tricky... 'till then:
+			e.printStackTrace();
+		}
+	}
 	
 	protected void writeStatusChangeToDatabase(Node node, String key, String value) {
 
@@ -101,8 +128,6 @@ public class StatusManager implements DatagramReceiver{
 				
 				// is there a change?
 				if(!oldValue.contentEquals(value)) {
-					
-					
 					
 					PreparedStatement updateNode = database.getConnection().prepareStatement("UPDATE node_status SET value = ? WHERE node_id = ? AND `key` = ?;");
 					
@@ -168,10 +193,13 @@ public class StatusManager implements DatagramReceiver{
 				
 		// Is the node already in the right status
 		if (receiver.getStatus().containsKey(key) && receiver.getStatus().get(key).contentEquals(value)) {
-			System.out.println(receiver.getStatus().get(key));
-			System.out.println(value);
 			return new ArrayList<Node>();
 		}
+		
+		return setStatusWithoutChecking(receiver, key, value, true);
+	}
+	
+	private List<Node> setStatusWithoutChecking(Node receiver, String key, String value, boolean writeToDatabase) throws InvalidStatusValue {
 		
 		try {
 			Statement getBestSender = database.getConnection().createStatement();
@@ -251,7 +279,8 @@ public class StatusManager implements DatagramReceiver{
 		StatusDatagram statusDatagram = new StatusDatagram(receiver, key, value);
 		nodeManager.sendDatagram(statusDatagram);
 		//if (statusDatagram.isProcessed()) {
-		writeStatusChangeToDatabase(receiver, key, value);
+		if (writeToDatabase)
+			writeStatusChangeToDatabase(receiver, key, value);
 		receiver.getStatus().put(key, value);
 		//}
 		

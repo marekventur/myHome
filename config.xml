@@ -13,9 +13,9 @@
 	<!-- This configures the soap interface -->
 	<soapinterface>
 		<!-- HTTP is faster at startup and does not need a keystore-file. Should only be used during development/testing and on a secure network -->
-		<binding protocol="http" port="8888" host="localhost" path="/service" />
+		<binding protocol="http" port="8888" host="0.0.0.0" path="/service" />
 		<!-- HTTPS is recommended for productive use -->
-		<!-- <binding protocol="https" port="8888" host="localhost" path="/service" keystore="myhome.jks" keystorepassword="myhome" keypassword="myhome" /> -->
+		<!-- <binding protocol="https" port="8888" host="0.0.0.0" path="/service" keystore="myhome.jks" keystorepassword="myhome" keypassword="myhome" /> -->
 		<!-- At the moment you can only use one (the first!) interface -->
 	</soapinterface>
 	
@@ -207,11 +207,10 @@
 					</trigger>
 					
 				</node>
-				
-				
-				
+
 			</data>
 		</nodeplugin>
+		
 		<!--
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.mielesimulator">
 		
@@ -222,6 +221,7 @@
 			
 		</nodeplugin>
 		-->
+		
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>

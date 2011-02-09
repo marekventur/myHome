@@ -36,6 +36,7 @@ public class Blueprint {
 	private int width;
 	private int height;
 	private Image image = null;
+	private boolean primary = false;
 
 	private List<BlueprintLink> blueprintLinks = Collections.synchronizedList(new ArrayList<BlueprintLink>());
 	
@@ -52,6 +53,7 @@ public class Blueprint {
 		name = resultSet.getString("name");
 		width = resultSet.getInt("width");
 		height = resultSet.getInt("height");
+		primary = (resultSet.getInt("primary") == 1);
 		
 		if (Database.columnExist(resultSet, "image")) {
 		
@@ -72,13 +74,14 @@ public class Blueprint {
 	 * @param image
 	 */
 	public Blueprint(int databseId, String name, int width, int height,
-			Image image) {
+			Image image, boolean primary) {
 		super();
 		this.databseId = databseId;
 		this.name = name;
 		this.width = width;
 		this.height = height;
 		this.image = image;
+		this.primary = primary;
 	}
 
 	public int getDatabseId() {
@@ -163,6 +166,10 @@ public class Blueprint {
 		
 		
 		frame.setVisible(true);
+	}
+	
+	public boolean isPrimary() {
+		return primary;
 	}
 	
 	
