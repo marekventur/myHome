@@ -18,6 +18,7 @@ public class BlueprintLinkResponse {
 	private String name;
 	private int id;
 	private int referringBlueprintId;
+	private boolean primary;
 	
 	public BlueprintLinkResponse() {
 		
@@ -29,6 +30,7 @@ public class BlueprintLinkResponse {
 		this.name = blueprintLink.getName();
 		this.id = blueprintLink.getId();
 		this.referringBlueprintId = blueprintLink.getReferringBlueprintId();
+		this.primary = blueprintLink.isPrimary();
 	}
 
 	public float getX() {
@@ -69,6 +71,14 @@ public class BlueprintLinkResponse {
 
 	public void setReferringBlueprintId(int referringBlueprintId) {
 		this.referringBlueprintId = referringBlueprintId;
+	}
+
+	public boolean isPrimary() {
+		return primary;
+	}
+
+	public void setPrimary(boolean primary) {
+		this.primary = primary;
 	}
 	
 	

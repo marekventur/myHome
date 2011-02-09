@@ -212,7 +212,7 @@ public class BlueprintManager {
 					/* Get links */
 					String getLinksSQL = "SELECT " +
 								"l.id, l.pos_x, l.pos_y, " +
-								"b2.id as 'referring_blueprint_id', b2.name " +
+								"b2.id as 'referring_blueprint_id', b2.name, b2.primary " +
 							"FROM " +
 								"blueprint b " +
 									"LEFT JOIN " +
