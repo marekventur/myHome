@@ -11,6 +11,8 @@ import java.net.Socket;
  * @author Nico
  * some ideas and code snipes from http://www.ryanheise.com/software/jftpd/
  * and http://www.echo.nuee.nagoya-u.ac.jp/~tanaka/MyFtpd.java
+ * FTP Commands according to Common Commands on"http://www.nsftools.com/tips/RawFTP.htm"
+ * and rfc959.
  * Converts data streams to and from IMAGE representation.
  */
 public class ImageRepresentation extends Representation{

@@ -2,7 +2,9 @@ package de.wi08e.myhome.nodeplugins.camera;
 
 /**
  * @author Nico
- *
+ * Main Class for CameraPlugin with ImageFtpServer
+ * Change Rate of Pictures in seconds in Class FTPServerData.java
+ * in Function receiveFile(String path).
  */
 
 
