@@ -38,6 +38,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
+		
 		/* Loading config.xml */
 		try {
 			Config.initiate("config.xml");
@@ -55,12 +56,16 @@ public class Main {
 		
 		/* Loading all NodePlugins */
 		nodePluginManager = new NodePluginManager();
+		
+		System.out.println("assad");
 
 		/* Create Database-Connection */
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
+		System.out.println("assad");
 		
 		/* Create Snapshot manager */
 		snapshotManager = new SnapshotManager(database);
+		
 		
 		/* Create Usermanager */
 		userManager = new UserManager(database);

@@ -12,7 +12,9 @@ public class MySQLDatabase extends Database {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println("Trying to connect");
 			connection = DriverManager.getConnection("jdbc:mysql://"+host+":"+String.valueOf(port)+"/"+databaseName, username, password);
+			System.out.println("Connected");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
