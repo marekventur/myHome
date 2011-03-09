@@ -211,7 +211,7 @@
 			</data>
 		</nodeplugin>
 		
-		<!--
+		
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.mielesimulator">
 		
 			<parameter>
@@ -220,7 +220,7 @@
 			</parameter>
 			
 		</nodeplugin>
-		-->
+		
 		
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
 			<!-- There can be zero to many parameter tags -->
