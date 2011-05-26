@@ -530,9 +530,13 @@ public class FrontendInterface {
 	 * @return String Returns the URL of the camera stream as a String
 	 */
 	
-	public String getStream(@WebParam(name="userToken") String userToken,@WebParam(name="CameraId") int cameraId) throws NotLoggedIn, NoAdminRights{
+	public String getStream(@WebParam(name="userToken") String userToken,@WebParam(name="CameraId") int cameraId) throws NotLoggedIn, NodeNotFound, NoAdminRights{
 		requestUserRights(userToken);
 		String streamURL = null;
+		Node node = nodeManager.getNode(cameraId, true);
+		if (node == null) 
+			throw new NodeNotFound();
+		streamURL = node.getStatus().get("url");
 		return streamURL;
 	}
 }

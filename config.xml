@@ -224,6 +224,9 @@
 				<key>name</key>
 				<value>Kamera Haustür</value>	
 			</parameter>
+			<parameter>
+				<key>url</key>
+				<value>http://myhomecam1.dyndns-home.com/</value></parameter>
 		</nodeplugin>
 
 		<!-- There might be some more plugins added here -->
