@@ -214,7 +214,7 @@
 			</data>
 		</nodeplugin>
 		
-		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.camerasimulator">
+		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.camera">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
 				<key>id</key>
@@ -226,7 +226,7 @@
 			</parameter>
 			<parameter>
 				<key>url</key>
-				<value>http://myhomecam1.dyndns-home.com/</value></parameter>
+				<value>http://myhomecam1.dyndns-home.com/record/current.jpg</value></parameter>
 		</nodeplugin>
 
 		<!-- There might be some more plugins added here -->

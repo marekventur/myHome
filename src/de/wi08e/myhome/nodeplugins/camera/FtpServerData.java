@@ -106,13 +106,15 @@ public class FtpServerData{
 			protocol.server.main.lastImage = image;
 			//Abspeichern nur wenn Counter mit 1 Initialisiert wurde.
 			//Es werden 18 Bilder gespeichert: Alle 10 Sekunden, 3 Minuten lang
+			/*Auskommentiert, da Selbstauslöser der Kamera benutzt wird
 			if (protocol.server.imageCounter > 0){
 				protocol.server.main.event.storeImage(protocol.server.main.node, image);
 				protocol.server.imageCounter = protocol.server.imageCounter + 1;
 				if (protocol.server.imageCounter == 19){
 					protocol.server.imageCounter = 0;
 				}
-			}
+			}*/
+			protocol.server.main.event.storeImage(protocol.server.main.node, image);
 			reply = protocol.reply(226, "Transfer complete.");
 		}
 		catch (ConnectException e){
