@@ -227,6 +227,9 @@
 			<parameter>
 				<key>url</key>
 				<value>http://myhomecam1.dyndns-home.com/record/current.jpg</value></parameter>
+			<parameter>
+				<key>alarm</key>
+				<value>1</value></parameter>
 		</nodeplugin>
 
 		<!-- There might be some more plugins added here -->

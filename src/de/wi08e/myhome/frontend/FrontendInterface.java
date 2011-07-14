@@ -495,9 +495,14 @@ public class FrontendInterface {
 	 * @return boolean Is true if alarm notification is set, false if not
 	 */
 
-	public boolean getAlarmSetting (@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights{
+	public boolean getAlarmSetting (@WebParam(name="userToken") String userToken, @WebParam(name="CameraId") int cameraId) throws NotLoggedIn, NodeNotFound, NoAdminRights{
 		requestAdminRights(userToken);
-		if("".equals(1)){		//SQL Abfrage des Status muss noch eingefügt werden
+		String alarm = null;
+		Node node = nodeManager.getNode(cameraId, true);
+		if (node == null) 
+			throw new NodeNotFound();
+		alarm = node.getStatus().get("alarm");
+		if(alarm == "1"){
 			return true;
 		}else{
 			return false;
@@ -512,14 +517,19 @@ public class FrontendInterface {
 	 * @return boolean Is true if alarm notification is turned on, false if turned off
 	 */
 
-	public boolean setAlarm (@WebParam(name="userToken") String userToken) throws NotLoggedIn, NoAdminRights{
+	public boolean setAlarm (@WebParam(name="userToken") String userToken, @WebParam(name="CameraId") int cameraId) throws NotLoggedIn,  NodeNotFound, NoAdminRights{
 		requestAdminRights(userToken);
-		boolean isSet = getAlarmSetting(userToken);
-		//SQL Befehl zum Ändern des Status in der DB
-		if(isSet == true){
-			return true;
-		}else{
+		String alarm = null;
+		Node node = nodeManager.getNode(cameraId, true);
+		if (node == null) 
+			throw new NodeNotFound();
+		alarm = node.getStatus().get("alarm");
+		if(alarm == "1"){
+			alarm = node.getStatus().put("alarm", "0");
 			return false;
+		}else{
+			alarm = node.getStatus().put("alarm", "1");
+			return true;
 		}
 	}
 	
