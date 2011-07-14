@@ -1,4 +1,0 @@
-Jul 14, 2011 1:04:56 PM de.wi08e.myhome.frontend.httpserver.HTTPServer <init>
-INFO: HTTP for SOAP-communicationis insecure and should only be used during development and testing. Make sure that the network is safe!
-Jul 14, 2011 1:04:56 PM de.wi08e.myhome.frontend.httpserver.HTTPServer <init>
-INFO: SOAP server has started. WSDL can be found at http://0.0.0.0:8888/service?wsdl
