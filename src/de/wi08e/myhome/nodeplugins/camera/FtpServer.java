@@ -17,12 +17,12 @@ public class FtpServer{
 	/**
 	 * Default Server Port
 	 */
-	public static final int SERVER_PORT = 21;
+	public static final int SERVER_PORT = 1201;
 
 	/**
 	 * Default Data Port
 	 */
-	public static final int SERVER_DATA_PORT = 20;
+	public static final int SERVER_DATA_PORT = 1200;
 
 	/**
 	 * Default Listening Port
