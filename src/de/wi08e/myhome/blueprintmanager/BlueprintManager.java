@@ -87,7 +87,7 @@ public class BlueprintManager {
 			Statement getBlueprints = database.getConnection()
 					.createStatement();
 			if (getBlueprints
-					.execute("SELECT id, name, width, height FROM blueprint;")) {
+					.execute("SELECT id, name, width, height, `primary` FROM blueprint;")) {
 				ResultSet rs = getBlueprints.getResultSet();
 				while (rs.next())
 					result.add(new Blueprint(rs));
@@ -99,22 +99,25 @@ public class BlueprintManager {
 		return result;
 	}
 
+	/*
 	public Blueprint getBlueprint() {
 		try {
 			Statement getBlueprints = database.getConnection()
 					.createStatement();
 			if (getBlueprints
-					.execute("SELECT id, name, width, height, image FROM blueprint;")) {
+					.execute("SELECT id, name, width, height, image, `primary` FROM blueprint;")) {
 				ResultSet rs = getBlueprints.getResultSet();
-				if (rs.next())
-					return new Blueprint(rs);
+				if (rs.next()) {
+					 Blueprint blueprint = new Blueprint(rs);
+					 return blueprint;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-
+*/
 	/**
 	 * 
 	 * @return true if successfull, false if not (id not found)
@@ -127,6 +130,23 @@ public class BlueprintManager {
 				.prepareStatement("UPDATE blueprint SET name = ? WHERE id = ?;");
 
 			updateBlueprint.setString(1, name);
+			updateBlueprint.setInt(2, blueprintId);
+			if (updateBlueprint.executeUpdate() == 0)
+				throw new BlueprintNotFound();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new BlueprintNotFound();
+		}
+	}
+	
+	public void setBlueprintIsPrimary(int blueprintId, boolean primary) throws BlueprintNotFound {
+		try {
+			PreparedStatement updateBlueprint = database
+				.getConnection()
+				.prepareStatement("UPDATE blueprint SET `primary` = ? WHERE id = ?;");
+
+			updateBlueprint.setInt(1, primary?1:0);
 			updateBlueprint.setInt(2, blueprintId);
 			if (updateBlueprint.executeUpdate() == 0)
 				throw new BlueprintNotFound();
@@ -159,7 +179,7 @@ public class BlueprintManager {
 			Statement getBlueprints = database.getConnection()
 					.createStatement();
 			if (getBlueprints
-					.execute("SELECT id, name, width, height, image FROM blueprint WHERE id="
+					.execute("SELECT id, name, width, height, image, `primary` FROM blueprint WHERE id="
 							+ String.valueOf(blueprintId) + ";")) {
 				ResultSet rs = getBlueprints.getResultSet();
 				if (rs.next()) {
@@ -192,7 +212,7 @@ public class BlueprintManager {
 					/* Get links */
 					String getLinksSQL = "SELECT " +
 								"l.id, l.pos_x, l.pos_y, " +
-								"b2.id as 'referring_blueprint_id', b2.name " +
+								"b2.id as 'referring_blueprint_id', b2.name, b2.primary " +
 							"FROM " +
 								"blueprint b " +
 									"LEFT JOIN " +

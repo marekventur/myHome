@@ -68,14 +68,6 @@ public class FrontendInterface {
 	private void requestAdminRights(String userToken) throws NotLoggedIn, NoAdminRights {
 		
 	}
-	/**
-	 * @param nodes convert List to response Array Node
-	 * @return new result when nodes response (result i++)
-	 */
-	
-	private int[] getAllowedBlueprintIds(String userToken) {
-		return new int[] {1,2,3,4,5};
-	}
 	
 	private NodeResponse[] convertListToResponseArrayNode(List<Node> nodes) {
 		NodeResponse[] result = new NodeResponse[nodes.size()];
@@ -290,7 +282,6 @@ public class FrontendInterface {
 		blueprintManager.addBlueprint(name, image);  
 	}
 	
-
 	public void deleteBlueprint(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
 		requestAdminRights(userToken); 
 		blueprintManager.deleteBlueprint(blueprintId); 
@@ -305,6 +296,11 @@ public class FrontendInterface {
 	public int addBlueprintLink(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId, @WebParam(name="linkingBlueprintId")  int linkingBlueprintId,@WebParam(name="x") float x,@WebParam(name="y") float y) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
 		requestAdminRights(userToken); 
 		return blueprintManager.addLink(blueprintId, linkingBlueprintId, x, y);
+	}
+	
+	public void setBlueprintIsPrimary(@WebParam(name="userToken") String userToken,@WebParam(name="blueprintId") int blueprintId, @WebParam(name="primary") boolean primary) throws NotLoggedIn, NoAdminRights, BlueprintNotFound {
+		requestAdminRights(userToken); 
+		blueprintManager.setBlueprintIsPrimary(blueprintId, primary);
 	}
 	
 	/* Nodes */

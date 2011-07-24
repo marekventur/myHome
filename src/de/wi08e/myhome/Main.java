@@ -81,7 +81,7 @@ public class Main {
 		/* Start NodePluginManager */
 		new Thread(nodePluginManager).start();
 		
-		/* Create statusmanager */
+		/* Create StatusManager */
 		statusManager = new StatusManager(database, nodeManager);
 		nodeManager.addReceiver(statusManager);
 		

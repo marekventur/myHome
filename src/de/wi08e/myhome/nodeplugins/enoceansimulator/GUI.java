@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
 import de.wi08e.myhome.model.Node;
@@ -23,12 +24,33 @@ import de.wi08e.myhome.model.Node;
  */
 public class GUI extends JFrame {
 	
-	public GUI(String title, List<NodePanel> nodePanels) {
+	private float temperature = 0;
+	private static final float MINTEMPERATURE = 0;
+	private static final float MAXTEMPERATURE = 40;
+	private JProgressBar temperatureProgressBar;
+	
+	public void setTemperature(float temperature) {
+		this.temperature = temperature;
+		temperatureProgressBar.setValue(Math.round(temperature * 100));
+		temperatureProgressBar.setString(String.format("%.1f °C", temperature));
+	}
+
+	public float getTemperature() {
+		return temperature;
+	}
+	
+	public GUI(String title, List<NodePanel> nodePanels, float temperature) {
 		super(title);
 		setLayout(new BorderLayout());
 	
 		/* Title */				
 		getContentPane().add(new JLabel("Enocean Simulator: "+title), BorderLayout.NORTH);
+		
+		/* Temperature */	
+		temperatureProgressBar = new JProgressBar(Math.round(MINTEMPERATURE*100), Math.round(MAXTEMPERATURE*100));
+		setTemperature(temperature);
+		temperatureProgressBar.setStringPainted(true);
+		getContentPane().add(temperatureProgressBar, BorderLayout.SOUTH);
 			
 		/* Content */
 		JPanel content = new JPanel(new GridLayout(0,2));

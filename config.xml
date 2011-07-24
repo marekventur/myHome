@@ -13,9 +13,9 @@
 	<!-- This configures the soap interface -->
 	<soapinterface>
 		<!-- HTTP is faster at startup and does not need a keystore-file. Should only be used during development/testing and on a secure network -->
-		<binding protocol="http" port="8888" host="localhost" path="/service" />
+		<binding protocol="http" port="8888" host="0.0.0.0" path="/service" />
 		<!-- HTTPS is recommended for productive use -->
-		<!-- <binding protocol="https" port="8888" host="localhost" path="/service" keystore="myhome.jks" keystorepassword="myhome" keypassword="myhome" /> -->
+		<!-- <binding protocol="https" port="8888" host="0.0.0.0" path="/service" keystore="myhome.jks" keystorepassword="myhome" keypassword="myhome" /> -->
 		<!-- At the moment you can only use one (the first!) interface -->
 	</soapinterface>
 	
@@ -39,6 +39,11 @@
 			<parameter>
 				<key>top</key>
 				<value>100</value>	
+			</parameter>
+			
+			<parameter>
+				<key>temperature</key>
+				<value>14.2</value>	
 			</parameter>
 			
 			<!-- There can be zero or one data tags-->
@@ -85,12 +90,50 @@
 					</trigger>
 					
 				</node>
-				
+
 				<node type="OccupancySensor">
 					<manufacturer>simulator</manufacturer>
 					<id>ddddda01</id>
 					<title>Bewegungsm.</title>
 				</node>
+
+				<node type="Radiator">
+					<manufacturer>simulator</manufacturer>
+					<id>bbbbbb01</id>
+					<title>Heizkörper</title>
+					<setpointadjustment>5.0</setpointadjustment>
+					<basicsetpoint>21.0</basicsetpoint>
+					<loweringtemperature>4.0</loweringtemperature>
+					<efficency>0.01</efficency>
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ddddda03</id>
+					</trigger>
+				</node>
+				
+				<node type="Radiator">
+					<manufacturer>simulator</manufacturer>
+					<id>bbbbbb04</id>
+					<title>Heizkörper</title>
+					<setpointadjustment>5.0</setpointadjustment>
+					<basicsetpoint>22.0</basicsetpoint>
+					<loweringtemperature>4.0</loweringtemperature>
+					<efficency>0.01</efficency>
+					<trigger>
+						<manufacturer>simulator</manufacturer>
+						<id>ddddda03</id>
+					</trigger>
+				</node>
+
+				<node type="RoomTemperatureSensor">
+					<manufacturer>simulator</manufacturer>
+					<id>ddddda03</id>
+					<title>Sollwert</title>
+					<setpoint>0.5</setpoint>
+				</node>
+				
+				
+				
 				<!-- end of data tag -->
 			</data>
 		</nodeplugin>
@@ -110,6 +153,11 @@
 			<parameter>
 				<key>top</key>
 				<value>100</value>	
+			</parameter>
+			
+			<parameter>
+				<key>temperature</key>
+				<value>16.4</value>	
 			</parameter>
 			
 			<!-- There can be zero or one data tags-->
@@ -159,9 +207,10 @@
 					</trigger>
 					
 				</node>
-				<!-- end of data tag -->
+
 			</data>
 		</nodeplugin>
+		
 		<!--
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.mielesimulator">
 		
@@ -172,6 +221,7 @@
 			
 		</nodeplugin>
 		-->
+		
 		<nodeplugin namespace="de.wi08e.myhome.nodeplugins.enoceansimulator">
 			<!-- There can be zero to many parameter tags -->
 			<parameter>
@@ -187,6 +237,11 @@
 			<parameter>
 				<key>top</key>
 				<value>100</value>	
+			</parameter>
+			
+			<parameter>
+				<key>temperature</key>
+				<value>10.6</value>	
 			</parameter>
 			
 			<!-- There can be zero or one data tags-->
