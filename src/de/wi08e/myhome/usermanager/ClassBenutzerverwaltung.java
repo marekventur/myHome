@@ -1,4 +1,4 @@
-package benutzerverwaltung;
+package de.wi08e.myhome.usermanager;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -261,7 +261,7 @@ public class ClassBenutzerverwaltung {
 	}
 	public List<Right> hasRights(int userId)
 	{
-		//Rolle des Users in die jeweiligen Rechte übersetzen.
+		//Rolle des Users in die jeweiligen Rechte ï¿½bersetzen.
 		List<Right> rightsUser = new ArrayList<Right>();
 		connect_db();
 		try {
@@ -281,7 +281,7 @@ public class ClassBenutzerverwaltung {
 		return rightsUser;
 	}
 	public boolean addRole(String roleName, List<Right> rights)
-	{	//Rolle definieren und zugehörige Rechte hinzufügen. bei misserfolg, wird false zurück gegeben.
+	{	//Rolle definieren und zugehï¿½rige Rechte hinzufï¿½gen. bei misserfolg, wird false zurï¿½ck gegeben.
 		Right bufferRight = new Right();
 		try {
 			connect_db();
@@ -324,7 +324,7 @@ public class ClassBenutzerverwaltung {
 		}	
 	}
 	public boolean addRightToRole(int roleId, int nodeId, boolean writable)
-	{ //Funktion gibt false zurück falls Eintrag bereits existiert. True wenn geklappt.
+	{ //Funktion gibt false zurï¿½ck falls Eintrag bereits existiert. True wenn geklappt.
 		try {
 			connect_db();
 			int writeInt = 0;
@@ -350,7 +350,7 @@ public class ClassBenutzerverwaltung {
 		}		
 	}
 	public boolean deleteRightFromRole(int roleId, int nodeId)
-	{	//Funktion löscht das übergebene Recht in der Rolle. Gibt bei Erfolg true zurück bei nicht existenz oder misserfolg false.
+	{	//Funktion lï¿½scht das ï¿½bergebene Recht in der Rolle. Gibt bei Erfolg true zurï¿½ck bei nicht existenz oder misserfolg false.
 		try {
 			connect_db();
 			rs = stmt.executeQuery("SELECT roleId, nodeId, writable FROM consistsof WHERE roleId = '" + roleId + "' AND nodeId = '" + nodeId + "'");

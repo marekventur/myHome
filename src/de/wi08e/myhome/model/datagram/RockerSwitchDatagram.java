@@ -55,6 +55,10 @@ public class RockerSwitchDatagram extends BroadcastDatagram {
 		return state;
 	}
 	
+	public String toString() {
+		return "Channel:"+getChannel()+ "  Action:"+getAction()+ "   State:"+getState()+ "   Node:"+getSender(); 
+	}
+	
 	
 
 }

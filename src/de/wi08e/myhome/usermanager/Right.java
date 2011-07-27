@@ -1,4 +1,4 @@
-package benutzerverwaltung;
+package de.wi08e.myhome.usermanager;
 
 public class Right {
 	private int nodeId;

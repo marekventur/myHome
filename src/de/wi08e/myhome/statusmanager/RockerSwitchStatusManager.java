@@ -32,8 +32,8 @@ public class RockerSwitchStatusManager implements SpecializedStatusManager {
 				// Receiver is Relais
 				if (receiver.getReceiver().getType().equalsIgnoreCase("relais")) {
 					
-					// Only if button is realeased
-					if (rockerSwitchDatagram.getAction() == RockerSwitchDatagram.Action.RELEASED) {
+					// Only if button is pressed
+					if (rockerSwitchDatagram.getAction() == RockerSwitchDatagram.Action.PRESSED) {
 						// Only if correct channel is choosen
 						if (rockerSwitchDatagram.getChannel().getChar() == receiver.getChannel()) {
 							float light = rockerSwitchDatagram.getState() == RockerSwitchDatagram.State.ON?1:0;
@@ -57,13 +57,18 @@ public class RockerSwitchStatusManager implements SpecializedStatusManager {
 
 	@Override
 	public Datagram findDatagramForStatusChange(String key, String value, Trigger trigger, int[] receiverIds) throws InvalidStatusValue {
-		if (trigger.getSender().getType().contentEquals("rockerswitch")) {
+		System.out.println(trigger);
+		if (trigger.getSender().getType().contentEquals("rockerswitch") || trigger.getSender().getType().contentEquals("gateway")) {
+			
 			if (trigger.getReceiver().getType().contentEquals("relais")) {
 				if (key.contentEquals("light")) {
 					if (!value.matches("[01](.0)?")) 
 						throw new InvalidStatusValue();
 					RockerSwitchDatagram.State state = (value.charAt(0)=='1')?RockerSwitchDatagram.State.ON:RockerSwitchDatagram.State.OFF;
-					return new RockerSwitchDatagram(trigger.getSender(), RockerSwitchDatagram.Channel.convertFromChar(trigger.getChannel()), state, RockerSwitchDatagram.Action.RELEASED);
+					RockerSwitchDatagram rsd = new RockerSwitchDatagram(trigger.getSender(), RockerSwitchDatagram.Channel.convertFromChar(trigger.getChannel()), state, RockerSwitchDatagram.Action.RELEASED);
+					System.out.println("Send: "+ rsd);
+					
+					return rsd;
 				}
 			}
 		}

@@ -1,4 +1,4 @@
-package benutzerverwaltung;
+package de.wi08e.myhome.usermanager;
 import java.util.*;
 
 public class test {
@@ -26,10 +26,10 @@ public class test {
 		bver.addRightToRole(3,2,false);
 		/*...............................................*/
 		/*...............................................*/
-		//Test für Methode Recht löschen
+		//Test fï¿½r Methode Recht lï¿½schen
 		//bver.deleteRightFromRole(3,1);
 		/*...............................................*/
-		//Testdaten für Methode addRole
+		//Testdaten fï¿½r Methode addRole
 		/*List<Right> bufferRightTest = new ArrayList<Right>();
 		
 		for(int i = 0; i < 5; i++)

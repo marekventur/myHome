@@ -225,8 +225,10 @@ public class StatusManager implements DatagramReceiver{
 			"GROUP BY " +
 				"t1.sender_node_id, t1.channel " +
 			"ORDER BY " +
-				"count ASC " +
+				"n.priority DESC, count ASC " +
 			"LIMIT 1;";
+			
+			System.out.println(getBestSenderSQL);
 			
 			if (getBestSender.execute(getBestSenderSQL)) {
 				ResultSet rs = getBestSender.getResultSet(); 

@@ -56,8 +56,6 @@ public class Main {
 		
 		/* Loading all NodePlugins */
 		nodePluginManager = new NodePluginManager();
-		
-		System.out.println("assad");
 
 		/* Create Database-Connection */
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());
