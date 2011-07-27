@@ -111,6 +111,7 @@ public class NodePluginManager implements Runnable {
 				
 				if (message.getType() == MessageFromPluginQueueHolder.Type.RECEIVED_DATAGRAM) {
 					Datagram datagram = message.getDatagram();
+				
 					
 					for (NodePluginRunnable pluginRunnable: plugins) 
 						pluginRunnable.chainReceiveDatagram(datagram);	

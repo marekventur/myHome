@@ -54,6 +54,8 @@ public class Main {
 		
 		/* Loading all NodePlugins */
 		nodePluginManager = new NodePluginManager();
+		//Thread nodePluginManagerThread = new Thread(nodePluginManager);
+		//nodePluginManagerThread.start();
 
 		/* Create Database-Connection */
 		database = new MySQLDatabase(Config.getDatabaseHost(), Config.getDatabasePort(), Config.getDatabaseName(), Config.getDatabaseUser(), Config.getDatabasePassword());

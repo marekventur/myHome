@@ -20,7 +20,8 @@ public class NodePluginRunnable implements Runnable {
 	private NodePluginEvent event = new NodePluginEvent() {
 		@Override
 		public void datagrammReceived(Datagram datagram) {		
-			outgoingMessages.add(new MessageFromPluginQueueHolder(datagram));			
+			outgoingMessages.add(new MessageFromPluginQueueHolder(datagram));	
+			System.out.println ("Step1 "+datagram+" "+outgoingMessages.size());
 		}
 
 		@Override

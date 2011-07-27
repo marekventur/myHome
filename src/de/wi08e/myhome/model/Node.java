@@ -81,7 +81,7 @@ public class Node {
 				category.length() == 0 ||
 				manufacturer.length() == 0 ||
 				hardwareId.length() == 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(this.toString());
 		
 		this.category = category.toLowerCase();
 		this.manufacturer = manufacturer.toLowerCase();
