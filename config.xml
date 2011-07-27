@@ -281,7 +281,7 @@
 			</parameter>
 			<parameter>
 				<key>url</key>
-				<value>http://myhomecam1.dyndns-home.com/record/current.jpg</value></parameter>
+				<value>http://myhomecam1.dyndns-home.com/control/faststream.jpg?stream=full&fps=10&rand=220215</value></parameter>
 			<parameter>
 				<key>alarm</key>
 				<value>1</value></parameter>
